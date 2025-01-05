@@ -1,5 +1,5 @@
 [versions]
-agp = "8.5.0"
+agp = "8.5.2"
 converterMoshi = "2.9.0"
 gradle = "8.1.4"
 hiltAndroid = "2.49"
@@ -12,10 +12,11 @@ espressoCore = "3.6.1"
 kotlinGradlePlugin = "1.9.0"
 lifecycleRuntimeKtx = "2.8.7"
 activityCompose = "1.9.3"
-composeBom = "2024.04.01"
+composeBom = "2024.12.01"
 loggingInterceptor = "4.11.0"
 playServicesLocation = "21.3.0"
 retrofit = "2.9.0"
+
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
