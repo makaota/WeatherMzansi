@@ -1,4 +1,4 @@
-package com.makaota.weathermzansi
+package com.makaota.weathermzansi.ui
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
