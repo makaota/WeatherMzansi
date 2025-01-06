@@ -43,6 +43,8 @@ class WeatherViewModel @Inject constructor(
                             error = result.message
                         )
                     }
+
+                    else -> {}
                 }
             } ?: kotlin.run {
                 state = state.copy(

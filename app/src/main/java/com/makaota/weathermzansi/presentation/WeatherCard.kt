@@ -15,6 +15,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -26,6 +27,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.makaota.weathermzansi.R
+import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import kotlin.math.roundToInt
 
@@ -36,6 +38,11 @@ fun WeatherCard(
     modifier: Modifier = Modifier
 ) {
     state.weatherInfo?.currentWeatherData?.let { data ->
+
+        // Get the current time
+        val currentTime = remember { LocalDateTime.now() }
+        val formattedCurrentTime = currentTime.format(DateTimeFormatter.ofPattern("HH:mm"))
+
         Card(
             colors = CardDefaults.cardColors(
                 containerColor = backgroundColor // Your desired background color
@@ -49,12 +56,9 @@ fun WeatherCard(
                     .padding(16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
+                // Display current time here
                 Text(
-                    text = "Today ${
-                        data.time.format(
-                            DateTimeFormatter.ofPattern("HH:mm")
-                        )
-                    }",
+                    text = "Today $formattedCurrentTime",
                     modifier = Modifier.align(Alignment.End),
                     color = Color.White
                 )

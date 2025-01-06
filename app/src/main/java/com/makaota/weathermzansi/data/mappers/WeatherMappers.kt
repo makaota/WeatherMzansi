@@ -47,8 +47,10 @@ fun WeatherDto.toWeatherInfo(): WeatherInfo {
         val hour = if(now.minute < 30) now.hour else now.hour + 1
         it.time.hour == hour
     }
+    val weatherDataPerWeek = null
     return WeatherInfo(
         weatherDataPerDay = weatherDataMap,
         currentWeatherData = currentWeatherData
+        //weatherDataPerWeek = weatherDataPerWeek
     )
 }
