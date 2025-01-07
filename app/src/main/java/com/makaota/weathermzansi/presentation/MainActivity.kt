@@ -9,6 +9,8 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.ui.Alignment
@@ -42,12 +44,14 @@ class MainActivity : ComponentActivity() {
         setContent {
             WeatherMzansiTheme {
 
-                Box(modifier = Modifier.fillMaxSize()){
+                Box(modifier = Modifier.fillMaxSize()
+                    .background(DarkBlue)){
 
                     Column(
                         modifier = Modifier
-                            .fillMaxSize()
-                            .background(DarkBlue)
+                            .verticalScroll(rememberScrollState())
+                            .wrapContentHeight()
+
                     ) {
                         WeatherCard(
                             state = viewModel.state,
@@ -55,6 +59,11 @@ class MainActivity : ComponentActivity() {
                         )
                         Spacer(modifier = Modifier.height(16.dp))
                         WeatherForecast(state = viewModel.state)
+                        Spacer(modifier = Modifier.height(16.dp))
+                        val weatherState = viewModel.state
+                        weatherState.weatherInfo?.let { weatherInfo ->
+                            WeeklyWeatherForecast(weeklyWeatherData = weatherInfo.weeklyWeatherData)
+                        }
                     }
                     if(viewModel.state.isLoading) {
                         CircularProgressIndicator(

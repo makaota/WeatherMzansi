@@ -1,5 +1,6 @@
 package com.makaota.weathermzansi.data.mappers
 
+import android.util.Log
 import com.makaota.weathermzansi.data.remote.WeatherDataDto
 import com.makaota.weathermzansi.data.remote.WeatherDto
 import com.makaota.weathermzansi.weather.WeatherData
@@ -36,7 +37,7 @@ fun WeatherDataDto.toWeatherDataMap(): Map<Int, List<WeatherData>> {
     }.mapValues {
         it.value.map { it.data }
     }.also {
-        println(it.keys)
+        Log.d("WeatherDataMap", "Grouped keys: ${it.keys}")
     }
 }
 
@@ -47,10 +48,13 @@ fun WeatherDto.toWeatherInfo(): WeatherInfo {
         val hour = if(now.minute < 30) now.hour else now.hour + 1
         it.time.hour == hour
     }
-    val weatherDataPerWeek = null
+
+    // Extract weekly weather data
+    val weeklyWeatherData = weatherDataMap.values.toList()
     return WeatherInfo(
         weatherDataPerDay = weatherDataMap,
-        currentWeatherData = currentWeatherData
-        //weatherDataPerWeek = weatherDataPerWeek
+        currentWeatherData = currentWeatherData,
+        weeklyWeatherData = weeklyWeatherData
+
     )
 }

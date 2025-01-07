@@ -66,18 +66,18 @@ fun WeatherCard(
                 Image(
                     painter = painterResource(id = data.weatherType.iconRes),
                     contentDescription = null,
-                    modifier = Modifier.width(200.dp)
+                    modifier = Modifier.width(100.dp)
                 )
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(
                     text = "${data.temperatureCelsius}°C",
-                    fontSize = 50.sp,
+                    fontSize = 30.sp,
                     color = Color.White
                 )
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(
                     text = data.weatherType.weatherDesc,
-                    fontSize = 20.sp,
+                    fontSize = 16.sp,
                     color = Color.White
                 )
                 Spacer(modifier = Modifier.height(32.dp))
