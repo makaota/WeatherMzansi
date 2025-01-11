@@ -1,5 +1,6 @@
 package com.makaota.weathermzansi.presentation
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -21,6 +22,8 @@ class WeatherViewModel @Inject constructor(
     var state by mutableStateOf(WeatherState())
         private set
 
+
+
     fun loadWeatherInfo() {
         viewModelScope.launch {
             state = state.copy(
@@ -35,6 +38,7 @@ class WeatherViewModel @Inject constructor(
                             isLoading = false,
                             error = null
                         )
+                        Log.d( "WeatherViewModel","WeatherData: ${result.data}")
                     }
                     is Resource.Error -> {
                         state = state.copy(
@@ -54,4 +58,6 @@ class WeatherViewModel @Inject constructor(
             }
         }
     }
+
+
 }

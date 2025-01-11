@@ -10,4 +10,10 @@ interface WeatherApi {
         @Query("latitude") lat: Double,
         @Query("longitude") long: Double
     ): WeatherDto
+
+    @GET("v1/forecast?daily=temperature_2m_max,temperature_2m_min,precipitation_sum,weathercode")
+    suspend fun getDailyWeatherData(
+        @Query("latitude") lat: Double,
+        @Query("longitude") long: Double
+    ): DailyWeatherDto
 }

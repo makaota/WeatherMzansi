@@ -1,6 +1,7 @@
 package com.makaota.weathermzansi.presentation
 
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -39,6 +40,7 @@ fun WeatherCard(
 ) {
     state.weatherInfo?.currentWeatherData?.let { data ->
 
+        Log.d("WeatherCard", "WeatherData: $data")
         // Get the current time
         val currentTime = remember { LocalDateTime.now() }
         val formattedCurrentTime = currentTime.format(DateTimeFormatter.ofPattern("HH:mm"))

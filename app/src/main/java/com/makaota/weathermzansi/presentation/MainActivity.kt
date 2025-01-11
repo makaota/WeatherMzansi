@@ -27,6 +27,7 @@ import dagger.hilt.android.AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
     private val viewModel: WeatherViewModel by viewModels()
+    private val dailyViewModel: DailyWeatherViewModel by viewModels()
     private lateinit var permissionLauncher: ActivityResultLauncher<Array<String>>
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -35,6 +36,7 @@ class MainActivity : ComponentActivity() {
             ActivityResultContracts.RequestMultiplePermissions()
         ) {
             viewModel.loadWeatherInfo()
+            dailyViewModel.loadDailyWeatherInfo()
         }
         permissionLauncher.launch(arrayOf(
             Manifest.permission.ACCESS_FINE_LOCATION,
@@ -60,10 +62,7 @@ class MainActivity : ComponentActivity() {
                         Spacer(modifier = Modifier.height(16.dp))
                         WeatherForecast(state = viewModel.state)
                         Spacer(modifier = Modifier.height(16.dp))
-                        val weatherState = viewModel.state
-                        weatherState.weatherInfo?.let { weatherInfo ->
-                            WeeklyWeatherForecast(weeklyWeatherData = weatherInfo.weeklyWeatherData)
-                        }
+                        DailyDisplay(dailyViewModel)
                     }
                     if(viewModel.state.isLoading) {
                         CircularProgressIndicator(
