@@ -31,10 +31,14 @@ fun WeatherForecast(
         val filteredData = remember(data, currentTime) {
             data.filter { weatherData ->
                 Log.d("WeatherDataForecast", "values: $weatherData")
-                weatherData.time.isAfter(currentTime) || weatherData.time.hour == currentTime.hour
+                weatherData.time.isAfter(currentTime) || weatherData.time.hour == currentTime.hour  ||
+                        weatherData.time.hour == 0
 
             }
+
         }
+
+        Log.d("filteredData", "values: ${filteredData.size}")
 
         Column(
             modifier = modifier
@@ -48,7 +52,19 @@ fun WeatherForecast(
             )
             Spacer(modifier = Modifier.height(16.dp))
             LazyRow(content = {
-                items(filteredData) { weatherData ->
+                items(
+                    filteredData.sortedWith { weather1, weather2 ->
+                        val currentHour = currentTime.hour
+
+                        val hour1 = weather1.time.hour
+                        val hour2 = weather2.time.hour
+
+                        val adjustedHour1 = if (hour1 < currentHour) hour1 + 24 else hour1
+                        val adjustedHour2 = if (hour2 < currentHour) hour2 + 24 else hour2
+
+                        adjustedHour1.compareTo(adjustedHour2)
+                    }
+                ) { weatherData ->
                     HourlyWeatherDisplay(
                         weatherData = weatherData,
                         modifier = Modifier
@@ -56,6 +72,8 @@ fun WeatherForecast(
                             .padding(horizontal = 16.dp)
                     )
                 }
+
+
             })
         }
     }

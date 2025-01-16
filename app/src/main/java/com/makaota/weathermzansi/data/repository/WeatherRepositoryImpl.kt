@@ -7,6 +7,8 @@ import com.makaota.weathermzansi.domain.repository.WeatherRepository
 import com.makaota.weathermzansi.utils.Resource
 import com.makaota.weathermzansi.weather.DailyWeatherInfo
 import com.makaota.weathermzansi.weather.WeatherInfo
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 import javax.inject.Inject
 
 class WeatherRepositoryImpl @Inject constructor(
@@ -36,6 +38,23 @@ class WeatherRepositoryImpl @Inject constructor(
                 ).toDailyWeatherInfo()
             )
         } catch(e: Exception) {
+            e.printStackTrace()
+            Resource.Error(e.message ?: "An unknown error occurred.")
+        }
+    }
+
+    override suspend fun fetchCombinedWeatherData(lat: Double, long: Double): Resource<Pair<WeatherInfo, DailyWeatherInfo>> {
+        return try {
+            coroutineScope {
+                val weatherDataDeferred = async { api.getWeatherData(lat, long).toWeatherInfo() }
+                val dailyWeatherDataDeferred = async { api.getDailyWeatherData(lat, long).toDailyWeatherInfo() }
+
+                val weatherData = weatherDataDeferred.await()
+                val dailyWeatherData = dailyWeatherDataDeferred.await()
+
+                Resource.Success(weatherData to dailyWeatherData)
+            }
+        } catch (e: Exception) {
             e.printStackTrace()
             Resource.Error(e.message ?: "An unknown error occurred.")
         }

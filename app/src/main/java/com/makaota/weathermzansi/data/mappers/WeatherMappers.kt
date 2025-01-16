@@ -57,9 +57,10 @@ fun WeatherDto.toWeatherInfo(): WeatherInfo {
     val weatherDataMap = weatherData.toWeatherDataMap()
     val now = LocalDateTime.now()
     val currentHourlyWeatherData = weatherDataMap[0]?.find {
-        val hour = if(now.minute < 30) now.hour else now.hour + 1
+        val hour = if (now.minute < 30) now.hour else (now.hour + 1) % 24
         it.time.hour == hour
     }
+
     Log.d("WeatherDataMap", "Grouped hours: $weatherDataMap")
 
     // Extract weekly weather data

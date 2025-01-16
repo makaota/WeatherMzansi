@@ -9,4 +9,7 @@ interface WeatherRepository {
     suspend fun getWeatherData(lat: Double, long: Double): Resource<WeatherInfo>
 
     suspend fun getDailyWeatherData(lat: Double, long: Double): Resource<DailyWeatherInfo>
+
+    suspend fun fetchCombinedWeatherData(lat: Double, long: Double): Resource<Pair<WeatherInfo, DailyWeatherInfo>>
+
 }

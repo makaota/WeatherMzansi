@@ -19,7 +19,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 
 
 @Composable
-fun DailyDisplay(viewModel: DailyWeatherViewModel = hiltViewModel()) {
+fun DailyDisplay(viewModel: CombinedWeatherViewModel = hiltViewModel()) {
     val state = viewModel.dailyWeatherState
 
     Column(

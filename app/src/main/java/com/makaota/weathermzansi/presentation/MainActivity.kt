@@ -26,17 +26,19 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
-    private val viewModel: WeatherViewModel by viewModels()
-    private val dailyViewModel: DailyWeatherViewModel by viewModels()
+    //private val viewModel: WeatherViewModel by viewModels()
+   // private val dailyViewModel: DailyWeatherViewModel by viewModels()
     private lateinit var permissionLauncher: ActivityResultLauncher<Array<String>>
+    private val combinedViewModel: CombinedWeatherViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         permissionLauncher = registerForActivityResult(
             ActivityResultContracts.RequestMultiplePermissions()
         ) {
-            viewModel.loadWeatherInfo()
-            dailyViewModel.loadDailyWeatherInfo()
+//            viewModel.loadWeatherInfo()
+//            dailyViewModel.loadDailyWeatherInfo()
+            combinedViewModel.loadWeatherData()
         }
         permissionLauncher.launch(arrayOf(
             Manifest.permission.ACCESS_FINE_LOCATION,
@@ -56,20 +58,20 @@ class MainActivity : ComponentActivity() {
 
                     ) {
                         WeatherCard(
-                            state = viewModel.state,
+                            state = combinedViewModel.state,
                             backgroundColor = DeepBlue
                         )
                         Spacer(modifier = Modifier.height(16.dp))
-                        WeatherForecast(state = viewModel.state)
+                        WeatherForecast(state = combinedViewModel.state)
                         Spacer(modifier = Modifier.height(16.dp))
-                        DailyDisplay(dailyViewModel)
+                        DailyDisplay(combinedViewModel)
                     }
-                    if(viewModel.state.isLoading) {
+                    if(combinedViewModel.state.isLoading) {
                         CircularProgressIndicator(
                              modifier = Modifier.align(Alignment.Center)
                         )
                     }
-                    viewModel.state.error?.let { error ->
+                    combinedViewModel.state.error?.let { error ->
                         Text(
                             text = error,
                             color = Color.Red,
