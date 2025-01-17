@@ -10,10 +10,15 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -35,6 +40,7 @@ import kotlin.math.roundToInt
 @Composable
 fun WeatherCard(
     state: WeatherState,
+    dailyState: DailyWeatherState,
     backgroundColor: Color,
     modifier: Modifier = Modifier
 ) {
@@ -44,6 +50,11 @@ fun WeatherCard(
         // Get the current time
         val currentTime = remember { LocalDateTime.now() }
         val formattedCurrentTime = currentTime.format(DateTimeFormatter.ofPattern("HH:mm"))
+
+        // Extract the first day's data for highs, lows, and rain chance
+        val dailyWeatherData = dailyState.dailyWeatherInfo?.dailyWeatherData?.get(0)
+
+        Log.d("WeatherCard", "DailyWeatherData: $dailyWeatherData")
 
         Card(
             colors = CardDefaults.cardColors(
@@ -82,6 +93,44 @@ fun WeatherCard(
                     fontSize = 16.sp,
                     color = Color.White
                 )
+                Spacer(modifier = Modifier.height(32.dp))
+                // Display daily weather details
+                dailyWeatherData?.let { dailyData ->
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.Center,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                            Icon(
+                                imageVector = ImageVector.vectorResource(id = R.drawable.up),
+                                contentDescription = null,
+                                tint = Color.White, // Tinting the icon white
+                                modifier = Modifier.size(24.dp) // Adjust size as needed
+                            )
+                            Text(
+                                text = "${dailyData.get(0).maxTemperatures}°",
+                                color = Color.White, // Text color to match
+                                fontSize = 14.sp // Adjust font size as needed
+                            )
+                        }
+                        Spacer(modifier = Modifier.width(20.dp))
+                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                            Icon(
+                                imageVector = ImageVector.vectorResource(id = R.drawable.down),
+                                contentDescription = null,
+                                tint = Color.White, // Tinting the icon white
+                                modifier = Modifier.size(24.dp) // Adjust size as needed
+                            )
+                            Text(
+                                text = "${dailyData.get(0).lowTemperatures}°",
+                                color = Color.White, // Text color to match
+                                fontSize = 14.sp // Adjust font size as needed
+                            )
+                        }
+                    }
+                }
+
                 Spacer(modifier = Modifier.height(32.dp))
                 Row(
                     modifier = Modifier.fillMaxWidth(),

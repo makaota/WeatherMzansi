@@ -21,10 +21,12 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.makaota.weathermzansi.R
+import com.makaota.weathermzansi.ui.theme.DeepBlue
 import com.makaota.weathermzansi.weather.DailyWeatherData
 import com.makaota.weathermzansi.weather.WeatherType
 import java.time.LocalDate
@@ -47,49 +49,63 @@ fun DailyWeatherDisplay(
 
     Row(
         modifier = modifier
+            .fillMaxWidth()
             .height(100.dp)
-            .padding(horizontal = 16.dp),
+            .background(DeepBlue),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
+            verticalArrangement = Arrangement.Center,
+            modifier = Modifier
+                .width(60.dp) // Fixed width for day and date
         ) {
-            Text(text = day, color = Color.LightGray, fontWeight = FontWeight.Bold)
-            Text(text = date, color = Color.LightGray)
+            Text(
+                text = day,
+                color = Color.LightGray,
+                fontSize = 16.sp,
+                textAlign = TextAlign.Center
+            )
+            Text(
+                text = date,
+                color = Color.LightGray,
+                fontSize = 16.sp,
+                textAlign = TextAlign.Center
+            )
         }
 
-        Image(
-            painter = painterResource(id = R.drawable.ic_rainy),
-            contentDescription = "Rainy Weather Icon",
-            modifier = Modifier.size(25.dp)
-        )
         Text(
             text = "${dailyWeatherData.chancesOfRain.roundToInt()}%",
             color = Color.LightGray,
-            fontSize = 12.sp
+            fontSize = 16.sp,
+            modifier = Modifier.width(40.dp), // Fixed width for chances of rain
+            textAlign = TextAlign.Center
         )
+
         Image(
             painter = painterResource(id = dailyWeatherData.weatherType.iconRes),
             contentDescription = null,
-            modifier = Modifier.width(25.dp)
+            modifier = Modifier.size(25.dp)
         )
+
         Text(
             text = dailyWeatherData.weatherType.weatherDesc,
             fontSize = 16.sp,
-            color = Color.White
+            color = Color.White,
+            modifier = Modifier.width(80.dp), // Fixed width for weather description
+            textAlign = TextAlign.Center
         )
+
         Text(
-            text = "${dailyWeatherData.lowTemperatures}°C / ${dailyWeatherData.maxTemperatures}°C",
+            text = "${dailyWeatherData.maxTemperatures.roundToInt()}°/${dailyWeatherData.lowTemperatures.roundToInt()}°",
             color = textColor,
-            fontWeight = androidx.compose.ui.text.font.FontWeight.Bold
+            fontSize = 16.sp,
+            modifier = Modifier.width(40.dp), // Fixed width for temperatures
+            textAlign = TextAlign.Center
         )
-
     }
-}
-
-@Preview(showBackground = true)
+}@Preview(showBackground = true)
 @Composable
 fun PreviewDailyWeatherDisplay() {
     val sampleData = DailyWeatherData(

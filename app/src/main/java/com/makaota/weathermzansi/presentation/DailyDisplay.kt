@@ -15,6 +15,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 
 
@@ -27,14 +28,17 @@ fun DailyDisplay(viewModel: CombinedWeatherViewModel = hiltViewModel()) {
             .fillMaxWidth()
             .padding(16.dp)
     ) {
+
         when {
             state.isLoading -> {
-                Text("Loading weather data...", style = MaterialTheme.typography.bodySmall)
+                Text("Loading weather data...", style = MaterialTheme.typography.bodySmall, color = Color.White)
             }
             state.error != null -> {
                 Text("Error: ${state.error}", color = MaterialTheme.colorScheme.error)
+
             }
             state.dailyWeatherInfo != null -> {
+                Text("Daily Weather", fontSize = 20.sp, color = Color.White)
                 state.dailyWeatherInfo.dailyWeatherData.forEach { (index, weatherDataList) ->
                     weatherDataList.forEach { data ->
                         DailyWeatherDisplay(data)
@@ -49,31 +53,4 @@ fun DailyDisplay(viewModel: CombinedWeatherViewModel = hiltViewModel()) {
 
     Log.d("DailyDisplay", "State: $state")
 }
-
-
-
-
-//@Composable
-//fun DailyDisplay(viewModel: DailyWeatherViewModel = hiltViewModel()) {
-//    val state by remember { mutableStateOf(viewModel.dailyWeatherState) }
-//
-//    Column(
-//        modifier = Modifier
-//            .fillMaxWidth()
-//            .padding(16.dp)
-//    ) {
-//
-//            // Display weather data
-//            state.dailyWeatherInfo?.dailyWeatherData?.forEach { (index, weatherDataList) ->
-//                weatherDataList.forEach { data ->
-//                    DailyWeatherDisplay(data)
-//
-//                }
-//
-//
-//            }
-//
-//        Log.d("DailyDisplay", "Display Data: $state")
-//    }
-//}
 

@@ -28,27 +28,27 @@ sealed class WeatherType(
         iconRes = R.drawable.ic_very_cloudy
     )
     object DepositingRimeFog : WeatherType(
-        weatherDesc = "Depositing rime fog",
+        weatherDesc = "Depositing\nrime fog",
         iconRes = R.drawable.ic_very_cloudy
     )
     object LightDrizzle : WeatherType(
-        weatherDesc = "Light drizzle",
+        weatherDesc = "Light\ndrizzle",
         iconRes = R.drawable.ic_rainshower
     )
     object ModerateDrizzle : WeatherType(
-        weatherDesc = "Moderate drizzle",
+        weatherDesc = "Moderate\ndrizzle",
         iconRes = R.drawable.ic_rainshower
     )
     object DenseDrizzle : WeatherType(
-        weatherDesc = "Dense drizzle",
+        weatherDesc = "Dense\ndrizzle",
         iconRes = R.drawable.ic_rainshower
     )
     object LightFreezingDrizzle : WeatherType(
-        weatherDesc = "Slight freezing drizzle",
+        weatherDesc = "Slight\nfreezing drizzle",
         iconRes = R.drawable.ic_snowyrainy
     )
     object DenseFreezingDrizzle : WeatherType(
-        weatherDesc = "Dense freezing drizzle",
+        weatherDesc = "Dense\nfreezing drizzle",
         iconRes = R.drawable.ic_snowyrainy
     )
     object SlightRain : WeatherType(
@@ -64,19 +64,19 @@ sealed class WeatherType(
         iconRes = R.drawable.ic_rainy
     )
     object HeavyFreezingRain: WeatherType(
-        weatherDesc = "Heavy freezing rain",
+        weatherDesc = "Heavy\nfreezing rain",
         iconRes = R.drawable.ic_snowyrainy
     )
     object SlightSnowFall: WeatherType(
-        weatherDesc = "Slight snow fall",
+        weatherDesc = "Slight\nsnow fall",
         iconRes = R.drawable.ic_snowy
     )
     object ModerateSnowFall: WeatherType(
-        weatherDesc = "Moderate snow fall",
+        weatherDesc = "Moderate\nsnow fall",
         iconRes = R.drawable.ic_heavysnow
     )
     object HeavySnowFall: WeatherType(
-        weatherDesc = "Heavy snow fall",
+        weatherDesc = "Heavy\nsnow fall",
         iconRes = R.drawable.ic_heavysnow
     )
     object SnowGrains: WeatherType(
@@ -84,35 +84,35 @@ sealed class WeatherType(
         iconRes = R.drawable.ic_heavysnow
     )
     object SlightRainShowers: WeatherType(
-        weatherDesc = "Slight rain showers",
+        weatherDesc = "Slight\nrain showers",
         iconRes = R.drawable.ic_rainshower
     )
     object ModerateRainShowers: WeatherType(
-        weatherDesc = "Moderate rain showers",
+        weatherDesc = "Moderate\nrain showers",
         iconRes = R.drawable.ic_rainshower
     )
     object ViolentRainShowers: WeatherType(
-        weatherDesc = "Violent rain showers",
+        weatherDesc = "Violent\nrain showers",
         iconRes = R.drawable.ic_rainshower
     )
     object SlightSnowShowers: WeatherType(
-        weatherDesc = "Light snow showers",
+        weatherDesc = "Light\nsnow showers",
         iconRes = R.drawable.ic_snowy
     )
     object HeavySnowShowers: WeatherType(
-        weatherDesc = "Heavy snow showers",
+        weatherDesc = "Heavy\nsnow showers",
         iconRes = R.drawable.ic_snowy
     )
     object ModerateThunderstorm: WeatherType(
-        weatherDesc = "Moderate thunderstorm",
+        weatherDesc = "Moderate\nthunderstorm",
         iconRes = R.drawable.ic_thunder
     )
     object SlightHailThunderstorm: WeatherType(
-        weatherDesc = "Thunderstorm with slight hail",
+        weatherDesc = "Thunderstorm\nwith slight hail",
         iconRes = R.drawable.ic_rainythunder
     )
     object HeavyHailThunderstorm: WeatherType(
-        weatherDesc = "Thunderstorm with heavy hail",
+        weatherDesc = "Thunderstorm\nwith heavy hail",
         iconRes = R.drawable.ic_rainythunder
     )
 

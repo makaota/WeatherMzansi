@@ -1,6 +1,7 @@
 package com.makaota.weathermzansi.presentation
 
 import android.util.Log
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -15,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.makaota.weathermzansi.ui.theme.DeepBlue
 import java.time.LocalDateTime
 
 @Composable
@@ -70,6 +72,7 @@ fun WeatherForecast(
                         modifier = Modifier
                             .height(100.dp)
                             .padding(horizontal = 16.dp)
+                            .background(DeepBlue)
                     )
                 }
 
