@@ -98,7 +98,7 @@ fun DailyWeatherDisplay(
         )
 
         Text(
-            text = "${dailyWeatherData.maxTemperatures.roundToInt()}°/${dailyWeatherData.lowTemperatures.roundToInt()}°",
+            text = "${dailyWeatherData.lowTemperatures.roundToInt()}°/${dailyWeatherData.maxTemperatures.roundToInt()}°",
             color = textColor,
             fontSize = 16.sp,
             modifier = Modifier.width(40.dp), // Fixed width for temperatures

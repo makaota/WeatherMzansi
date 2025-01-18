@@ -85,11 +85,9 @@ dependencies {
     implementation (libs.converter.moshi)
     implementation(libs.logging.interceptor)
 
+    implementation (libs.accompanist.swiperefresh)
 
-    
 
-
- //   implementation ("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.7")
 
 
 }

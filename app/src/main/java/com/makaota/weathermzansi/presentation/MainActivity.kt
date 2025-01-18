@@ -13,12 +13,15 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.google.accompanist.swiperefresh.SwipeRefresh
+import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.makaota.weathermzansi.ui.theme.DarkBlue
 import com.makaota.weathermzansi.ui.theme.DeepBlue
 import com.makaota.weathermzansi.ui.theme.WeatherMzansiTheme
@@ -46,42 +49,54 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             WeatherMzansiTheme {
+                val isRefreshing = combinedViewModel.isRefreshing.collectAsState().value
 
-                Box(modifier = Modifier.fillMaxSize()
-                    .background(DarkBlue)){
+                SwipeRefresh(
+                    state = rememberSwipeRefreshState(isRefreshing),
+                    onRefresh = { combinedViewModel.loadWeatherData() }
+                ) {
 
-                    Column(
+                    Box(
                         modifier = Modifier
-                            .verticalScroll(rememberScrollState())
-                            .wrapContentHeight()
-
+                            .fillMaxSize()
+                            .background(DarkBlue)
                     ) {
-                        WeatherCard(
-                            state = combinedViewModel.state,
-                            backgroundColor = DeepBlue,
-                            dailyState = combinedViewModel.dailyWeatherState
-                        )
-                        Spacer(modifier = Modifier.height(16.dp))
-                        WeatherForecast(state = combinedViewModel.state)
-                        Spacer(modifier = Modifier.height(16.dp))
-                        DailyDisplay(combinedViewModel)
-                    }
-                    if(combinedViewModel.state.isLoading) {
-                        CircularProgressIndicator(
-                             modifier = Modifier.align(Alignment.Center)
-                        )
-                    }
-                    combinedViewModel.state.error?.let { error ->
-                        Text(
-                            text = error,
-                            color = Color.Red,
-                            textAlign = TextAlign.Center,
-                            modifier = Modifier.align(Alignment.Center)
-                        )
-                    }
 
+                        Column(
+                            modifier = Modifier
+                                .verticalScroll(rememberScrollState())
+                                .wrapContentHeight()
+
+                        ) {
+                            WeatherCard(
+                                state = combinedViewModel.state,
+                                backgroundColor = DeepBlue,
+                                dailyState = combinedViewModel.dailyWeatherState
+                            )
+                            Spacer(modifier = Modifier.height(16.dp))
+                            WeatherForecast(state = combinedViewModel.state)
+                            Spacer(modifier = Modifier.height(16.dp))
+                            DailyDisplay(combinedViewModel)
+                            WeatherDetailsDisplay(state = combinedViewModel.state)
+                        }
+                        if (combinedViewModel.state.isLoading) {
+                            CircularProgressIndicator(
+                                modifier = Modifier.align(Alignment.Center)
+                            )
+                        }
+                        combinedViewModel.state.error?.let { error ->
+                            Text(
+                                text = error,
+                                color = Color.Red,
+                                textAlign = TextAlign.Center,
+                                modifier = Modifier.align(Alignment.Center)
+                            )
+                        }
+
+                    }
                 }
             }
         }
     }
 }
+

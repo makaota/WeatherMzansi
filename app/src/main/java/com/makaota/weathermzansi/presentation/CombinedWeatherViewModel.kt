@@ -12,6 +12,8 @@ import com.makaota.weathermzansi.weather.DailyWeatherInfo
 import com.makaota.weathermzansi.weather.WeatherInfo
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.async
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -27,32 +29,52 @@ class CombinedWeatherViewModel @Inject constructor(
     var dailyWeatherState by mutableStateOf(DailyWeatherState())
         private set
 
+    private val _state = MutableStateFlow(WeatherState())
+    val refreshState: StateFlow<WeatherState> = _state
+
+    // Add an isRefreshing state
+    private val _isRefreshing = MutableStateFlow(false)
+    val isRefreshing: StateFlow<Boolean> = _isRefreshing
+
     fun loadWeatherData() {
         viewModelScope.launch {
-            state = state.copy(isLoading = true, error = null)
-            dailyWeatherState = dailyWeatherState.copy(isLoading = true, error = null)
 
-            val location = locationTracker.getCurrentLocation()
-            if (location == null) {
-                state = state.copy(
-                    isLoading = false,
-                    error = "Couldn't retrieve location. Make sure to grant permission and enable GPS."
-                )
-                dailyWeatherState = dailyWeatherState.copy(
-                    isLoading = false,
-                    error = "Couldn't retrieve location. Make sure to grant permission and enable GPS."
-                )
-                return@launch
+            _isRefreshing.value = true
+            try {
+                // Load weather data here
+                state = state.copy(isLoading = true, error = null)
+                dailyWeatherState = dailyWeatherState.copy(isLoading = true, error = null)
+
+                val location = locationTracker.getCurrentLocation()
+                if (location == null) {
+                    state = state.copy(
+                        isLoading = false,
+                        error = "Couldn't retrieve location. Make sure to grant permission and enable GPS."
+                    )
+                    dailyWeatherState = dailyWeatherState.copy(
+                        isLoading = false,
+                        error = "Couldn't retrieve location. Make sure to grant permission and enable GPS."
+                    )
+                    return@launch
+                }
+
+                val currentWeatherDeferred =
+                    async { repository.getWeatherData(location.latitude, location.longitude) }
+                val dailyWeatherDeferred =
+                    async { repository.getDailyWeatherData(location.latitude, location.longitude) }
+
+                val currentWeatherResult = currentWeatherDeferred.await()
+                val dailyWeatherResult = dailyWeatherDeferred.await()
+
+                handleCurrentWeatherResult(currentWeatherResult)
+                handleDailyWeatherResult(dailyWeatherResult)
+            } catch (e: Exception) {
+                // Handle errors
+
+            } finally {
+                _isRefreshing.value = false
             }
 
-            val currentWeatherDeferred = async { repository.getWeatherData(location.latitude, location.longitude) }
-            val dailyWeatherDeferred = async { repository.getDailyWeatherData(location.latitude, location.longitude) }
-
-            val currentWeatherResult = currentWeatherDeferred.await()
-            val dailyWeatherResult = dailyWeatherDeferred.await()
-
-            handleCurrentWeatherResult(currentWeatherResult)
-            handleDailyWeatherResult(dailyWeatherResult)
         }
     }
 

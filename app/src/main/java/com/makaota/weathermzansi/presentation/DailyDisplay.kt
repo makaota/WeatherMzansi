@@ -2,7 +2,9 @@ package com.makaota.weathermzansi.presentation
 
 import android.util.Log
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
@@ -31,22 +33,30 @@ fun DailyDisplay(viewModel: CombinedWeatherViewModel = hiltViewModel()) {
 
         when {
             state.isLoading -> {
-                Text("Loading weather data...", style = MaterialTheme.typography.bodySmall, color = Color.White)
+                Text("Loading weather data...",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = Color.White)
             }
             state.error != null -> {
                 Text("Error: ${state.error}", color = MaterialTheme.colorScheme.error)
 
             }
             state.dailyWeatherInfo != null -> {
-                Text("Daily Weather", fontSize = 20.sp, color = Color.White)
+                Text("Daily Weather",
+                    fontSize = 20.sp,
+                    color = Color.White)
+                Spacer(modifier = Modifier.height(16.dp))
                 state.dailyWeatherInfo.dailyWeatherData.forEach { (index, weatherDataList) ->
                     weatherDataList.forEach { data ->
                         DailyWeatherDisplay(data)
+                        Log.d("DailyDisplay", "data: $data")
                     }
                 }
             }
             else -> {
-                Text("No weather data to display.")
+                Text("No weather data to display.",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = Color.White)
             }
         }
     }

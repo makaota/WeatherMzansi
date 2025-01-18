@@ -103,20 +103,6 @@ fun WeatherCard(
                     ) {
                         Column(horizontalAlignment = Alignment.CenterHorizontally) {
                             Icon(
-                                imageVector = ImageVector.vectorResource(id = R.drawable.up),
-                                contentDescription = null,
-                                tint = Color.White, // Tinting the icon white
-                                modifier = Modifier.size(24.dp) // Adjust size as needed
-                            )
-                            Text(
-                                text = "${dailyData.get(0).maxTemperatures}°",
-                                color = Color.White, // Text color to match
-                                fontSize = 14.sp // Adjust font size as needed
-                            )
-                        }
-                        Spacer(modifier = Modifier.width(20.dp))
-                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                            Icon(
                                 imageVector = ImageVector.vectorResource(id = R.drawable.down),
                                 contentDescription = null,
                                 tint = Color.White, // Tinting the icon white
@@ -124,6 +110,20 @@ fun WeatherCard(
                             )
                             Text(
                                 text = "${dailyData.get(0).lowTemperatures}°",
+                                color = Color.White, // Text color to match
+                                fontSize = 14.sp // Adjust font size as needed
+                            )
+                        }
+                        Spacer(modifier = Modifier.width(15.dp))
+                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                            Icon(
+                                imageVector = ImageVector.vectorResource(id = R.drawable.up),
+                                contentDescription = null,
+                                tint = Color.White, // Tinting the icon white
+                                modifier = Modifier.size(24.dp) // Adjust size as needed
+                            )
+                            Text(
+                                text = "${dailyData.get(0).maxTemperatures}°",
                                 color = Color.White, // Text color to match
                                 fontSize = 14.sp // Adjust font size as needed
                             )
