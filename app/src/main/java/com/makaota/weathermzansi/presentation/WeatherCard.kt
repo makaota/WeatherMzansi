@@ -13,9 +13,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.KeyboardArrowDown
-import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -25,7 +22,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.vectorResource
@@ -103,7 +99,7 @@ fun WeatherCard(
                     ) {
                         Column(horizontalAlignment = Alignment.CenterHorizontally) {
                             Icon(
-                                imageVector = ImageVector.vectorResource(id = R.drawable.down),
+                                imageVector = ImageVector.vectorResource(id = R.drawable.arrow_down),
                                 contentDescription = null,
                                 tint = Color.White, // Tinting the icon white
                                 modifier = Modifier.size(24.dp) // Adjust size as needed
@@ -117,7 +113,7 @@ fun WeatherCard(
                         Spacer(modifier = Modifier.width(15.dp))
                         Column(horizontalAlignment = Alignment.CenterHorizontally) {
                             Icon(
-                                imageVector = ImageVector.vectorResource(id = R.drawable.up),
+                                imageVector = ImageVector.vectorResource(id = R.drawable.arrow_up),
                                 contentDescription = null,
                                 tint = Color.White, // Tinting the icon white
                                 modifier = Modifier.size(24.dp) // Adjust size as needed

@@ -85,7 +85,12 @@ dependencies {
     implementation (libs.converter.moshi)
     implementation(libs.logging.interceptor)
 
+    // Accompanist
     implementation (libs.accompanist.swiperefresh)
+    implementation (libs.accompanist.systemuicontroller)
+
+
+
 
 
 
