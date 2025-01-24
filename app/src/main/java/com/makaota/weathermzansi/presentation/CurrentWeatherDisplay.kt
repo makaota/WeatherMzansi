@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -32,7 +33,7 @@ import kotlin.math.roundToInt
 
 @Composable
 fun CurrentWeatherDisplay(
-    state: WeatherState,
+    hourlyState: WeatherState,
     dailyState: DailyWeatherState,
     modifier: Modifier = Modifier,
 ) {
@@ -52,7 +53,7 @@ fun CurrentWeatherDisplay(
 
 
 
-    state.weatherInfo?.currentWeatherData?.let { data ->
+    hourlyState.weatherInfo?.currentWeatherData?.let { data ->
 
         Log.d("WeatherCard", "WeatherData: $data")
         // Get the current time
@@ -96,7 +97,7 @@ fun CurrentWeatherDisplay(
                     Image(
                         painter = painterResource(id = data.weatherType.iconRes),
                         contentDescription = null,
-                        modifier = Modifier.width(45.dp)
+                        modifier = Modifier.size(45.dp)
 
                     )
                 }
@@ -107,7 +108,7 @@ fun CurrentWeatherDisplay(
                         text = data.weatherType.weatherDesc,
                         fontSize = 18.sp,
                         color = textColor,
-                        fontWeight = FontWeight.Medium
+                        fontWeight = FontWeight.SemiBold
                     )
                     Text(
                         text = "Feels Like ${data.feelsLike.roundToInt()}°",
@@ -134,7 +135,7 @@ fun CurrentWeatherDisplay(
                             text = "${dailyData.get(0).maxTemperatures.roundToInt()}°",
                             color = labelColor,
                             fontSize = 16.sp,
-                            fontWeight = FontWeight.Light
+                            fontWeight = FontWeight.Medium
                         )
 
                     }
@@ -150,7 +151,7 @@ fun CurrentWeatherDisplay(
                             text = "${dailyData.get(0).lowTemperatures.roundToInt()}°",
                             color = labelColor,
                             fontSize = 16.sp,
-                            fontWeight = FontWeight.Light
+                            fontWeight = FontWeight.Medium
                         )
                     }
                 }
