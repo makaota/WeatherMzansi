@@ -101,11 +101,12 @@ class MainActivity : ComponentActivity() {
 //
 //                    }
 //                }
-                CustomSystemBarColors()
-                CurrentWeatherDisplay(hourlyState = combinedViewModel.state,
-                    dailyState = combinedViewModel.dailyWeatherState)
-                TodayTomorrowWeatherDisplay(dailyState = combinedViewModel.dailyWeatherState)
+//                CustomSystemBarColors()
+//                CurrentWeatherDisplay(hourlyState = combinedViewModel.state,
+//                    dailyState = combinedViewModel.dailyWeatherState)
+//                TodayTomorrowWeatherDisplay(dailyState = combinedViewModel.dailyWeatherState)
                 //ParallaxEffect()
+                HourlyWeatherForecast(state = combinedViewModel.state)
 
             }
         }

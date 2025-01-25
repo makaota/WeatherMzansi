@@ -31,6 +31,7 @@ fun WeatherDataDto.toWeatherDataMap(): Map<Int, List<WeatherData>> {
         val pressure = pressures[index]
         val humidity = humidities[index]
         val feelsLike = feelsLike[index]
+        val precipitationProbability = precipitationProbability[index]
         IndexedWeatherData(
             index = index,
             data = WeatherData(
@@ -40,6 +41,7 @@ fun WeatherDataDto.toWeatherDataMap(): Map<Int, List<WeatherData>> {
                 windSpeed = windSpeed,
                 humidity = humidity,
                 feelsLike = feelsLike,
+                precipitationProbability = precipitationProbability,
                 weatherType = WeatherType.fromWMO(weatherCode)
             )
         )
@@ -58,18 +60,19 @@ fun WeatherDataDto.toWeatherDataMap(): Map<Int, List<WeatherData>> {
 fun WeatherDto.toWeatherInfo(): WeatherInfo {
     val weatherDataMap = weatherData.toWeatherDataMap()
     val now = LocalDateTime.now()
-    val currentHourlyWeatherData = weatherDataMap[0]?.find {
+    val currentHourWeatherData = weatherDataMap[0]?.find {
         val hour = if (now.minute < 30) now.hour else (now.hour + 1) % 24
         it.time.hour == hour
     }
 
     Log.d("WeatherDataMap", "Grouped hours: $weatherDataMap")
+    Log.d("WeatherDataMap", "currentHourlyWeatherData: $currentHourWeatherData")
 
     // Extract weekly weather data
     val weeklyWeatherData = weatherDataMap.values.toList()
     return WeatherInfo(
         weatherDataPerDay = weatherDataMap,
-        currentWeatherData = currentHourlyWeatherData,
+        currentWeatherData = currentHourWeatherData,
         weeklyWeatherData = weeklyWeatherData
 
     )
