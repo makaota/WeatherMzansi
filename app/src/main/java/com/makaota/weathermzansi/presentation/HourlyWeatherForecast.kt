@@ -20,6 +20,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.makaota.weathermzansi.R
 import java.time.LocalDateTime
 
@@ -80,6 +81,7 @@ fun HourlyWeatherForecast(
                     Text(
                         text = "Hourly Forecast",
                         color = textColor,
+                        fontSize = 16.sp
                     )
                     Spacer(modifier = Modifier.height(16.dp))
                     LazyRow(   modifier = Modifier
