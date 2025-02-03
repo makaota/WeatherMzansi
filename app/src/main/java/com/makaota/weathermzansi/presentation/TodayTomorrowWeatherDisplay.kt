@@ -27,7 +27,10 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.makaota.weathermzansi.R
@@ -78,7 +81,7 @@ fun TodayTomorrowWeatherDisplay(
             modifier = modifier
                 .fillMaxWidth()
                 .wrapContentHeight() // Ensure the Row does not fill the screen height
-                .padding(16.dp)
+                .padding(start = 16.dp, top = 16.dp, end = 16.dp)
                 .clip(RoundedCornerShape(10.dp))
                 .background(backgroundColor)
         ) {
@@ -106,12 +109,16 @@ fun TodayTomorrowWeatherDisplay(
                                 fontWeight = FontWeight.Medium
                             )
                             Text(
-                                text = "${todayData.get(0).maxTemperatures.roundToInt()}° / ${
-                                    todayData.get(
-                                        0
-                                    ).lowTemperatures.roundToInt()
-                                }°",
-                                color = textColor,
+                                text = buildAnnotatedString {
+                                    withStyle(style = SpanStyle(color = colorResource(id = R.color.orange_red))) { // High Temp in Red
+                                        append("${todayData.get(0).maxTemperatures.roundToInt()}°")
+                                    }
+                                    append(" ") // Separator
+                                    withStyle(style = SpanStyle(color = colorResource(id = R.color.dodger_blue))) { // Low Temp in Blue
+                                        append("${todayData.get(0).lowTemperatures.roundToInt()}°")
+                                    }
+
+                                },
                                 fontSize = 18.sp,
                                 fontWeight = FontWeight.Medium
                             )
@@ -158,12 +165,16 @@ fun TodayTomorrowWeatherDisplay(
                                 fontWeight = FontWeight.Medium
                             )
                             Text(
-                                text = "${tomorrowData.get(0).maxTemperatures.roundToInt()}° / ${
-                                    tomorrowData.get(
-                                        0
-                                    ).lowTemperatures.roundToInt()
-                                }°",
-                                color = textColor,
+                                text = buildAnnotatedString {
+                                    withStyle(style = SpanStyle(color = colorResource(id = R.color.orange_red))) { // High Temp in Red
+                                        append("${tomorrowData.get(0).maxTemperatures.roundToInt()}°")
+                                    }
+                                    append(" ") // Separator
+                                    withStyle(style = SpanStyle(color = colorResource(id = R.color.dodger_blue))) { // Low Temp in Blue
+                                        append("${tomorrowData.get(0).lowTemperatures.roundToInt()}°")
+                                    }
+
+                                },
                                 fontSize = 18.sp,
                                 fontWeight = FontWeight.Medium
                             )

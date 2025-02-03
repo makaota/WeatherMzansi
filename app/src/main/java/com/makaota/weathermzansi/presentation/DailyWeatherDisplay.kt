@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -25,13 +24,10 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.makaota.weathermzansi.R
 import com.makaota.weathermzansi.weather.DailyWeatherData
-import com.makaota.weathermzansi.weather.WeatherType
-import java.time.LocalDate.of
 import java.time.format.DateTimeFormatter
 import kotlin.math.roundToInt
 
@@ -67,7 +63,7 @@ fun DailyWeatherDisplay(
         modifier = modifier
             .clip(RoundedCornerShape(10.dp)) // Apply rounded corners
             .fillMaxWidth()
-            .height(60.dp)
+            .height(80.dp)
             .background(backgroundColor),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -142,23 +138,25 @@ fun DailyWeatherDisplay(
         )
 
     }
-}@Preview(showBackground = true)
-@Composable
-fun PreviewDailyWeatherDisplay() {
-    val sampleData = DailyWeatherData(
-        time = of(2025, 1, 10), // Example date
-        maxTemperatures = 28.0,
-        lowTemperatures = 18.0,
-        chancesOfRain = 20.0,
-        weatherType = WeatherType.ClearSky // Ensure WeatherType.Sunny has a valid iconRes
-    )
-
-    DailyWeatherDisplay(
-        dailyWeatherData = sampleData,
-        modifier = Modifier
-            .padding(16.dp)
-            //   .background(Color(0xFF121212))
-            .fillMaxWidth(),
-    )
 }
+
+//@Preview(showBackground = true)
+//@Composable
+//fun PreviewDailyWeatherDisplay() {
+//    val sampleData = DailyWeatherData(
+//        time = of(2025, 1, 10), // Example date
+//        maxTemperatures = 28.0,
+//        lowTemperatures = 18.0,
+//        chancesOfRain = 20.0,
+//        weatherType = WeatherType.ClearSky // Ensure WeatherType.Sunny has a valid iconRes
+//    )
+//
+//    DailyWeatherDisplay(
+//        dailyWeatherData = sampleData,
+//        modifier = Modifier
+//            .padding(16.dp)
+//            //   .background(Color(0xFF121212))
+//            .fillMaxWidth(),
+//    )
+//}
 

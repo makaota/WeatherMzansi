@@ -11,5 +11,12 @@ data class DailyWeatherDataDto (
     @field:Json(name = "temperature_2m_min")
     val lowTemperatures: List<Double>,
     @field:Json(name = "precipitation_sum")
-    val chancesOfRain: List<Double>
+    val chancesOfRain: List<Double>,
+    @field:Json(name = "sunrise")
+    val sunrise: List<String>,
+    @field:Json(name = "sunset")
+    val sunset: List<String>,
+    @field:Json(name = "daylight_duration")
+    val daylightDuration: List<Double>,
+
 )

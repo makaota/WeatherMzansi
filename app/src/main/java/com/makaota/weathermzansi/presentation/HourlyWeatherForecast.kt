@@ -45,7 +45,7 @@ fun HourlyWeatherForecast(
 
     Box(
         modifier = Modifier
-            .padding(16.dp)
+            .padding(start = 16.dp, top = 16.dp, end = 16.dp)
             .clip(RoundedCornerShape(10.dp)) // Apply rounded corners
             .background(backgroundColor)    // Set background color
     )  {

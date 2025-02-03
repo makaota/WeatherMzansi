@@ -86,6 +86,9 @@ fun DailyWeatherDataDto.toDailyWeatherDataMap(): Map<Int, List<DailyWeatherData>
         val maxTemperatures = maxTemperatures[index]
         val lowTemperatures = lowTemperatures[index]
         val chancesOfRain = chancesOfRain[index]
+        val sunriseTime = sunrise[index]
+        val sunsetTime = sunset[index]
+        val daiylightDuration = daylightDuration[index]
         IndexedDailyWeatherData(
             index = index,
             data = DailyWeatherData(
@@ -93,6 +96,9 @@ fun DailyWeatherDataDto.toDailyWeatherDataMap(): Map<Int, List<DailyWeatherData>
                 maxTemperatures = maxTemperatures,
                 lowTemperatures = lowTemperatures,
                 chancesOfRain = chancesOfRain,
+                sunrise = LocalDateTime.parse(sunriseTime, DateTimeFormatter.ISO_DATE_TIME).toLocalTime(),
+                sunset = LocalDateTime.parse(sunsetTime, DateTimeFormatter.ISO_DATE_TIME).toLocalTime(),
+                daylightDuration = daiylightDuration,
                 weatherType = WeatherType.fromWMO(weatherCodes)
             )
         )

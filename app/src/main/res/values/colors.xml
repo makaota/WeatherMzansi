@@ -16,4 +16,15 @@
     <color name="dark_gray">#212121</color>
     <color name="light_steel_blue">#B0BEC5</color>
 
+    <color name="day_image_dark_blue">#107197</color>
+    <color name="day_image_light_blue">#66D0DF</color>
+    <color name="day_image_light_dark_blue">#0E7F8F</color>
+    <color name="day_image_skyblue">#91DFFB</color>
+    <color name="day_image_super_skyblue">#92EAEC</color>
+
+    <color name="night_image_dark_blue">#080932</color>
+    <color name="night_image_light_blue">#072943</color>
+    <color name="night_image_blue">#090E6D</color>
+    <color name="night_image_dark">#080814</color>
+
 </resources>
