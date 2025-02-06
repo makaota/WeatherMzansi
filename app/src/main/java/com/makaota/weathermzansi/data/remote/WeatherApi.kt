@@ -17,3 +17,6 @@ interface WeatherApi {
         @Query("longitude") long: Double
     ): DailyWeatherDto
 }
+
+
+// Key for Maps SDK AIzaSyBLByYu8IQon0go5ngsHHgU_edGX58NXjU

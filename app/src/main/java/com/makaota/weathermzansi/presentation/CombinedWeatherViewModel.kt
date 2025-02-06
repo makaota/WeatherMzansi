@@ -115,4 +115,36 @@ class CombinedWeatherViewModel @Inject constructor(
             else->{}
         }
     }
+
+    fun fetchWeather(lat: Double, long: Double) {
+        viewModelScope.launch {
+            _isRefreshing.value = true
+            state = state.copy(isLoading = true, error = null)
+            dailyWeatherState = dailyWeatherState.copy(isLoading = true, error = null)
+
+            try {
+                val result = repository.fetchCombinedWeatherData(lat, long)
+
+                when (result) {
+                    is Resource.Success -> {
+                        val (weatherInfo, dailyWeatherInfo) = result.data!!
+                        state = state.copy(weatherInfo = weatherInfo, isLoading = false, error = null)
+                        dailyWeatherState = dailyWeatherState.copy(dailyWeatherInfo = dailyWeatherInfo, isLoading = false, error = null)
+                    }
+                    is Resource.Error -> {
+                        state = state.copy(isLoading = false, error = result.message ?: "An unknown error occurred.")
+                        dailyWeatherState = dailyWeatherState.copy(isLoading = false, error = result.message ?: "An unknown error occurred.")
+                    }
+                }
+            } catch (e: Exception) {
+                state = state.copy(isLoading = false, error = "Failed to load weather: ${e.message}")
+                dailyWeatherState = dailyWeatherState.copy(isLoading = false, error = "Failed to load weather: ${e.message}")
+            } finally {
+                _isRefreshing.value = false
+            }
+        }
+    }
+
 }
+
+

@@ -21,6 +21,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -32,7 +33,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.google.android.libraries.places.api.Places
 import com.makaota.weathermzansi.R
+import com.makaota.weathermzansi.data.repository.LocationTrackerImpl
 import com.makaota.weathermzansi.ui.theme.WeatherMzansiTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -57,6 +60,9 @@ class MainActivity : ComponentActivity() {
             )
         )
 
+        // Initialize Places API
+        Places.initialize(applicationContext, "AIzaSyBLByYu8IQon0go5ngsHHgU_edGX58NXjU")
+        
         setContent {
 
             WeatherMzansiTheme {
@@ -115,6 +121,11 @@ class MainActivity : ComponentActivity() {
                 ParallaxEffect()
                 //HourlyWeatherForecast(state = combinedViewModel.state)
                // DailyDisplay(combinedViewModel)
+
+                val locationTracker = remember { LocationTrackerImpl(this) } // ✅ Provide LocationTracker
+
+
+                WeatherScreen(combinedWeatherViewModel = combinedViewModel, locationTracker =locationTracker)
 
             }
         }

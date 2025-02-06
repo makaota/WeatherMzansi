@@ -37,7 +37,7 @@ import kotlin.math.sin
 fun DaylightDurationLayout(
     sunriseTime: LocalTime,
     sunsetTime: LocalTime,
-    daylightDuration: Duration, // 🌞 Now we use daylight duration!
+    daylightDuration: Duration, // 🌞 Use daylight duration!
     currentTime: LocalTime = LocalTime.now(),
     modifier: Modifier = Modifier
 ) {
@@ -48,9 +48,15 @@ fun DaylightDurationLayout(
     val backgroundColor2 = if (isSystemInDarkTheme()) colorResource(id = R.color.night_sky_blue)
     else colorResource(id = R.color.sky_blue)
 
-    // ✅ **Use daylightDuration for progress calculation**
     val totalDayMinutes = daylightDuration.toMinutes().toFloat()
-    val elapsedMinutes = Duration.between(sunriseTime, currentTime).toMinutes().toFloat()
+
+    // ✅ Ensure correct time difference based on daylight
+    val elapsedMinutes = when {
+        currentTime.isBefore(sunriseTime) -> 0f // Before sunrise, progress is 0
+        currentTime.isAfter(sunsetTime) -> totalDayMinutes // After sunset, progress stays full
+        else -> Duration.between(sunriseTime, currentTime).toMinutes().toFloat()
+    }
+
     val sunProgress = (elapsedMinutes / totalDayMinutes).coerceIn(0f, 1f) // Clamp between 0 and 1
 
     Column(
@@ -95,7 +101,7 @@ fun DaylightDurationLayout(
                 // **Draw Filled Semicircle Based on Progress**
                 val progressAngle = sunProgress * 180f
                 val radians = Math.toRadians(progressAngle.toDouble())
-                val progressX = (centerX + radius * cos(radians)).toFloat()
+                val progressX = (centerX - radius * cos(radians)).toFloat() // **Fixed direction**
                 val progressY = (centerY - radius * sin(radians)).toFloat()
 
                 val progressPath = Path().apply {
@@ -137,7 +143,7 @@ fun DaylightDurationLayout(
 @Composable
 fun PreviewDaylightDurationLayout() {
     DaylightDurationLayout(
-        sunriseTime = LocalTime.of(18, 45),  // 6:30 AM
+        sunriseTime = LocalTime.of(6, 45),  // 6:30 AM
         sunsetTime = LocalTime.of(18, 45),  // 6:45 PM
         daylightDuration = Duration.ofHours(12) // Example: 12-hour daylight
     )

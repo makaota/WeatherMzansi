@@ -80,6 +80,12 @@ dependencies {
     // Location Services
     implementation (libs.play.services.location)
 
+    // Google Places API
+    implementation (libs.places)
+
+    // Google Maps SDK
+    implementation (libs.play.services.maps)
+
     // Retrofit
     implementation (libs.retrofit)
     implementation (libs.converter.moshi)
