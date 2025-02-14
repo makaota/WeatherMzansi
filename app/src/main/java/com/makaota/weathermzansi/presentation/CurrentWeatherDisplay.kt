@@ -67,7 +67,7 @@ fun CurrentWeatherDisplay(
                 .fillMaxHeight() // Fill the full height to push content to bottom
                 .background(Color.Transparent)
                 .padding(16.dp),
-            horizontalAlignment = Alignment.End,
+            horizontalAlignment = Alignment.Start,
             verticalArrangement = Arrangement.Bottom // Push all content to the bottom
         ) {
             Text(
@@ -82,7 +82,7 @@ fun CurrentWeatherDisplay(
             // Temperature and Weather Icon
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.End,
+                horizontalArrangement = Arrangement.Start,
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
@@ -97,9 +97,9 @@ fun CurrentWeatherDisplay(
                     contentDescription = null,
                     modifier = Modifier.size(45.dp)
                 )
-            }
 
-            Spacer(modifier = Modifier.height(8.dp)) // Space before weather description
+
+            Spacer(modifier = Modifier.weight(1f)) // Space before weather description
 
             // Weather description and Feels Like
             Column(horizontalAlignment = Alignment.End) {
@@ -107,7 +107,7 @@ fun CurrentWeatherDisplay(
                     text = data.weatherType.weatherDesc,
                     fontSize = 18.sp,
                     color = textColor,
-                    fontWeight = FontWeight.SemiBold
+                    fontWeight = FontWeight.SemiBold,
                 )
                 Text(
                     text = "Feels Like ${data.feelsLike.roundToInt()}°",
@@ -116,6 +116,7 @@ fun CurrentWeatherDisplay(
                     fontWeight = FontWeight.Medium
                 )
             }
+        }
 
             Spacer(modifier = Modifier.height(12.dp)) // Space before high/low temperatures
 
@@ -123,7 +124,7 @@ fun CurrentWeatherDisplay(
             dailyWeatherData?.let { dailyData ->
                 Row(
                     modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.End,
+                    horizontalArrangement = Arrangement.Start,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Row(horizontalArrangement = Arrangement.Center) {
