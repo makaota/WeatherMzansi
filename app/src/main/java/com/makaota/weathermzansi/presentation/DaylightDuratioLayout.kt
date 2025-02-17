@@ -37,20 +37,20 @@ import kotlin.math.sin
 fun DaylightDurationLayout(
     sunriseTime: LocalTime,
     sunsetTime: LocalTime,
-    daylightDuration: Duration, // 🌞 Use daylight duration!
+    daylightDuration: Duration, // Use daylight duration!
     currentTime: LocalTime = LocalTime.now(),
     modifier: Modifier = Modifier
 ) {
     val textColor = if (isSystemInDarkTheme()) Color.White else Color.Black
     val barBackgroundColor = if (isSystemInDarkTheme()) Color.Gray else Color(0xFFE0E0E0) // Light Gray
     val progressColor = Color(0xFFFFD700) // Golden Yellow
-    val sunColor = Color(0xFFFFA500) // Sun icon 🌞
+    val sunColor = Color(0xFFFFA500) // Sun icon
     val backgroundColor2 = if (isSystemInDarkTheme()) colorResource(id = R.color.night_sky_blue)
     else colorResource(id = R.color.sky_blue)
 
     val totalDayMinutes = daylightDuration.toMinutes().toFloat()
 
-    // ✅ Ensure correct time difference based on daylight
+    // Ensure correct time difference based on daylight
     val elapsedMinutes = when {
         currentTime.isBefore(sunriseTime) -> 0f // Before sunrise, progress is 0
         currentTime.isAfter(sunsetTime) -> totalDayMinutes // After sunset, progress stays full

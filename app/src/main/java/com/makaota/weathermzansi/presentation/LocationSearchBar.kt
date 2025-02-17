@@ -9,6 +9,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -50,12 +51,12 @@ fun LocationSearchBar(onLocationSelected: (String, LatLng) -> Unit) {
         }
     }
 
-    // **🔥 Clickable Text Instead of TextField**
+    // **Clickable Text Instead of TextField**
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp)
-            .clickable { // ✅ Clicking the Text triggers Google Places search
+            .clickable { // Clicking the Text triggers Google Places search
                 launcher.launch(
                     Autocomplete.IntentBuilder(
                         AutocompleteActivityMode.OVERLAY,
@@ -64,8 +65,8 @@ fun LocationSearchBar(onLocationSelected: (String, LatLng) -> Unit) {
                         .build(context)
                 )
             }
-            .background(Color.LightGray, shape = RoundedCornerShape(8.dp))
-            .padding(12.dp),
+            .background(Color.White, shape = RoundedCornerShape(8.dp))
+            .fillMaxHeight(),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
