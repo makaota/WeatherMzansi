@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.android.gms.maps.model.LatLng
 import com.makaota.weathermzansi.domain.location.LocationTracker
 import com.makaota.weathermzansi.domain.repository.WeatherRepository
 import com.makaota.weathermzansi.utils.Resource
@@ -35,6 +36,12 @@ class CombinedWeatherViewModel @Inject constructor(
     // Add an isRefreshing state
     private val _isRefreshing = MutableStateFlow(false)
     val isRefreshing: StateFlow<Boolean> = _isRefreshing
+
+    private val _selectedLocation = MutableStateFlow<String?>("Unknown Location")
+    val selectedLocation: StateFlow<String?> = _selectedLocation
+
+    private val _latLng = MutableStateFlow<LatLng?>(null)
+    val latLng: StateFlow<LatLng?> = _latLng
 
     fun loadWeatherData() {
         viewModelScope.launch {
@@ -113,6 +120,17 @@ class CombinedWeatherViewModel @Inject constructor(
                 )
             }
             else->{}
+        }
+    }
+
+    fun updateLocation(city: String?, coordinates: LatLng?) {
+        _selectedLocation.value = city
+        _latLng.value = coordinates
+    }
+
+    fun loadWeather(lat: Double, lon: Double) {
+        viewModelScope.launch {
+            fetchWeather(lat, lon)
         }
     }
 

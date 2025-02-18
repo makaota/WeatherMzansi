@@ -1,6 +1,7 @@
 package com.makaota.weathermzansi.data.location_database
 
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
@@ -13,4 +14,8 @@ interface LocationDao {
 
     @Query("SELECT * FROM locations ORDER BY name ASC")
     fun getAllLocations(): Flow<List<LocationEntity>>
+
+    @Delete
+    suspend fun deleteLocation(location: LocationEntity) // ✅ Delete a city
+
 }

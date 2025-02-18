@@ -31,8 +31,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.navigation.compose.rememberNavController
+import androidx.room.Room
 import com.google.android.libraries.places.api.Places
 import com.makaota.weathermzansi.R
+import com.makaota.weathermzansi.data.location_database.AppDatabase
 import com.makaota.weathermzansi.data.repository.LocationTrackerImpl
 import com.makaota.weathermzansi.ui.theme.WeatherMzansiTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -61,15 +63,21 @@ class MainActivity : ComponentActivity() {
         // Initialize Places API
         Places.initialize(applicationContext, "AIzaSyBLByYu8IQon0go5ngsHHgU_edGX58NXjU")
 
+
         setContent {
 
             WeatherMzansiTheme {
 
                 val navController = rememberNavController()
+                val context = LocalContext.current
+
+
+                 val db = Room.databaseBuilder(context, AppDatabase::class.java, "weather_db").build()
+                  val locationDao = db.locationDao()
 
                 WeatherApp(combinedViewModel = combinedViewModel)
                 WeatherAppWithDrawerDisplay(dailyState = combinedViewModel.dailyWeatherState,
-                    navController = navController)
+                    navController = navController, locationDao = locationDao)
 
             }
         }
@@ -82,7 +90,7 @@ fun WeatherApp(combinedViewModel: CombinedWeatherViewModel) {
     val context = LocalContext.current
 
     val scrollState = rememberScrollState()
-  //  val db = Room.databaseBuilder(context, AppDatabase::class.java, "weather_db").build()
+   // val db = Room.databaseBuilder(context, AppDatabase::class.java, "weather_db").build()
   //  val locationDao = db.locationDao()
     val locationTracker = remember { LocationTrackerImpl(context) }
 
@@ -140,10 +148,10 @@ fun WeatherApp(combinedViewModel: CombinedWeatherViewModel) {
                 .zIndex(1f)
                 .background(Color.Transparent)
         ) {
+            Spacer(modifier = Modifier.height(16.dp))
             WeatherScreenDisplay(
                 dailyState = combinedViewModel.dailyWeatherState,
-                combinedWeatherViewModel = combinedViewModel,
-                locationTracker = locationTracker,
+                combinedWeatherViewModel = combinedViewModel
             )
             Spacer(modifier = Modifier.height(16.dp))
             CurrentWeatherDisplay(

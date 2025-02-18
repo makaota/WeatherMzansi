@@ -2,32 +2,41 @@ package com.makaota.weathermzansi.presentation
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.makaota.weathermzansi.R
-import com.makaota.weathermzansi.domain.location.LocationTracker
 
 @Composable
-fun WeatherScreenDisplay(dailyState: DailyWeatherState,
-                         combinedWeatherViewModel: CombinedWeatherViewModel,
-                         locationTracker: LocationTracker,) {
-
+fun WeatherScreenDisplay(
+    dailyState: DailyWeatherState,
+    combinedWeatherViewModel: CombinedWeatherViewModel,
+) {
 
     val textColor = if (isSystemInDarkTheme()) colorResource(id = R.color.white)
     else colorResource(
-        id = R.color.dark_gray
+        id = R.color.white
     )
+    val selectedLocation by combinedWeatherViewModel.selectedLocation.collectAsState()
 
-
-    Column{
+    Column (horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier.fillMaxWidth()
+            .padding(16.dp)){
         when {
             dailyState.dailyWeatherInfo != null -> {
-                WeatherScreen(combinedWeatherViewModel = combinedWeatherViewModel,
-                    locationTracker = locationTracker)
+                Text(text = " ${selectedLocation ?: "Loading..."}",
+                    color = textColor,
+                    fontSize = 20.sp)
             }
         }
-
-
     }
 }
 

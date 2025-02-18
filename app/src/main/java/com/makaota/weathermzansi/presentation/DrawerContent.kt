@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Icon
@@ -45,8 +44,7 @@ fun DrawerContent(navController: NavController, closeDrawer: () -> Unit) {
             modifier = Modifier.padding(16.dp)
         )
 
-        DrawerItem("Home", "home", Icons.Default.Home, selectedItem, navController, closeDrawer)
-        DrawerItem("Settings", "settings", Icons.Default.Settings, selectedItem, navController, closeDrawer)
+        DrawerItem("City Management", "cityManagement", Icons.Default.Settings, selectedItem, navController, closeDrawer)
         DrawerItem("About", "about", Icons.Default.Info, selectedItem, navController, closeDrawer)
     }
 }
