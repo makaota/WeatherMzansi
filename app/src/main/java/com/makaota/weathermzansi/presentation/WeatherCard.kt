@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -23,6 +24,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.TextStyle
@@ -158,3 +160,128 @@ fun WeatherCard(
         }
     }
 }
+
+@Composable
+fun WindInfoDisplay(
+    state: WeatherState,
+    modifier: Modifier = Modifier
+) {
+
+    state.weatherInfo?.currentWeatherData?.let { data ->
+
+        Text(
+            text = "Current Weather Details",
+            fontSize = 16.sp,
+            color = Color.Black,
+            modifier= Modifier.padding(start = 16.dp, bottom = 16.dp)
+
+        )
+
+
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween,
+            modifier = modifier
+                .fillMaxWidth()
+                .padding(start = 16.dp, end = 16.dp)
+        ) {
+            Card(
+                colors = CardDefaults.cardColors(
+                    containerColor = colorResource(id = R.color.sky_blue)
+                ),
+                shape = RoundedCornerShape(10.dp),
+                modifier = Modifier
+                    .weight(1f)
+                    .heightIn(min = 180.dp, max = 258.dp) // Adjust height dynamically
+
+            ) {
+                WindDirectionCompass(
+                    windDegrees = data.windDirection.toFloat(),
+                    windSpeed = data.windSpeed
+                )
+            }
+
+            Spacer(modifier = Modifier.width(10.dp)) // Space between two cards
+
+            Card(
+                colors = CardDefaults.cardColors(
+                    containerColor = colorResource(id = R.color.sky_blue)
+                ),
+                shape = RoundedCornerShape(10.dp),
+                modifier = Modifier
+                    .weight(1f)
+                    .heightIn(min = 180.dp, max = 258.dp) // Adjust height dynamically
+
+            ) {
+                PressureGauge(
+                    pressure = data.pressure.toFloat(),modifier.size(150.dp)
+                )
+            }
+        }
+
+
+//        Column(
+//            modifier = Modifier
+//                .fillMaxWidth()
+//                .padding(16.dp),
+//            horizontalAlignment = Alignment.CenterHorizontally
+//        ) {
+//            HumidityGauge(humidity = data.humidity.toFloat())
+//            VisibilityBlurEffect(visibilityKm = data.visibility.toFloat())
+//        }
+    }
+
+}
+
+@Composable
+fun HumidityInfoDisplay(
+    state: WeatherState,
+    modifier: Modifier = Modifier
+) {
+
+    state.weatherInfo?.currentWeatherData?.let { data ->
+
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween,
+            modifier = modifier
+                .fillMaxWidth()
+                .padding(start = 16.dp, end = 16.dp)
+        ) {
+            Card(
+                colors = CardDefaults.cardColors(
+                    containerColor = colorResource(id = R.color.sky_blue)
+                ),
+                shape = RoundedCornerShape(10.dp),
+                modifier = Modifier
+                    .weight(1f)
+                    .heightIn(min = 180.dp, max = 258.dp) // Adjust height dynamically
+
+            ) {
+                HumidityGauge(
+                    humidity = data.humidity.toFloat()
+                )
+            }
+
+            Spacer(modifier = Modifier.width(10.dp)) // Space between two cards
+
+            Card(
+                colors = CardDefaults.cardColors(
+                    containerColor = colorResource(id = R.color.sky_blue)
+                ),
+                shape = RoundedCornerShape(10.dp),
+                modifier = Modifier
+                    .weight(1f)
+                    .heightIn(min = 180.dp, max = 258.dp) // Adjust height dynamically
+
+            ) {
+                VisibilityBlurEffect(
+                    visibilityKm = data.visibility.toFloat(),data.dewPoint
+                )
+            }
+        }
+
+    }
+
+}
+

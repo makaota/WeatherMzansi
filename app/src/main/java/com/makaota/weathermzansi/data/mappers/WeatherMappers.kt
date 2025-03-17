@@ -31,6 +31,9 @@ fun WeatherDataDto.toWeatherDataMap(): Map<Int, List<WeatherData>> {
         val pressure = pressures[index]
         val humidity = humidities[index]
         val feelsLike = feelsLike[index]
+        val windDirection = windDirection[index]
+        val visibility = visibility[index]
+        val dewPoint = dewPoint[index]
         val precipitationProbability = precipitationProbability[index]
         IndexedWeatherData(
             index = index,
@@ -41,7 +44,10 @@ fun WeatherDataDto.toWeatherDataMap(): Map<Int, List<WeatherData>> {
                 windSpeed = windSpeed,
                 humidity = humidity,
                 feelsLike = feelsLike,
+                windDirection = windDirection,
+                visibility = visibility,
                 precipitationProbability = precipitationProbability,
+                dewPoint = dewPoint,
                 weatherType = WeatherType.fromWMO(weatherCode)
             )
         )
@@ -88,6 +94,7 @@ fun DailyWeatherDataDto.toDailyWeatherDataMap(): Map<Int, List<DailyWeatherData>
         val chancesOfRain = chancesOfRain[index]
         val sunriseTime = sunrise[index]
         val sunsetTime = sunset[index]
+        val uvIndex = uvIndex[index]
         val daiylightDuration = daylightDuration[index]
         IndexedDailyWeatherData(
             index = index,
@@ -99,6 +106,7 @@ fun DailyWeatherDataDto.toDailyWeatherDataMap(): Map<Int, List<DailyWeatherData>
                 sunrise = LocalDateTime.parse(sunriseTime, DateTimeFormatter.ISO_DATE_TIME).toLocalTime(),
                 sunset = LocalDateTime.parse(sunsetTime, DateTimeFormatter.ISO_DATE_TIME).toLocalTime(),
                 daylightDuration = daiylightDuration,
+                uvIndex = uvIndex,
                 weatherType = WeatherType.fromWMO(weatherCodes)
             )
         )

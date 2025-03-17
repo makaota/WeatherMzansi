@@ -70,6 +70,15 @@ fun CurrentWeatherDisplay(
             horizontalAlignment = Alignment.Start,
             verticalArrangement = Arrangement.Bottom // Push all content to the bottom
         ) {
+                Text(
+                    text = data.weatherType.weatherDesc,
+                    fontSize = 18.sp,
+                    color = textColor,
+                    fontWeight = FontWeight.SemiBold,
+                    modifier = Modifier.align(alignment = Alignment.CenterHorizontally)
+
+                )
+
             Text(
                 text = "Now $formattedCurrentTime",
                 color = textColor,
@@ -87,7 +96,7 @@ fun CurrentWeatherDisplay(
             ) {
                 Text(
                     text = "${data.temperatureCelsius.roundToInt()}°",
-                    fontSize = 50.sp,
+                    fontSize = 60.sp,
                     color = textColor,
                     fontWeight = FontWeight.ExtraBold
                 )
@@ -95,7 +104,7 @@ fun CurrentWeatherDisplay(
                 Image(
                     painter = painterResource(id = data.weatherType.iconRes),
                     contentDescription = null,
-                    modifier = Modifier.size(45.dp)
+                    modifier = Modifier.size(55.dp)
                 )
 
 
@@ -103,12 +112,7 @@ fun CurrentWeatherDisplay(
 
             // Weather description and Feels Like
             Column(horizontalAlignment = Alignment.End) {
-                Text(
-                    text = data.weatherType.weatherDesc,
-                    fontSize = 18.sp,
-                    color = textColor,
-                    fontWeight = FontWeight.SemiBold,
-                )
+
                 Text(
                     text = "Feels Like ${data.feelsLike.roundToInt()}°",
                     fontSize = 18.sp,

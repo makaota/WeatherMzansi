@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -22,10 +23,8 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.makaota.weathermzansi.R
 import java.time.Duration
 import java.time.LocalTime
@@ -62,18 +61,13 @@ fun DaylightDurationLayout(
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .padding(16.dp)
-            .background(backgroundColor2),
+            .height(245.dp)
+            .background(backgroundColor2, shape = RoundedCornerShape(12.dp)),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(
-            text = "Daylight Duration",
-            fontSize = 18.sp,
-            fontWeight = FontWeight.Bold,
-            color = textColor
-        )
 
-        Spacer(modifier = Modifier.height(16.dp))
+
+       // Spacer(modifier = Modifier.height(16.dp))
 
         Box(
             modifier = Modifier
@@ -128,7 +122,8 @@ fun DaylightDurationLayout(
 
         // **Sunrise, Noon & Sunset Values**
         Row(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth()
+                .padding(start = 16.dp, end = 16.dp),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(text = "🌅 ${sunriseTime.format(DateTimeFormatter.ofPattern("hh:mm a"))}", color = textColor)

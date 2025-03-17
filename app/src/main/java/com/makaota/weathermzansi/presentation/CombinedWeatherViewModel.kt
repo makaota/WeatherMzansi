@@ -9,6 +9,7 @@ import com.google.android.gms.maps.model.LatLng
 import com.makaota.weathermzansi.domain.location.LocationTracker
 import com.makaota.weathermzansi.domain.repository.WeatherRepository
 import com.makaota.weathermzansi.utils.Resource
+import com.makaota.weathermzansi.weather.DailyWeatherData
 import com.makaota.weathermzansi.weather.DailyWeatherInfo
 import com.makaota.weathermzansi.weather.WeatherInfo
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -41,7 +42,13 @@ class CombinedWeatherViewModel @Inject constructor(
     val selectedLocation: StateFlow<String?> = _selectedLocation
 
     private val _latLng = MutableStateFlow<LatLng?>(null)
-    val latLng: StateFlow<LatLng?> = _latLng
+
+    var selectedWeatherData by mutableStateOf<DailyWeatherData?>(null)
+        private set
+
+    fun selectWeatherData(data: DailyWeatherData) {
+        selectedWeatherData = data
+    }
 
     fun loadWeatherData() {
         viewModelScope.launch {

@@ -30,6 +30,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.google.android.gms.maps.model.LatLng
 import com.makaota.weathermzansi.data.location_database.LocationDao
@@ -51,11 +52,11 @@ fun HomeScreen() {
 fun CityManagementScreen(
     combinedViewModel: CombinedWeatherViewModel,
     navController: NavHostController,
-    locationDao: LocationDao // ✅ Room DB Access
+    locationDao: LocationDao // Room DB Access
 ) {
     val scope = rememberCoroutineScope()
 
-    // ✅ Correctly collect locations from Room Database
+    // Correctly collect locations from Room Database
     val cities by locationDao.getAllLocations().collectAsState(initial = emptyList())
 
     Scaffold(
@@ -78,24 +79,26 @@ fun CityManagementScreen(
             if (cities.isEmpty()) {
                 Text(
                     text = "No saved locations",
-                    modifier = Modifier.fillMaxSize().wrapContentSize(Alignment.Center),
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .wrapContentSize(Alignment.Center),
                     fontSize = 18.sp,
                     color = Color.Gray
                 )
             } else {
                 LazyColumn(modifier = Modifier.fillMaxSize()) {
-                    // ✅ Correctly iterate over cities list
+                    // Correctly iterate over cities list
                     items(cities) { city ->
                         CityItem(
-                            locationEntity = city, // ✅ Pass each LocationEntity
+                            locationEntity = city, // Pass each LocationEntity
                             onSelect = {
                                 combinedViewModel.updateLocation(city.name, LatLng(city.latitude, city.longitude)) // ✅ Update ViewModel
-                                combinedViewModel.fetchWeather(city.latitude, city.longitude) // ✅ Fetch weather
-                                navController.navigateUp() // ✅ Navigate back to home
+                                combinedViewModel.fetchWeather(city.latitude, city.longitude) // Fetch weather
+                                navController.navigateUp() // Navigate back to home
                             },
                             onDelete = {
                                 scope.launch {
-                                    locationDao.deleteLocation(city) // ✅ Delete city from DB
+                                    locationDao.deleteLocation(city) // Delete city from DB
                                 }
                             }
                         )
@@ -119,7 +122,7 @@ fun AboutScreen() {
 
 @Composable
 fun CityItem(
-    locationEntity: LocationEntity, // ✅ Ensure correct `LocationEntity` is passed
+    locationEntity: LocationEntity, // Ensure correct `LocationEntity` is passed
     onSelect: () -> Unit,
     onDelete: () -> Unit
 ) {
@@ -127,7 +130,7 @@ fun CityItem(
         modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp)
-            .clickable { onSelect() }, // ✅ Select city when clicked
+            .clickable { onSelect() }, // Select city when clicked
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -144,8 +147,31 @@ fun CityItem(
             Icon(
                 imageVector = Icons.Default.Delete,
                 contentDescription = "Delete",
-                tint = Color.Red // ✅ Delete icon in red
+                tint = Color.Red // Delete icon in red
             )
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun WeatherDetailsScreen(viewModel: CombinedWeatherViewModel, navController: NavController) {
+    val selectedWeatherData = viewModel.selectedWeatherData
+
+    Column(
+        modifier = Modifier.fillMaxSize().padding(16.dp)
+    ) {
+        IconButton(onClick = { navController.navigateUp() }) {
+            Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "Back")
+        }
+
+        if (selectedWeatherData != null) {
+            Text("Weather Details", fontSize = 22.sp, fontWeight = FontWeight.Bold)
+            Text("Date: ${selectedWeatherData.time}")
+            Text("Temperature: ${selectedWeatherData.maxTemperatures}°C")
+            Text("Rain: ${selectedWeatherData.chancesOfRain}%")
+        } else {
+            Text("No Weather Data Selected", fontSize = 18.sp, color = Color.Red)
         }
     }
 }

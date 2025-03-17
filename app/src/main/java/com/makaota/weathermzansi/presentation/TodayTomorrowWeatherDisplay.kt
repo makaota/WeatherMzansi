@@ -2,6 +2,7 @@ package com.makaota.weathermzansi.presentation
 
 
 import android.util.Log
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
@@ -17,16 +18,14 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Divider
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
@@ -37,7 +36,6 @@ import com.makaota.weathermzansi.R
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import kotlin.math.roundToInt
-
 
 
 @Composable
@@ -123,12 +121,11 @@ fun TodayTomorrowWeatherDisplay(
                                 fontWeight = FontWeight.Medium
                             )
                         }
-                        Icon(
-                            imageVector = ImageVector.vectorResource(id = todayData.get(0).weatherType.iconRes),
+                        Image(
+                            painter = painterResource(id = todayData.get(0).weatherType.iconRes),
                             contentDescription = null,
-                            modifier = Modifier
-                                .align(Alignment.CenterVertically)
-                                .size(25.dp) // Consistent size for the icon
+                            modifier = Modifier.size(25.dp)
+
                         )
                     }
                 }
@@ -179,14 +176,13 @@ fun TodayTomorrowWeatherDisplay(
                                 fontWeight = FontWeight.Medium
                             )
                         }
-                        Icon(
-                            imageVector = ImageVector.vectorResource(id = tomorrowData.get(0).weatherType.iconRes),
+                        Image(
+                            painter = painterResource(id = tomorrowData.get(0).weatherType.iconRes),
                             contentDescription = null,
-                            tint = colorResource(id = R.color.dodger_blue),
-                            modifier = Modifier
-                                .align(Alignment.CenterVertically)
-                                .size(25.dp) // Consistent size for the icon
+                            modifier = Modifier.size(25.dp)
+
                         )
+
                     }
                 }
             }

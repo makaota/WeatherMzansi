@@ -27,4 +27,6 @@
     <color name="night_image_blue">#090E6D</color>
     <color name="night_image_dark">#080814</color>
 
+    <color name="orange">#FFA500</color>
+
 </resources>

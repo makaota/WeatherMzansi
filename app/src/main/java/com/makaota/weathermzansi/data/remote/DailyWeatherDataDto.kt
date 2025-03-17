@@ -16,6 +16,8 @@ data class DailyWeatherDataDto (
     val sunrise: List<String>,
     @field:Json(name = "sunset")
     val sunset: List<String>,
+    @field:Json(name = "uv_index_max")
+    val uvIndex: List<Double>,
     @field:Json(name = "daylight_duration")
     val daylightDuration: List<Double>,
 

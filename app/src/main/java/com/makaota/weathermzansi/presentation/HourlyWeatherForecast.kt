@@ -43,78 +43,96 @@ fun HourlyWeatherForecast(
         id = R.color.sky_blue
     )
 
-    Box(
+
+    Column(
         modifier = Modifier
-            .padding(start = 16.dp, top = 16.dp, end = 16.dp)
-            .clip(RoundedCornerShape(10.dp)) // Apply rounded corners
-            .background(backgroundColor)    // Set background color
-    )  {
+            .fillMaxWidth()
+           // .padding(16.dp)
+    ) {
 
-
-        state.weatherInfo?.weatherDataPerDay?.get(0)?.let { data ->
-
-            // Get the current time
-            val currentTime = remember { LocalDateTime.now() }
-
-            // Filter the data to show only the current hour onward
-            val todayData = remember(data, currentTime) {
-                data.filter { weatherData ->
-                    Log.d("WeatherDataForecast", "values: $weatherData")
-                    weatherData.time.isAfter(currentTime) || weatherData.time.hour == currentTime.hour ||
-                            weatherData.time.hour == 0
-
-                }
-
-            }
-            state.weatherInfo.weatherDataPerDay.get(1)?.let { data ->
-                val tomorrowData = data.sortedBy { it.time.hour }
-
-                val combinedData = (todayData + tomorrowData).distinctBy { it.time.hour }
-
-                Log.d("combinedData", "values: $combinedData")
-
-                Column(
-                    modifier = modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp)
+        when {
+            state.weatherInfo != null -> {
+                Text(
+                    text = "Hourly Forecast",
+                    color = textColor,
+                    fontSize = 16.sp,
+                    modifier = Modifier.padding(start = 16.dp)
+                )
+                Box(
+                    modifier = Modifier
+                        .padding(16.dp)
+                        .clip(RoundedCornerShape(10.dp)) // Apply rounded corners
+                        .background(backgroundColor)    // Set background color
                 ) {
-                    Text(
-                        text = "Hourly Forecast",
-                        color = textColor,
-                        fontSize = 16.sp
-                    )
-                    Spacer(modifier = Modifier.height(16.dp))
-                    LazyRow(   modifier = Modifier
-                        .clip(RoundedCornerShape(10.dp)) // Apply rounded corners to LazyRow
-                        .background(backgroundColor)    // Ensure the background matches
-                        .padding(8.dp),  content = {
-                        items(
-                            combinedData.sortedWith { weather1, weather2 ->
-                                val currentHour = currentTime.hour
 
-                                val hour1 = weather1.time.hour
-                                val hour2 = weather2.time.hour
 
-                                val adjustedHour1 = if (hour1 < currentHour) hour1 + 24 else hour1
-                                val adjustedHour2 = if (hour2 < currentHour) hour2 + 24 else hour2
+                    state.weatherInfo?.weatherDataPerDay?.get(0)?.let { data ->
 
-                                adjustedHour1.compareTo(adjustedHour2)
+                        // Get the current time
+                        val currentTime = remember { LocalDateTime.now() }
+
+                        // Filter the data to show only the current hour onward
+                        val todayData = remember(data, currentTime) {
+                            data.filter { weatherData ->
+                                Log.d("WeatherDataForecast", "values: $weatherData")
+                                weatherData.time.isAfter(currentTime) || weatherData.time.hour == currentTime.hour ||
+                                        weatherData.time.hour == 0
+
                             }
-                                .take(24)
-                        ) { weatherData ->
-                            HourlyWeatherDisplay(
-                                weatherData = weatherData,
-                                modifier = Modifier
-                                    .padding(horizontal = 16.dp)
-                                    .background(Color.Transparent)
-                            )
-                        }
 
-                    })
+                        }
+                        state.weatherInfo.weatherDataPerDay.get(1)?.let { data ->
+                            val tomorrowData = data.sortedBy { it.time.hour }
+
+                            val combinedData =
+                                (todayData + tomorrowData).distinctBy { it.time.hour }
+
+                            Log.d("combinedData", "values: $combinedData")
+
+                            Column(
+                                modifier = modifier
+                                    .fillMaxWidth()
+                                  //  .padding(horizontal = 16.dp)
+                            ) {
+
+                                Spacer(modifier = Modifier.height(16.dp))
+                                LazyRow(modifier = Modifier
+                                    .clip(RoundedCornerShape(10.dp)) // Apply rounded corners to LazyRow
+                                    .background(backgroundColor)    // Ensure the background matches
+                                    .padding(8.dp), content = {
+                                    items(
+                                        combinedData.sortedWith { weather1, weather2 ->
+                                            val currentHour = currentTime.hour
+
+                                            val hour1 = weather1.time.hour
+                                            val hour2 = weather2.time.hour
+
+                                            val adjustedHour1 =
+                                                if (hour1 < currentHour) hour1 + 24 else hour1
+                                            val adjustedHour2 =
+                                                if (hour2 < currentHour) hour2 + 24 else hour2
+
+                                            adjustedHour1.compareTo(adjustedHour2)
+                                        }
+                                            .take(24)
+                                    ) { weatherData ->
+                                        HourlyWeatherDisplay(
+                                            weatherData = weatherData,
+                                            modifier = Modifier
+                                                .padding(horizontal = 16.dp)
+                                                .background(Color.Transparent)
+                                        )
+                                    }
+
+                                })
+                            }
+                        }
+                    }
                 }
             }
         }
     }
+
 }
 
 

@@ -30,6 +30,7 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import androidx.room.Room
 import com.google.android.libraries.places.api.Places
@@ -75,7 +76,7 @@ class MainActivity : ComponentActivity() {
                  val db = Room.databaseBuilder(context, AppDatabase::class.java, "weather_db").build()
                   val locationDao = db.locationDao()
 
-                WeatherApp(combinedViewModel = combinedViewModel)
+                WeatherApp(combinedViewModel = combinedViewModel, navController)
                 WeatherAppWithDrawerDisplay(dailyState = combinedViewModel.dailyWeatherState,
                     navController = navController, locationDao = locationDao)
 
@@ -85,7 +86,7 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun WeatherApp(combinedViewModel: CombinedWeatherViewModel) {
+fun WeatherApp(combinedViewModel: CombinedWeatherViewModel, navHostController: NavHostController) {
 
     val context = LocalContext.current
 
@@ -160,10 +161,20 @@ fun WeatherApp(combinedViewModel: CombinedWeatherViewModel) {
             )
             Spacer(modifier = Modifier.height(16.dp))
             TodayTomorrowWeatherDisplay(dailyState = combinedViewModel.dailyWeatherState)
-            HourlyWeatherForecast(state = combinedViewModel.state)
-            DailyDisplay(combinedViewModel)
             Spacer(modifier = Modifier.height(16.dp))
+            HourlyWeatherForecast(state = combinedViewModel.state)
+            DailyDisplay(combinedViewModel, navController = navHostController)
+            Spacer(modifier = Modifier.height(16.dp))
+            WindInfoDisplay(state = combinedViewModel.state )
+            Spacer(modifier = Modifier.height(16.dp))
+            HumidityInfoDisplay(state = combinedViewModel.state)
+            DailyUVIndexDisplay(combinedViewModel.dailyWeatherState)
+
             DailyDurationDisplay(combinedViewModel.dailyWeatherState)
+            Spacer(modifier = Modifier.height(16.dp))
+
+
+
         }
 
         // **Show Loading Indicator While Data is Fetching**

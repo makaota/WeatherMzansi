@@ -16,7 +16,13 @@ data class WeatherDataDto(
     val humidities: List<Double>,
     @field:Json(name = "apparent_temperature")
     val feelsLike: List<Double>,
+    @field:Json(name = "visibility")
+    val visibility: List<Double>,
+    @field:Json(name = "wind_direction_10m")
+    val windDirection: List<Double>,
     @field:Json(name = "precipitation_probability")
-    val precipitationProbability: List<Double>
+    val precipitationProbability: List<Double>,
+    @field:Json(name = "dew_point_2m")
+    val dewPoint: List<Double>
 )
 

@@ -10,6 +10,7 @@ data class DailyWeatherData(
     val chancesOfRain: Double,
     val sunrise: LocalTime,
     val sunset: LocalTime,
+    val uvIndex: Double,
     val daylightDuration: Double,
     val weatherType: WeatherType
 )

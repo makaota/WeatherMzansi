@@ -1,6 +1,5 @@
 package com.makaota.weathermzansi.presentation
 
-import android.util.Log
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -12,11 +11,10 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.makaota.weathermzansi.R
-import java.time.Duration
 
 
 @Composable
-fun DailyDurationDisplay( dailyState: DailyWeatherState,) {
+fun DailyUVIndexDisplay( dailyState: DailyWeatherState,) {
 
 
     val textColor = if (isSystemInDarkTheme()) colorResource(id = R.color.white)
@@ -34,7 +32,7 @@ fun DailyDurationDisplay( dailyState: DailyWeatherState,) {
 
         when {
             dailyState.dailyWeatherInfo != null -> {
-                Text("Daylight Duration",
+                Text("UV Index",
                     fontSize = 16.sp,
                     color = textColor,
                     modifier = Modifier.padding(top = 16.dp, bottom = 16.dp)
@@ -45,11 +43,9 @@ fun DailyDurationDisplay( dailyState: DailyWeatherState,) {
                     val todayWeatherData = dailyState.dailyWeatherInfo.dailyWeatherData.get(0)
 
                     todayWeatherData?.let { todayData ->
-                        DaylightDurationLayout(sunriseTime = todayData.get(0).sunrise,
-                            sunsetTime = todayData.get(0).sunset,
-                            daylightDuration = Duration.ofSeconds(todayData.get(0).daylightDuration.toLong()))
-                        Log.d("DailyDisplay", "WeatherData: $data")
-                        Log.d("DailyDisplay", "TodayData: $todayData")
+                        UVIndexGradient(uvIndex = todayData.get(0).uvIndex.toFloat())
+                     //   UVIndexSunIcon(uvIndex = todayData.get(0).uvIndex.toFloat())
+
                     }
 
                 }
