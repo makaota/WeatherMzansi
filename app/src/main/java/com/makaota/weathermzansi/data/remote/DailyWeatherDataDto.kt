@@ -20,5 +20,21 @@ data class DailyWeatherDataDto (
     val uvIndex: List<Double>,
     @field:Json(name = "daylight_duration")
     val daylightDuration: List<Double>,
+    @field:Json(name = "apparent_temperature_max")
+    val apparentTemperatureMax: List<Double>,
+    @field:Json(name = "apparent_temperature_min")
+    val apparentTemperatureMin: List<Double>,
+    @field:Json(name = "sunshine_duration")
+    val sunshineDuration: List<Double>,
+    @field:Json(name = "uv_index_clear_sky_max")
+    val uvIndexClearSkyMax: List<Double>,
+    @field:Json(name = "snowfall_sum")
+    val snowfallSum: List<Double>,
+    @field:Json(name = "wind_speed_10m_max")
+    val windSpeedMax: List<Double>,
+    @field:Json(name = "wind_direction_10m_dominant")
+    val windDirectionDominant: List<Double>,
+    @field:Json(name = "wind_gusts_10m_max")
+    val windGutsMax: List<Double>,
 
 )

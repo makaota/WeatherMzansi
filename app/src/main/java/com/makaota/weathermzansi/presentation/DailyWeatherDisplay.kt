@@ -23,14 +23,10 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.makaota.weathermzansi.R
 import com.makaota.weathermzansi.weather.DailyWeatherData
-import com.makaota.weathermzansi.weather.WeatherType
-import java.time.LocalDate
-import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 import kotlin.math.roundToInt
 
@@ -119,26 +115,26 @@ fun DailyWeatherDisplay(
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun PreviewDailyWeatherDisplay() {
-    val sampleData = DailyWeatherData(
-        time = LocalDate.of(2025, 1, 10),
-        maxTemperatures = 28.0,
-        lowTemperatures = 18.0,
-        chancesOfRain = 20.0,
-        sunrise= LocalTime.of(5,30),
-        sunset = LocalTime.of(17,30),
-        uvIndex = 50.00,
-        daylightDuration = 10000.0,
-        weatherType = WeatherType.ClearSky // ✅ Ensure WeatherType has an iconRes
-    )
-
-    DailyWeatherDisplay(
-        index = 5,
-        dailyWeatherData = sampleData,
-        modifier = Modifier
-            .padding(16.dp)
-            .fillMaxWidth()
-    )
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun PreviewDailyWeatherDisplay() {
+//    val sampleData = DailyWeatherData(
+//        time = LocalDate.of(2025, 1, 10),
+//        maxTemperatures = 28.0,
+//        lowTemperatures = 18.0,
+//        chancesOfRain = 20.0,
+//        sunrise= LocalTime.of(5,30),
+//        sunset = LocalTime.of(17,30),
+//        uvIndex = 50.00,
+//        daylightDuration = 10000.0,
+//        weatherType = WeatherType.ClearSky // ✅ Ensure WeatherType has an iconRes
+//    )
+//
+//    DailyWeatherDisplay(
+//        index = 5,
+//        dailyWeatherData = sampleData,
+//        modifier = Modifier
+//            .padding(16.dp)
+//            .fillMaxWidth()
+//    )
+//}

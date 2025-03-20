@@ -12,6 +12,14 @@ data class DailyWeatherData(
     val sunset: LocalTime,
     val uvIndex: Double,
     val daylightDuration: Double,
+    val apparentTemperatureMax: Double,
+    val apparentTemperatureMin: Double,
+    val sunshineDuration: Double,
+    val uvIndexClearSky: Double,
+    val windSpeed: Double,
+    val windDirection: Double,
+    val windGust: Double,
+    val snowfallSum: Double,
     val weatherType: WeatherType
 )
 

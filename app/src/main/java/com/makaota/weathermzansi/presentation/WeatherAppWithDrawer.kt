@@ -98,7 +98,8 @@ fun WeatherAppWithDrawer(
                             IconButton(onClick = { scope.launch { drawerState.open() } }) {
                                 Icon(imageVector = Icons.Default.Menu, contentDescription = "Menu")
                             }
-                        } else {
+                        }
+                        else {
                             // Show Back Button on Other Screens
                             IconButton(onClick = { navController.navigateUp() }) {
                                 Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "Back")
@@ -130,9 +131,16 @@ fun WeatherAppWithDrawer(
                                 }
                             }
 
-                        } else {
+                        }
+                        else {
                             // Show Simple Title for Other Screens
-                            Text("Weather Details")
+                            if (currentRoute == "cityManagement"){
+                                Text("City Management")
+                            }
+                            else if (currentRoute == "WeatherDetails"){
+                                Text("7-Day forecast")
+                            }
+
                         }
                     }
                 )
