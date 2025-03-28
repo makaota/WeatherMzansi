@@ -40,6 +40,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.makaota.weathermzansi.R
+import com.makaota.weathermzansi.domain.utils.ThemeColors
 import kotlin.math.cos
 import kotlin.math.roundToInt
 import kotlin.math.sin
@@ -68,7 +69,7 @@ fun WindInfo(windSpeed: Double, windDegrees: Double, modifier: Modifier = Modifi
 }
 
 fun getWindDirection(degrees: Double): String {
-    val directions = arrayOf("N", "NE", "E", "SE", "S", "SW", "W", "NW")
+    val directions = arrayOf("North", "North East", "East", "South East", "South", "South West", "West", "North West")
     val index = ((degrees % 360) / 45).toInt()
     return directions[index]
 }
@@ -98,26 +99,13 @@ fun WindDirectionCompass(
 
     ) {
 
-    val textColor = if (isSystemInDarkTheme()) colorResource(id = R.color.white)
-    else colorResource(
-        id = R.color.dark_gray
-    )
+    val textColor = ThemeColors.textColor()
+    val backgroundColor = ThemeColors.backgroundColor()
+    val labelColor = ThemeColors.labelColor()
 
-    val labelColor =
-        if (isSystemInDarkTheme()) colorResource(id = R.color.light_steel_blue)
-        else colorResource(id = R.color.medium_gray)
 
-    val backgroundColor =
-        if (isSystemInDarkTheme()) colorResource(id = R.color.night_sky_blue)
-        else colorResource(
-            id = R.color.sky_blue
-        )
-
-    val backgroundColor2 =
-        if (isSystemInDarkTheme()) colorResource(id = R.color.night_image_dark)
-        else colorResource(
-            id = R.color.day_image_dark_blue
-        )
+    val myColorInt = if (isSystemInDarkTheme()) 1
+    else 2
 
 
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -135,7 +123,7 @@ fun WindDirectionCompass(
 
         Box(
             contentAlignment = Alignment.Center,
-            modifier = modifier.height(150.dp) // Adjust size as needed
+            modifier = modifier.height(130.dp) // Adjust size as needed
         ) {
             Canvas(
                 modifier = Modifier
@@ -147,7 +135,7 @@ fun WindDirectionCompass(
 
                 // Draw Circle
                 drawCircle(
-                    color = Color.Gray,
+                    color = textColor,
                     style = Stroke(width = 5f)
                 )
 
@@ -160,13 +148,18 @@ fun WindDirectionCompass(
                         (center.y + radius * sin(angleRad)).toFloat() + 5f
                     )
 
+
+                    val compassTextColor = myIntColor(myColorInt)
+
+                    val white = android.graphics.Color.WHITE
+                    val black = android.graphics.Color.BLACK
                     drawContext.canvas.nativeCanvas.drawText(
                         label,
                         textOffset.x,
                         textOffset.y,
                         android.graphics.Paint().apply {
-                            color = android.graphics.Color.BLACK
-                            textSize = 30f
+                            color = compassTextColor
+                            textSize = 40f
                             textAlign = android.graphics.Paint.Align.CENTER
                         }
                     )
@@ -181,12 +174,12 @@ fun WindDirectionCompass(
             horizontalAlignment = Alignment.Start,
             modifier = Modifier
                 .fillMaxSize()
-                .padding(start = 16.dp, bottom = 16.dp)
+                .padding(start = 16.dp)
         ) {
 
             Text(
                 text = buildAnnotatedString {
-                    withStyle(style = SpanStyle(fontSize = 24.sp, fontWeight = FontWeight.Bold)) {
+                    withStyle(style = SpanStyle(fontSize = 20.sp, fontWeight = FontWeight.Bold)) {
                         append("${windSpeed.roundToInt()}") // Larger wind speed
                     }
                     append(" km/h") // Regular text
@@ -203,7 +196,7 @@ fun WindDirectionCompass(
             Text(
                 text = getWindDirection(windDegrees.toDouble()),
                 color = textColor, // Change to your preferred color
-                fontSize = 16.sp, // Default size for non-highlighted text
+                fontSize = 14.sp, // Default size for non-highlighted text
                 textAlign = TextAlign.Start,
                 fontWeight = FontWeight.Bold,
 //                modifier = Modifier
@@ -213,6 +206,17 @@ fun WindDirectionCompass(
 
         }
 
+    }
+}
+
+private fun myIntColor(myIntTextColor: Int): Int{
+
+    val white = android.graphics.Color.WHITE
+    val black = android.graphics.Color.BLACK
+    return if (myIntTextColor == 1){
+        white
+    }else{
+        black
     }
 }
 
@@ -228,36 +232,20 @@ fun AnimatedWindArrow(degrees: Float) {
         painter = painterResource(id = R.drawable.wind_direction), // Custom arrow
         contentDescription = "Wind Direction",
         modifier = Modifier
-            .size(40.dp)
+            .size(26.dp)
             .rotate(animatedRotation) //  Rotates smoothly
     )
 }
 
 @Composable
-fun PressureGauge(pressure: Float, modifier: Modifier) {
+fun PressureGauge(pressure: Float) {
     val minPressure = 950f
     val maxPressure = 1050f
 
-    val textColor = if (isSystemInDarkTheme()) colorResource(id = R.color.white)
-    else colorResource(
-        id = R.color.dark_gray
-    )
+    val textColor = ThemeColors.textColor()
+    val backgroundColor = ThemeColors.backgroundColor()
+    val labelColor = ThemeColors.labelColor()
 
-    val labelColor =
-        if (isSystemInDarkTheme()) colorResource(id = R.color.light_steel_blue)
-        else colorResource(id = R.color.medium_gray)
-
-    val backgroundColor =
-        if (isSystemInDarkTheme()) colorResource(id = R.color.night_sky_blue)
-        else colorResource(
-            id = R.color.sky_blue
-        )
-
-    val backgroundColor2 =
-        if (isSystemInDarkTheme()) colorResource(id = R.color.night_image_dark)
-        else colorResource(
-            id = R.color.day_image_dark_blue
-        )
 
     // Normalize pressure to an angle between -120° (Low) and 120° (High)
     val needleAngle = ((pressure - minPressure) / (maxPressure - minPressure) * 240f) - 120f
@@ -289,7 +277,7 @@ fun PressureGauge(pressure: Float, modifier: Modifier) {
         )
         Box(
             contentAlignment = Alignment.Center,
-            modifier = Modifier.size(150.dp) // Adjust size as needed
+            modifier = Modifier.size(130.dp) // Adjust size as needed
         ) {
 
             Canvas(
@@ -330,7 +318,7 @@ fun PressureGauge(pressure: Float, modifier: Modifier) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(start = 16.dp, bottom = 16.dp),
+                .padding(start = 16.dp),
             horizontalAlignment = Alignment.Start,
 
             ) {
@@ -338,7 +326,7 @@ fun PressureGauge(pressure: Float, modifier: Modifier) {
             // Display Pressure Value
             Text(
                 text = "${pressure.roundToInt()} hPa",
-                fontSize = 20.sp,
+                fontSize = 18.sp,
                 fontWeight = FontWeight.Bold,
                 color = textColor,
                 textAlign = TextAlign.Start,
@@ -349,21 +337,22 @@ fun PressureGauge(pressure: Float, modifier: Modifier) {
 
            // Spacer(modifier = Modifier.height(8.dp))
 
+
             when (pressureColor) {
                 Color.Green -> {
 
-                    LegendItem("Low", Color.Green)
+                    LegendItem("Low", Color.Green, textColor)
 
                 }
 
                 Color.Yellow -> {
 
-                    LegendItem("Normal", Color.Yellow)
+                    LegendItem("Normal", Color.Yellow, textColor)
 
                 }
 
                 else -> {
-                    LegendItem("High", Color.Red)
+                    LegendItem("High", Color.Red, textColor)
                 }
             }
         }
@@ -374,22 +363,25 @@ fun PressureGauge(pressure: Float, modifier: Modifier) {
 
 // **Reusable Color Legend Item**
 @Composable
-fun LegendItem(label: String, color: Color) {
-    Row(verticalAlignment = Alignment.CenterVertically) {
+fun LegendItem(label: String, color: Color, textColor: Color) {
+    Row(verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier
+            .padding(end = 16.dp)
+            .fillMaxWidth()) {
         Box(
             modifier = Modifier
-                .size(12.dp)
+                .size(16.dp)
                 .background(color)
         )
         Spacer(modifier = Modifier.width(4.dp))
-        Text(text = label, fontSize = 14.sp, fontWeight = FontWeight.Medium, color = color)
+        Text(text = label, fontSize = 14.sp, fontWeight = FontWeight.Medium, color = textColor)
     }
 }
 
 @Preview(showBackground = true)
 @Composable
 fun PreviewPressureGauge() {
-    PressureGauge(pressure = 1015f, modifier = Modifier) // Example Pressure
+    PressureGauge(pressure = 1015f) // Example Pressure
 }
 
 @Composable
@@ -397,26 +389,9 @@ fun HumidityGauge(humidity: Float) {
     val minHumidity = 0f
     val maxHumidity = 100f
 
-    val textColor = if (isSystemInDarkTheme()) colorResource(id = R.color.white)
-    else colorResource(
-        id = R.color.dark_gray
-    )
-
-    val labelColor =
-        if (isSystemInDarkTheme()) colorResource(id = R.color.light_steel_blue)
-        else colorResource(id = R.color.medium_gray)
-
-    val backgroundColor =
-        if (isSystemInDarkTheme()) colorResource(id = R.color.night_sky_blue)
-        else colorResource(
-            id = R.color.sky_blue
-        )
-
-    val backgroundColor2 =
-        if (isSystemInDarkTheme()) colorResource(id = R.color.night_image_dark)
-        else colorResource(
-            id = R.color.day_image_dark_blue
-        )
+    val textColor = ThemeColors.textColor()
+    val backgroundColor = ThemeColors.backgroundColor()
+    val labelColor = ThemeColors.labelColor()
 
 
     // Normalize humidity to an angle between -120° (Low) and 120° (High)
@@ -449,7 +424,7 @@ fun HumidityGauge(humidity: Float) {
         )
         Box(
             contentAlignment = Alignment.Center,
-            modifier = Modifier.size(150.dp) // Adjust size as needed
+            modifier = Modifier.size(130.dp) // Adjust size as needed
         ) {
             Canvas(
                 modifier = Modifier
@@ -490,7 +465,7 @@ fun HumidityGauge(humidity: Float) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(start = 16.dp, bottom = 16.dp),
+                .padding(start = 16.dp),
             horizontalAlignment = Alignment.Start,
 
             ){
@@ -509,20 +484,20 @@ fun HumidityGauge(humidity: Float) {
             when (humidityColor) {
                 Color.Blue -> {
 
-                    LegendItem("Low", Color.Blue)
+                    LegendItem("Low", Color.Blue, textColor)
 
                 }
 
                 Color.Green -> {
-                    LegendItem("Comfortable", Color.Green)
+                    LegendItem("Comfortable", Color.Green, textColor)
                 }
 
                 Color(0xFFFFA500) -> {
-                    LegendItem("High", colorResource(id = R.color.orange))
+                    LegendItem("High", colorResource(id = R.color.orange), textColor)
                 }
 
                 else -> {
-                    LegendItem("Very High", Color.Red)
+                    LegendItem("Very High", Color.Red, textColor)
                 }
             }
         }

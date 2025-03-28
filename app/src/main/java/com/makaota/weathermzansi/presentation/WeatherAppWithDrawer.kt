@@ -5,7 +5,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -93,16 +93,24 @@ fun WeatherAppWithDrawer(
             topBar = {
                 TopAppBar(
                     navigationIcon = {
-                        if (currentRoute == "home") {
-                            // Show Menu Icon on Home Screen
-                            IconButton(onClick = { scope.launch { drawerState.open() } }) {
-                                Icon(imageVector = Icons.Default.Menu, contentDescription = "Menu")
-                            }
-                        }
-                        else {
-                            // Show Back Button on Other Screens
-                            IconButton(onClick = { navController.navigateUp() }) {
-                                Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "Back")
+                        val validRoutes = listOf("home", "cityManagement", "WeatherDetails") // Define your valid routes
+                        if (currentRoute != null && currentRoute in validRoutes) {
+                            if (currentRoute == "home") {
+                                // Show Menu Icon on Home Screen
+                                IconButton(onClick = { scope.launch { drawerState.open() } }) {
+                                    Icon(
+                                        imageVector = Icons.Default.Menu,
+                                        contentDescription = "Menu"
+                                    )
+                                }
+                            } else {
+                                // Show Back Button on Other Screens
+                                IconButton(onClick = { navController.navigateUp() }) {
+                                    Icon(
+                                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                                        contentDescription = "Back"
+                                    )
+                                }
                             }
                         }
                     },
@@ -111,7 +119,10 @@ fun WeatherAppWithDrawer(
                             // Show Location Search Bar on Home Screen
                             LocationSearchBar { city, coordinates ->
                                 combinedViewModel.updateLocation(city, coordinates)
-                                combinedViewModel.loadWeather(coordinates.latitude, coordinates.longitude)
+                                combinedViewModel.loadWeather(
+                                    coordinates.latitude,
+                                    coordinates.longitude
+                                )
 
 
                                 // Ask User Before Saving the Location
@@ -122,14 +133,27 @@ fun WeatherAppWithDrawer(
                                         duration = SnackbarDuration.Long
                                     )
                                     if (result == SnackbarResult.ActionPerformed) {
-                                        val db = Room.databaseBuilder(context, AppDatabase::class.java, "weather_db").build()
+                                        val db = Room.databaseBuilder(
+                                            context,
+                                            AppDatabase::class.java,
+                                            "weather_db"
+                                        ).build()
                                         val locationDao1 = db.locationDao()
-                                        locationDao1.insertLocation(LocationEntity(city, coordinates.latitude, coordinates.longitude))
-                                        snackbarHostState.showSnackbar("$city saved to history!",
-                                            duration = SnackbarDuration.Short)
+                                        locationDao1.insertLocation(
+                                            LocationEntity(
+                                                city,
+                                                coordinates.latitude,
+                                                coordinates.longitude
+                                            )
+                                        )
+                                        snackbarHostState.showSnackbar(
+                                            "$city saved to history!",
+                                            duration = SnackbarDuration.Short
+                                        )
                                     }
                                 }
                             }
+
 
                         }
                         else {
@@ -144,7 +168,6 @@ fun WeatherAppWithDrawer(
                         }
                     }
                 )
-
             }
         ) { padding ->
             Box(

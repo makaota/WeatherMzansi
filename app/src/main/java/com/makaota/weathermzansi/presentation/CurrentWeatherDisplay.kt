@@ -41,7 +41,7 @@ fun CurrentWeatherDisplay(
     modifier: Modifier = Modifier,
 ) {
     val textColor = if (isSystemInDarkTheme()) colorResource(id = R.color.white)
-    else colorResource(id = R.color.white)
+    else colorResource(id = R.color.black)
 
     val labelColor = if (isSystemInDarkTheme()) colorResource(id = R.color.light_steel_blue)
     else colorResource(id = R.color.medium_gray)
@@ -72,9 +72,9 @@ fun CurrentWeatherDisplay(
         ) {
                 Text(
                     text = data.weatherType.weatherDesc,
-                    fontSize = 18.sp,
+                    fontSize = 20.sp,
                     color = textColor,
-                    fontWeight = FontWeight.SemiBold,
+                    fontWeight = FontWeight.Bold,
                     modifier = Modifier.align(alignment = Alignment.CenterHorizontally)
 
                 )
@@ -96,7 +96,7 @@ fun CurrentWeatherDisplay(
             ) {
                 Text(
                     text = "${data.temperatureCelsius.roundToInt()}°",
-                    fontSize = 60.sp,
+                    fontSize = 70.sp,
                     color = textColor,
                     fontWeight = FontWeight.ExtraBold
                 )
@@ -104,7 +104,7 @@ fun CurrentWeatherDisplay(
                 Image(
                     painter = painterResource(id = data.weatherType.iconRes),
                     contentDescription = null,
-                    modifier = Modifier.size(55.dp)
+                    modifier = Modifier.size(65.dp)
                 )
 
 

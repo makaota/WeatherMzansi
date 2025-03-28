@@ -2,7 +2,6 @@ package com.makaota.weathermzansi.presentation
 
 import android.util.Log
 import androidx.compose.foundation.background
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -18,10 +17,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.makaota.weathermzansi.R
+import com.makaota.weathermzansi.domain.utils.ThemeColors
 import java.time.LocalDateTime
 
 @Composable
@@ -30,24 +29,15 @@ fun HourlyWeatherForecast(
     modifier: Modifier = Modifier
 ) {
 
-    val textColor = if (isSystemInDarkTheme()) colorResource(id = R.color.white)
-    else colorResource(
-        id = R.color.dark_gray
-    )
-
-    val labelColor = if (isSystemInDarkTheme()) colorResource(id = R.color.light_steel_blue)
-    else colorResource(id = R.color.medium_gray)
-
-    val backgroundColor = if (isSystemInDarkTheme()) colorResource(id = R.color.night_sky_blue)
-    else colorResource(
-        id = R.color.sky_blue
-    )
+    val textColor = ThemeColors.textColor()
+    val backgroundColor = ThemeColors.backgroundColor()
+    val labelColor = ThemeColors.labelColor()
 
 
     Column(
         modifier = Modifier
             .fillMaxWidth()
-           // .padding(16.dp)
+            .padding(16.dp)
     ) {
 
         when {
@@ -55,14 +45,15 @@ fun HourlyWeatherForecast(
                 Text(
                     text = "Hourly Forecast",
                     color = textColor,
-                    fontSize = 16.sp,
-                    modifier = Modifier.padding(start = 16.dp)
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 20.sp,
+                   // modifier = Modifier.padding(start = 16.dp)
                 )
                 Box(
                     modifier = Modifier
-                        .padding(16.dp)
+                   //     .padding(16.dp)
                         .clip(RoundedCornerShape(10.dp)) // Apply rounded corners
-                        .background(backgroundColor)    // Set background color
+                      //  .background(backgroundColor)    // Set background color
                 ) {
 
 
@@ -96,7 +87,7 @@ fun HourlyWeatherForecast(
                             ) {
 
                                 Spacer(modifier = Modifier.height(16.dp))
-                                LazyRow(modifier = Modifier
+                                LazyRow(userScrollEnabled = true,modifier = Modifier
                                     .clip(RoundedCornerShape(10.dp)) // Apply rounded corners to LazyRow
                                     .background(backgroundColor)    // Ensure the background matches
                                     .padding(8.dp), content = {
@@ -119,7 +110,7 @@ fun HourlyWeatherForecast(
                                         HourlyWeatherDisplay(
                                             weatherData = weatherData,
                                             modifier = Modifier
-                                                .padding(horizontal = 16.dp)
+                                                .padding(horizontal = 10.dp)
                                                 .background(Color.Transparent)
                                         )
                                     }

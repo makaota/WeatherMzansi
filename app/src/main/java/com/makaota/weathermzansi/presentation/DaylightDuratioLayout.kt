@@ -22,10 +22,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.makaota.weathermzansi.R
+import com.makaota.weathermzansi.domain.utils.ThemeColors
 import java.time.Duration
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
@@ -40,12 +39,12 @@ fun DaylightDurationLayout(
     currentTime: LocalTime = LocalTime.now(),
     modifier: Modifier = Modifier
 ) {
-    val textColor = if (isSystemInDarkTheme()) Color.White else Color.Black
-    val barBackgroundColor = if (isSystemInDarkTheme()) Color.Gray else Color(0xFFE0E0E0) // Light Gray
+    val barBackgroundColor = if (isSystemInDarkTheme()) Color.Gray else Color.Gray.copy(alpha = 0.3f) // Light Gray
     val progressColor = Color(0xFFFFD700) // Golden Yellow
     val sunColor = Color(0xFFFFA500) // Sun icon
-    val backgroundColor2 = if (isSystemInDarkTheme()) colorResource(id = R.color.night_sky_blue)
-    else colorResource(id = R.color.sky_blue)
+    val textColor = ThemeColors.textColor()
+    val backgroundColor = ThemeColors.backgroundColor()
+    val labelColor = ThemeColors.labelColor()
 
     val totalDayMinutes = daylightDuration.toMinutes().toFloat()
 
@@ -62,7 +61,7 @@ fun DaylightDurationLayout(
         modifier = modifier
             .fillMaxWidth()
             .height(245.dp)
-            .background(backgroundColor2, shape = RoundedCornerShape(12.dp)),
+            .background(backgroundColor, shape = RoundedCornerShape(12.dp)),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 

@@ -24,13 +24,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.makaota.weathermzansi.R
+import com.makaota.weathermzansi.domain.utils.ThemeColors
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import kotlin.math.roundToInt
@@ -167,16 +168,20 @@ fun WindInfoDisplay(
     modifier: Modifier = Modifier
 ) {
 
+
+    val textColor = ThemeColors.textColor()
+    val backgroundColor = ThemeColors.backgroundColor()
+    val labelColor = ThemeColors.labelColor()
+
     state.weatherInfo?.currentWeatherData?.let { data ->
 
         Text(
             text = "Current Weather Details",
-            fontSize = 16.sp,
-            color = Color.Black,
-            modifier= Modifier.padding(start = 16.dp, bottom = 16.dp)
-
+            fontSize = 20.sp,
+            color = textColor,
+            fontWeight = FontWeight.Bold,
+            modifier= Modifier.padding(16.dp)
         )
-
 
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -187,12 +192,12 @@ fun WindInfoDisplay(
         ) {
             Card(
                 colors = CardDefaults.cardColors(
-                    containerColor = colorResource(id = R.color.sky_blue)
+                    containerColor = backgroundColor
                 ),
                 shape = RoundedCornerShape(10.dp),
                 modifier = Modifier
                     .weight(1f)
-                    .heightIn(min = 180.dp, max = 258.dp) // Adjust height dynamically
+                    .heightIn(min = 180.dp, max = 230.dp) // Adjust height dynamically
 
             ) {
                 WindDirectionCompass(
@@ -205,16 +210,16 @@ fun WindInfoDisplay(
 
             Card(
                 colors = CardDefaults.cardColors(
-                    containerColor = colorResource(id = R.color.sky_blue)
+                    containerColor = backgroundColor
                 ),
                 shape = RoundedCornerShape(10.dp),
                 modifier = Modifier
                     .weight(1f)
-                    .heightIn(min = 180.dp, max = 258.dp) // Adjust height dynamically
+                    .heightIn(min = 180.dp, max = 230.dp) // Adjust height dynamically
 
             ) {
                 PressureGauge(
-                    pressure = data.pressure.toFloat(),modifier.size(150.dp)
+                    pressure = data.pressure.toFloat()
                 )
             }
         }
@@ -239,6 +244,11 @@ fun HumidityInfoDisplay(
     modifier: Modifier = Modifier
 ) {
 
+    val textColor = ThemeColors.textColor()
+    val backgroundColor = ThemeColors.backgroundColor()
+    val labelColor = ThemeColors.labelColor()
+
+
     state.weatherInfo?.currentWeatherData?.let { data ->
 
         Row(
@@ -250,12 +260,12 @@ fun HumidityInfoDisplay(
         ) {
             Card(
                 colors = CardDefaults.cardColors(
-                    containerColor = colorResource(id = R.color.sky_blue)
+                    containerColor = backgroundColor
                 ),
                 shape = RoundedCornerShape(10.dp),
                 modifier = Modifier
                     .weight(1f)
-                    .heightIn(min = 180.dp, max = 258.dp) // Adjust height dynamically
+                    .heightIn(min = 180.dp, max = 230.dp) // Adjust height dynamically
 
             ) {
                 HumidityGauge(
@@ -267,12 +277,12 @@ fun HumidityInfoDisplay(
 
             Card(
                 colors = CardDefaults.cardColors(
-                    containerColor = colorResource(id = R.color.sky_blue)
+                    containerColor = backgroundColor
                 ),
                 shape = RoundedCornerShape(10.dp),
                 modifier = Modifier
                     .weight(1f)
-                    .heightIn(min = 180.dp, max = 258.dp) // Adjust height dynamically
+                    .heightIn(min = 180.dp, max = 230.dp) // Adjust height dynamically
 
             ) {
                 VisibilityBlurEffect(

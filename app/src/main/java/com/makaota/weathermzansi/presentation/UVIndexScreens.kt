@@ -33,7 +33,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.times
 import com.makaota.weathermzansi.R
-import com.makaota.weathermzansi.ui.theme.SkyBlue
+import com.makaota.weathermzansi.domain.utils.ThemeColors
 import kotlin.math.roundToInt
 
 @Composable
@@ -42,13 +42,17 @@ fun UVIndexGradient(uvIndex: Float) {
         colors = listOf(Color.Green, Color.Yellow, Color(0xFFFFA500), Color.Red, Color(0xFF8B00FF))
     )
 
+    val textColor = ThemeColors.textColor()
+    val backgroundColor = ThemeColors.backgroundColor()
+    val labelColor = ThemeColors.labelColor()
+
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
         modifier = Modifier
             .fillMaxWidth()
             .height(180.dp)
-            .background(SkyBlue, shape = RoundedCornerShape(12.dp))
+            .background(backgroundColor, shape = RoundedCornerShape(12.dp))
             .padding(start = 16.dp, end = 16.dp)
     ) {
 
@@ -83,26 +87,9 @@ fun UVIndexGradient(uvIndex: Float) {
 fun UVIndexSunIcon(uvIndex: Float) {
 
 
-        val textColor = if (isSystemInDarkTheme()) colorResource(id = R.color.white)
-    else colorResource(
-        id = R.color.dark_gray
-    )
-
-    val labelColor =
-        if (isSystemInDarkTheme()) colorResource(id = R.color.light_steel_blue)
-        else colorResource(id = R.color.medium_gray)
-
-    val backgroundColor =
-        if (isSystemInDarkTheme()) colorResource(id = R.color.night_sky_blue)
-        else colorResource(
-            id = R.color.sky_blue
-        )
-
-    val backgroundColor2 =
-        if (isSystemInDarkTheme()) colorResource(id = R.color.night_image_dark)
-        else colorResource(
-            id = R.color.day_image_dark_blue
-        )
+    val textColor = ThemeColors.textColor()
+    val backgroundColor = ThemeColors.backgroundColor()
+    val labelColor = ThemeColors.labelColor()
 
 
     val uvColor = when {
@@ -136,7 +123,9 @@ fun UVIndexSunIcon(uvIndex: Float) {
 @Composable
 fun UVLegend() {
     Row(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth()
+            .background(colorResource(id = R.color.dark_gray))
+        ,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Text("Low", color = Color.Green, fontSize = 14.sp)
@@ -184,9 +173,9 @@ fun VisibilityBlurEffect(visibilityKm: Float, dewPoint: Double) {
 
         Box(
             modifier = Modifier
-                .size(130.dp)
+                .size(100.dp)
                 .blur(blurRadius.dp) // Apply dynamic blur
-                .background(Color.Gray.copy(alpha = 0.3f))
+                .background(Color.Gray.copy(alpha = 0.3f), shape = RoundedCornerShape(10.dp))
                 .padding(16.dp)
         ) {
             Column(
@@ -216,7 +205,7 @@ fun VisibilityBlurEffect(visibilityKm: Float, dewPoint: Double) {
         // Display Visibility Value
         Text(
             text = "$visibilityText",
-            fontSize = 20.sp,
+            fontSize = 18.sp,
             fontWeight = FontWeight.Bold,
             color = textColor,
             textAlign = TextAlign.Start,
@@ -234,19 +223,19 @@ fun VisibilityBlurEffect(visibilityKm: Float, dewPoint: Double) {
         ) {
             when(visibilityColor){
                 Color.Red ->{
-                    LegendItems("Very Poor (<1 km)", Color.Red)
+                    LegendItems("Very Poor (<1 km)", Color.Red, textColor)
                 }
                 Color(0xFFFFA500) ->{
-                    LegendItems("Poor (1 - 4 km)", Color(0xFFFFA500))
+                    LegendItems("Poor (1 - 4 km)", Color(0xFFFFA500), textColor)
                 }
                 Color.Yellow ->{
-                    LegendItems("Moderate (4 - 10 km)", Color.Yellow)
+                    LegendItems("Moderate (4 - 10 km)", Color.Yellow, textColor)
                 }
                 Color(0xFF90EE90)->{
-                    LegendItems("Good (10 - 20 km)", Color(0xFF90EE90))
+                    LegendItems("Good (10 - 20 km)", Color(0xFF90EE90), textColor)
                 }
                 Color.Green ->{
-                    LegendItems("Excellent (20+ km)", Color.Green)
+                    LegendItems("Excellent (20+ km)", Color.Green, textColor)
                 }
 
             }
@@ -256,18 +245,18 @@ fun VisibilityBlurEffect(visibilityKm: Float, dewPoint: Double) {
 }
 
 @Composable
-fun LegendItems(label: String, color: Color) {
+fun LegendItems(label: String, color: Color, textColor: Color) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
-       // modifier = Modifier.padding(4.dp)
-    ) {
+        modifier = Modifier.padding(end = 16.dp)
+            .fillMaxWidth()){
         Box(
             modifier = Modifier
                 .size(16.dp)
                 .background(color, shape = CircleShape)
         )
         Spacer(modifier = Modifier.width(4.dp))
-        Text(text = label, fontSize = 14.sp, color = color)
+        Text(text = label, fontSize = 14.sp, fontWeight = FontWeight.Medium, color = textColor)
     }
 }
 

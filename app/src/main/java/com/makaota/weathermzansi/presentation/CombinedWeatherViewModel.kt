@@ -38,10 +38,14 @@ class CombinedWeatherViewModel @Inject constructor(
     private val _isRefreshing = MutableStateFlow(false)
     val isRefreshing: StateFlow<Boolean> = _isRefreshing
 
+
+
     private val _selectedLocation = MutableStateFlow<String?>("Unknown Location")
     val selectedLocation: StateFlow<String?> = _selectedLocation
 
     private val _latLng = MutableStateFlow<LatLng?>(null)
+
+
 
     var selectedWeatherData by mutableStateOf<DailyWeatherData?>(null)
         private set
@@ -49,6 +53,16 @@ class CombinedWeatherViewModel @Inject constructor(
     fun selectWeatherData(data: DailyWeatherData) {
         selectedWeatherData = data
     }
+    var selectedDayIndex by mutableStateOf(0) // Default to first day
+        private set
+
+    fun selectDay(index: Int) {
+        selectedDayIndex = index
+    }
+    fun getSelectedDay(): Int {
+        return selectedDayIndex
+    }
+
 
     fun loadWeatherData() {
         viewModelScope.launch {

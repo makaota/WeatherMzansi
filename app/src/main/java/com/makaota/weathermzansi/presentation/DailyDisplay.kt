@@ -1,9 +1,7 @@
 package com.makaota.weathermzansi.presentation
 
 import android.util.Log
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -14,13 +12,12 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.makaota.weathermzansi.R
+import com.makaota.weathermzansi.domain.utils.ThemeColors
 
 
 @Composable
@@ -29,37 +26,35 @@ fun DailyDisplay(viewModel: CombinedWeatherViewModel = hiltViewModel(), navContr
     val state = viewModel.dailyWeatherState
 
 
-    val textColor = if (isSystemInDarkTheme()) colorResource(id = R.color.white)
-    else colorResource(
-        id = R.color.dark_gray
-    )
+
+    val textColor = ThemeColors.textColor()
 
 
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(start = 16.dp)
+            .padding( start = 16.dp, end = 16.dp)
     ) {
 
         when {
             state.dailyWeatherInfo != null -> {
                 Text(
-                    "7 days weather forecast",
-                    fontSize = 16.sp,
+                    text ="7 days weather forecast",
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold,
                     color = textColor,
                     modifier = Modifier.padding(bottom = 16.dp)
                 )
 
-                //  Spacer(modifier = Modifier.height(16.dp))
-                LazyColumn (modifier = Modifier.height(450.dp)){
+                LazyColumn (modifier = Modifier.height(382.dp)){
                     state.dailyWeatherInfo.dailyWeatherData.forEach { (index, weatherDataList) ->
                         items(weatherDataList) { data ->
                             DailyWeatherDisplay(
                                 index, data,
                                 modifier = Modifier
-                                    .padding(end = 16.dp)
-                                    .background(Color.Transparent)
                                     .clickable {
+                                        Log.d("DailyDisplay", "index: $index")
+                                        viewModel.selectDay(index)
                                         viewModel.selectWeatherData(data)
                                          navController.navigate("WeatherDetails")
                                     },

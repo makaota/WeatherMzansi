@@ -3,13 +3,11 @@ package com.makaota.weathermzansi.presentation
 
 import android.util.Log
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -17,7 +15,6 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Divider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -33,6 +30,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.makaota.weathermzansi.R
+import com.makaota.weathermzansi.domain.utils.ThemeColors
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import kotlin.math.roundToInt
@@ -44,18 +42,14 @@ fun TodayTomorrowWeatherDisplay(
     modifier: Modifier = Modifier,
 ) {
 
-    val textColor = if (isSystemInDarkTheme()) colorResource(id = R.color.white)
-    else colorResource(
-        id = R.color.dark_gray
-    )
+    val textColor = ThemeColors.textColor()
+    val backgroundColor = ThemeColors.backgroundColor()
+    val labelColor = ThemeColors.labelColor()
 
-    val labelColor = if (isSystemInDarkTheme()) colorResource(id = R.color.light_steel_blue)
-    else colorResource(id = R.color.medium_gray)
 
-    val backgroundColor = if (isSystemInDarkTheme()) colorResource(id = R.color.night_sky_blue)
-    else colorResource(
-        id = R.color.sky_blue
-    )
+
+
+
 
     dailyState.dailyWeatherInfo?.dailyWeatherData?.let { data ->
 
@@ -79,27 +73,26 @@ fun TodayTomorrowWeatherDisplay(
             modifier = modifier
                 .fillMaxWidth()
                 .wrapContentHeight() // Ensure the Row does not fill the screen height
-                .padding(start = 16.dp, top = 16.dp, end = 16.dp)
+                .padding(start = 16.dp, end = 16.dp)
                 .clip(RoundedCornerShape(10.dp))
-                .background(backgroundColor)
+              //  .background(backgroundColor)
         ) {
             Card(
                 colors = CardDefaults.cardColors(
-                    containerColor = backgroundColor // Your desired background color
+                    containerColor = backgroundColor
                 ),
                 modifier = Modifier
                     .weight(1f)
-                    .padding(8.dp) // Proper padding
             ) {
                 Row(
-                    horizontalArrangement = Arrangement.SpaceBetween,
+                    horizontalArrangement = Arrangement.Start,
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(8.dp) // Inner padding
+                        .padding(4.dp) // Inner padding
                 ) {
                     todayWeatherData?.let { todayData ->
-                        Column {
+                        Column (modifier = Modifier.padding(8.dp)){
                             Text(
                                 text = "Today",
                                 color = textColor,
@@ -121,22 +114,18 @@ fun TodayTomorrowWeatherDisplay(
                                 fontWeight = FontWeight.Medium
                             )
                         }
+                        Spacer(modifier = Modifier.width(8.dp))
                         Image(
                             painter = painterResource(id = todayData.get(0).weatherType.iconRes),
                             contentDescription = null,
-                            modifier = Modifier.size(25.dp)
+                            modifier = Modifier.size(40.dp)
 
                         )
                     }
                 }
             }
 
-            Divider(
-                color = textColor,
-                modifier = Modifier
-                    .height(60.dp) // Constrain height
-                    .width(1.dp) // Thin vertical line
-            )
+        Spacer(modifier = Modifier.width(8.dp))
 
             Card(
                 colors = CardDefaults.cardColors(
@@ -144,17 +133,17 @@ fun TodayTomorrowWeatherDisplay(
                 ),
                 modifier = Modifier
                     .weight(1f)
-                    .padding(8.dp) // Proper padding
+
             ) {
                 Row(
-                    horizontalArrangement = Arrangement.SpaceBetween,
+                    horizontalArrangement = Arrangement.Start,
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(8.dp)
+                        .padding(4.dp)
                 ) {
                     tomorrowWeatherData?.let { tomorrowData ->
-                        Column {
+                        Column(modifier = Modifier.padding(8.dp)) {
                             Text(
                                 text = "Tomorrow",
                                 color = textColor,
@@ -176,10 +165,11 @@ fun TodayTomorrowWeatherDisplay(
                                 fontWeight = FontWeight.Medium
                             )
                         }
+                       // Spacer(modifier = Modifier.width(8.dp))
                         Image(
                             painter = painterResource(id = tomorrowData.get(0).weatherType.iconRes),
                             contentDescription = null,
-                            modifier = Modifier.size(25.dp)
+                            modifier = Modifier.size(40.dp)
 
                         )
 

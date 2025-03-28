@@ -1,7 +1,6 @@
 package com.makaota.weathermzansi.presentation
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -20,6 +19,7 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.makaota.weathermzansi.R
+import com.makaota.weathermzansi.domain.utils.ThemeColors
 import com.makaota.weathermzansi.weather.WeatherData
 import java.time.format.DateTimeFormatter
 import java.util.Locale
@@ -32,18 +32,9 @@ fun HourlyWeatherDisplay(
 ) {
 
 
-    val textColor = if (isSystemInDarkTheme()) colorResource(id = R.color.white)
-    else colorResource(
-        id = R.color.dark_gray
-    )
-
-    val labelColor = if (isSystemInDarkTheme()) colorResource(id = R.color.light_steel_blue)
-    else colorResource(id = R.color.medium_gray)
-
-    val backgroundColor = if (isSystemInDarkTheme()) colorResource(id = R.color.night_sky_blue)
-    else colorResource(
-        id = R.color.sky_blue
-    )
+    val textColor = ThemeColors.textColor()
+    val backgroundColor = ThemeColors.backgroundColor()
+    val labelColor = ThemeColors.labelColor()
 
 
 
@@ -65,7 +56,7 @@ fun HourlyWeatherDisplay(
         Image(
             painter = painterResource(id = weatherData.weatherType.iconRes),
             contentDescription = null,
-            modifier = Modifier.size(40.dp),
+            modifier = Modifier.size(50.dp),
         )
         Text(
             text = "${weatherData.temperatureCelsius.roundToInt()}°C",
@@ -73,7 +64,7 @@ fun HourlyWeatherDisplay(
             fontWeight = FontWeight.Bold
         )
 
-        Spacer(modifier = Modifier.height(20.dp))
+        Spacer(modifier = Modifier.height(10.dp))
 
         Icon(
             imageVector = ImageVector.vectorResource(id = R.drawable.waterdrop),

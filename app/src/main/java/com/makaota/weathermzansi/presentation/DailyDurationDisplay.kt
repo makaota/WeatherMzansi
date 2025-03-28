@@ -1,17 +1,16 @@
 package com.makaota.weathermzansi.presentation
 
 import android.util.Log
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.makaota.weathermzansi.R
+import com.makaota.weathermzansi.domain.utils.ThemeColors
 import java.time.Duration
 
 
@@ -19,10 +18,9 @@ import java.time.Duration
 fun DailyDurationDisplay( dailyState: DailyWeatherState,) {
 
 
-    val textColor = if (isSystemInDarkTheme()) colorResource(id = R.color.white)
-    else colorResource(
-        id = R.color.dark_gray
-    )
+    val textColor = ThemeColors.textColor()
+    val backgroundColor = ThemeColors.backgroundColor()
+    val labelColor = ThemeColors.labelColor()
 
 
     Column(
@@ -35,7 +33,8 @@ fun DailyDurationDisplay( dailyState: DailyWeatherState,) {
         when {
             dailyState.dailyWeatherInfo != null -> {
                 Text("Daylight Duration",
-                    fontSize = 16.sp,
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold,
                     color = textColor,
                     modifier = Modifier.padding(top = 16.dp, bottom = 16.dp)
                 )
