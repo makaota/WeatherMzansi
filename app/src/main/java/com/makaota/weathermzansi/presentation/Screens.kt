@@ -9,7 +9,6 @@ import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -48,11 +47,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
@@ -60,6 +64,7 @@ import com.google.android.gms.maps.model.LatLng
 import com.makaota.weathermzansi.R
 import com.makaota.weathermzansi.data.location_database.LocationDao
 import com.makaota.weathermzansi.data.location_database.LocationEntity
+import com.makaota.weathermzansi.domain.utils.ThemeColors
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -181,9 +186,10 @@ fun WeatherDetailsScreen(viewModel: CombinedWeatherViewModel, navController: Nav
     val selectedWeatherData = viewModel.selectedWeatherData // Observe selected data
 
     val state = viewModel.dailyWeatherState
-    val textColor = if (isSystemInDarkTheme()) colorResource(id = R.color.white)
-    else colorResource(id = R.color.dark_gray)
 
+    val textColor = ThemeColors.textColor()
+    val backgroundColor = ThemeColors.backgroundColor()
+    val labelColor = ThemeColors.labelColor()
     val scrollState = rememberScrollState()
 
     // val selectedIndex = viewModel.getSelectedDay()
@@ -210,7 +216,7 @@ fun WeatherDetailsScreen(viewModel: CombinedWeatherViewModel, navController: Nav
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp)
+            .padding(start = 16.dp, end = 16.dp)
         //.verticalScroll(scrollState)
     ) {
 
@@ -233,9 +239,7 @@ fun WeatherDetailsScreen(viewModel: CombinedWeatherViewModel, navController: Nav
                             .width(80.dp)
                             .clip(RoundedCornerShape(10.dp))
                             .background(
-                                if (isSelected) Color.Blue.copy(alpha = 0.5f) else Color.LightGray.copy(
-                                    alpha = 0.5f
-                                )
+                                if (isSelected) colorResource(id = R.color.orange) else backgroundColor
                             )
                             .clickable {
                                 viewModel.selectDay(index)
@@ -262,10 +266,18 @@ fun WeatherDetailsScreen(viewModel: CombinedWeatherViewModel, navController: Nav
 
                         // **Bottom: High / Low Temperature**
                         Text(
-                            text = "${data.maxTemperatures.roundToInt()}°/${data.lowTemperatures.roundToInt()}°",
+                            text = buildAnnotatedString {
+                                withStyle(style = SpanStyle(color = colorResource(id = R.color.orange_red))) {
+                                    append("${data.maxTemperatures.roundToInt()}°")
+                                }
+                                append("/") // Separator
+                                withStyle(style = SpanStyle(color = colorResource(id = R.color.dodger_blue))) {
+                                    append("${data.lowTemperatures.roundToInt()}°")
+                                }
+                            },
                             fontSize = 14.sp,
-                            fontWeight = FontWeight.Medium,
-                            color = if (isSelected) Color.White else textColor
+                            textAlign = TextAlign.Center,
+                            fontWeight = FontWeight.Medium
                         )
                     }
                 }
@@ -293,15 +305,15 @@ fun WeatherDetailsScreen(viewModel: CombinedWeatherViewModel, navController: Nav
                         modifier = Modifier
                             .fillMaxWidth()
                             .clip(RoundedCornerShape(10.dp))
-                            .background(Color.LightGray.copy(alpha = 0.5f))
+                            .background(backgroundColor)
                         //.alpha(animatedAlpha)
                     ) {
 
                         Text(
                             text = "Daytime",
-                            fontSize = 16.sp,
+                            fontSize = 25.sp,
                             fontWeight = FontWeight.Bold,
-                            color = textColor,
+                            color = colorResource(id = R.color.orange_red),
                             modifier = Modifier
                                 .align(Alignment.Start)
                                 .padding(16.dp)
@@ -322,13 +334,13 @@ fun WeatherDetailsScreen(viewModel: CombinedWeatherViewModel, navController: Nav
                                 text = "${data.maxTemperatures.roundToInt()}°C",
                                 fontSize = 40.sp,
                                 fontWeight = FontWeight.Bold,
-                                color = textColor
+                                color = colorResource(id = R.color.orange_red)
                             )
 
                         }
                         Text(
                             text = data.weatherType.weatherDesc,
-                            fontSize = 20.sp,
+                            fontSize = 18.sp,
                             fontWeight = FontWeight.Bold,
                             color = textColor,
                             modifier = Modifier.padding(bottom = 16.dp)
@@ -354,7 +366,7 @@ fun WeatherDetailsScreen(viewModel: CombinedWeatherViewModel, navController: Nav
                         modifier = Modifier
                             .fillMaxWidth()
                             .clip(RoundedCornerShape(10.dp))
-                            .background(Color.LightGray.copy(alpha = 0.5f))
+                          //  .background(Color.LightGray.copy(alpha = 0.5f))
                         //.alpha(animatedAlpha)
                     ) {
 
@@ -474,14 +486,14 @@ fun WeatherDetailsScreen(viewModel: CombinedWeatherViewModel, navController: Nav
                         modifier = Modifier
                             .fillMaxWidth()
                             .clip(RoundedCornerShape(10.dp))
-                            .background(Color.LightGray.copy(alpha = 0.5f))
+                            .background(backgroundColor)
                     ) {
 
                         Text(
                             text = "Night Time",
-                            fontSize = 16.sp,
+                            fontSize = 25.sp,
                             fontWeight = FontWeight.Bold,
-                            color = textColor,
+                            color = colorResource(id = R.color.dodger_blue),
                             modifier = Modifier
                                 .align(Alignment.Start)
                                 .padding(16.dp)
@@ -502,7 +514,7 @@ fun WeatherDetailsScreen(viewModel: CombinedWeatherViewModel, navController: Nav
                                 text = "${data.lowTemperatures.roundToInt()}°C",
                                 fontSize = 40.sp,
                                 fontWeight = FontWeight.Bold,
-                                color = textColor
+                                color = colorResource(id = R.color.dodger_blue)
                             )
 
                         }
@@ -533,7 +545,6 @@ fun WeatherDetailsScreen(viewModel: CombinedWeatherViewModel, navController: Nav
                         modifier = Modifier
                             .fillMaxWidth()
                             .clip(RoundedCornerShape(10.dp))
-                            .background(Color.LightGray.copy(alpha = 0.5f))
                     ) {
 
                         DayAndNightDisplay(
@@ -587,6 +598,8 @@ fun DayAndNightDisplay(
     textValue: String,
 ) {
 
+    val backgroundColor = ThemeColors.backgroundColor()
+
     Row(
         horizontalArrangement = Arrangement.Start,
         verticalAlignment = Alignment.CenterVertically,
@@ -594,7 +607,7 @@ fun DayAndNightDisplay(
             .fillMaxWidth()
             .height(35.dp)
             .clip(RoundedCornerShape(10.dp))
-            .background(Color.LightGray.copy(alpha = 0.5f))
+            .background(backgroundColor)
     ) {
 
         Image(
@@ -602,7 +615,8 @@ fun DayAndNightDisplay(
             contentDescription = null,
             modifier = Modifier
                 .size(35.dp)
-                .padding(start = 16.dp)
+                .padding(start = 16.dp),
+            colorFilter = ColorFilter.tint(textColor)
         )
         Text(
             text = text,
