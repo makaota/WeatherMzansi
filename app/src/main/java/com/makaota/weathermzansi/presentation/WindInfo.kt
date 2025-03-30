@@ -41,6 +41,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.makaota.weathermzansi.R
 import com.makaota.weathermzansi.domain.utils.ThemeColors
+import com.makaota.weathermzansi.ui.theme.SkyBlue
 import kotlin.math.cos
 import kotlin.math.roundToInt
 import kotlin.math.sin
@@ -289,12 +290,12 @@ fun PressureGauge(pressure: Float) {
                 val radius = size.width / 2.5f
 
                 // Draw circular background
-                drawCircle(color = Color.LightGray, radius = radius, center = center)
+                drawCircle(color = SkyBlue.copy(alpha = 0.5f), radius = radius, center = center)
 
                 // Draw colored pressure zones (Green = Low, Yellow = Normal, Red = High)
-                drawArc(Color.Green, -120f, 80f, false, style = Stroke(20f))  // Low Pressure
-                drawArc(Color.Yellow, -40f, 80f, false, style = Stroke(20f))  // Normal Pressure
-                drawArc(Color.Red, 40f, 80f, false, style = Stroke(20f))  // High Pressure
+                drawArc(Color.Green.copy(alpha = 0.5f), -125f, 95f, false, style = Stroke(20f))  // Low Pressure
+                drawArc(Color.Yellow.copy(alpha = 0.5f), -30f, 80f, false, style = Stroke(20f))  // Normal Pressure
+                drawArc(Color.Red.copy(alpha = 0.5f), 50f, 80f, false, style = Stroke(20f))  // High Pressure
 
                 // Draw Needle (Arrow)
                 val needleEnd = Offset(
@@ -341,18 +342,18 @@ fun PressureGauge(pressure: Float) {
             when (pressureColor) {
                 Color.Green -> {
 
-                    LegendItem("Low", Color.Green, textColor)
+                    LegendItem("Low", Color.Green.copy(alpha = 0.5f), textColor)
 
                 }
 
                 Color.Yellow -> {
 
-                    LegendItem("Normal", Color.Yellow, textColor)
+                    LegendItem("Normal", Color.Yellow.copy(alpha = 0.5f), textColor)
 
                 }
 
                 else -> {
-                    LegendItem("High", Color.Red, textColor)
+                    LegendItem("High", Color.Red.copy(alpha = 0.5f), textColor)
                 }
             }
         }
@@ -381,7 +382,7 @@ fun LegendItem(label: String, color: Color, textColor: Color) {
 @Preview(showBackground = true)
 @Composable
 fun PreviewPressureGauge() {
-    PressureGauge(pressure = 1015f) // Example Pressure
+    PressureGauge(pressure = 1013f) // Example Pressure
 }
 
 @Composable
@@ -435,13 +436,13 @@ fun HumidityGauge(humidity: Float) {
                 val radius = size.width / 2.5f
 
                 // Draw circular background
-                drawCircle(color = Color.LightGray, radius = radius, center = center)
+                drawCircle(color = SkyBlue.copy(alpha = 0.5f), radius = radius, center = center)
 
                 // Draw colored humidity zones
-                drawArc(Color.Blue, -120f, 80f, false, style = Stroke(20f)) // Low Humidity
-                drawArc(Color.Green, -40f, 80f, false, style = Stroke(20f)) // Comfortable
-                drawArc(Color(0xFFFFA500), 40f, 40f, false, style = Stroke(20f)) // High Humidity
-                drawArc(Color.Red, 75f, 45f, false, style = Stroke(20f)) // Very High Humidity
+                drawArc(Color.Blue.copy(alpha = 0.5f), -131f, 80f, false, style = Stroke(20f)) // Low Humidity
+                drawArc(Color.Green.copy(alpha = 0.5f), -50f, 80f, false, style = Stroke(20f)) // Comfortable
+                drawArc(Color(0xFFFFA500).copy(alpha = 0.5f), 25f, 50f, false, style = Stroke(20f)) // High Humidity
+                drawArc(Color.Red.copy(alpha = 0.5f), 74f, 60f, false, style = Stroke(20f)) // Very High Humidity
 
                 // Draw Needle (Arrow)
                 val needleEnd = Offset(
@@ -484,20 +485,20 @@ fun HumidityGauge(humidity: Float) {
             when (humidityColor) {
                 Color.Blue -> {
 
-                    LegendItem("Low", Color.Blue, textColor)
+                    LegendItem("Low", Color.Blue.copy(alpha = 0.5f), textColor)
 
                 }
 
                 Color.Green -> {
-                    LegendItem("Comfortable", Color.Green, textColor)
+                    LegendItem("Comfortable", Color.Green.copy(alpha = 0.5f), textColor)
                 }
 
                 Color(0xFFFFA500) -> {
-                    LegendItem("High", colorResource(id = R.color.orange), textColor)
+                    LegendItem("High", colorResource(id = R.color.orange).copy(alpha = 0.5f), textColor)
                 }
 
                 else -> {
-                    LegendItem("Very High", Color.Red, textColor)
+                    LegendItem("Very High", Color.Red.copy(alpha = 0.5f), textColor)
                 }
             }
         }
@@ -509,6 +510,6 @@ fun HumidityGauge(humidity: Float) {
 @Preview(showBackground = true)
 @Composable
 fun PreviewHumidityGauge() {
-    HumidityGauge(humidity = 105f) // Example Humidity
+    HumidityGauge(humidity = 80f) // Example Humidity
 }
 

@@ -34,7 +34,6 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.times
 import com.makaota.weathermzansi.R
 import com.makaota.weathermzansi.domain.utils.ThemeColors
-import kotlin.math.roundToInt
 
 @Composable
 fun UVIndexGradient(uvIndex: Float) {
@@ -137,7 +136,7 @@ fun UVLegend() {
 }
 
 @Composable
-fun VisibilityBlurEffect(visibilityKm: Float, dewPoint: Double) {
+fun VisibilityBlurEffect(visibilityKm: Float) {
     val blurRadius = (50f - visibilityKm).coerceIn(0f, 50f) // More blur for lower visibility
     val iconOpacity = (visibilityKm / 50f).coerceIn(0.2f, 1f) // Less opacity when visibility is low
 
@@ -146,10 +145,10 @@ fun VisibilityBlurEffect(visibilityKm: Float, dewPoint: Double) {
 
     // Determine color based on visibility range
     val visibilityColor = when {
-        visibilityKm < 1 -> Color.Red // Very Poor
-        visibilityKm < 4 -> Color(0xFFFFA500) // Orange - Poor
-        visibilityKm < 10 -> Color.Yellow // Moderate
-        visibilityKm < 20 -> Color(0xFF90EE90) // Light Green - Good
+        visibilityKm < 10000 -> Color.Red // Very Poor
+        visibilityKm < 40000 -> Color(0xFFFFA500) // Orange - Poor
+        visibilityKm < 100000 -> Color.Yellow // Moderate
+        visibilityKm < 200000 -> Color(0xFF90EE90) // Light Green - Good
         else -> Color.Green // Excellent
     }
 
@@ -198,9 +197,9 @@ fun VisibilityBlurEffect(visibilityKm: Float, dewPoint: Double) {
         Spacer(modifier = Modifier.height(8.dp))
 
         val visibilityText = when {
-            visibilityKm >= 20000 -> "Unlimited"
-            visibilityKm >= 1000 -> String.format("%.1fk km", visibilityKm / 1000) // Converts to "16.4k km"
-            else -> "${visibilityKm.roundToInt()} km"
+            visibilityKm >= 100000 -> "Unlimited"
+            visibilityKm >= 10000 -> String.format("%.1f km", visibilityKm / 10000) // Converts to "16.4k km"
+            else -> "${visibilityKm.toDouble()} km"
         }
         // Display Visibility Value
         Text(
@@ -263,7 +262,7 @@ fun LegendItems(label: String, color: Color, textColor: Color) {
 @Preview(showBackground = true)
 @Composable
 fun PreviewVisibilityBlur() {
-    VisibilityBlurEffect(visibilityKm = 50000f, dewPoint = 10.0)
+    VisibilityBlurEffect(visibilityKm = 110000f)
 }
 
 //@Composable
@@ -359,8 +358,8 @@ fun PreviewVisibilityBlur() {
 //    }
 //}
 //
-//@Preview(showBackground = true)
-//@Composable
-//fun PreviewVisibilityBlur1() {
-//    VisibilityBlurEffect(visibilityKm = 50f, dewPoint = 10.0) // Example: 10 km visibility
-//}
+@Preview(showBackground = true)
+@Composable
+fun PreviewVisibilityBlur1() {
+    VisibilityBlurEffect(visibilityKm = 10f,) // Example: 10 km visibility
+}

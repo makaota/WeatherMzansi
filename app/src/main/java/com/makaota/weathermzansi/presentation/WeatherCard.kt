@@ -286,7 +286,7 @@ fun HumidityInfoDisplay(
 
             ) {
                 VisibilityBlurEffect(
-                    visibilityKm = data.visibility.toFloat(),data.dewPoint
+                    visibilityKm = data.visibility.toFloat()
                 )
             }
         }
