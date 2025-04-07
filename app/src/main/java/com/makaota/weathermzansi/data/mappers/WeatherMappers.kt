@@ -76,12 +76,14 @@ fun WeatherDto.toWeatherInfo(): WeatherInfo {
 
     // Extract weekly weather data
     val weeklyWeatherData = weatherDataMap.values.toList()
+    Log.d("weeklyWeatherData", "weeklyWeatherData: $weeklyWeatherData")
     return WeatherInfo(
         weatherDataPerDay = weatherDataMap,
         currentWeatherData = currentHourWeatherData,
         weeklyWeatherData = weeklyWeatherData
 
     )
+
 }
 
 

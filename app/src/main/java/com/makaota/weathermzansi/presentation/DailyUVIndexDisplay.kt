@@ -5,6 +5,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -13,12 +15,14 @@ import com.makaota.weathermzansi.domain.utils.ThemeColors
 
 
 @Composable
-fun DailyUVIndexDisplay( dailyState: DailyWeatherState,) {
+fun DailyUVIndexDisplay( dailyState: DailyWeatherState,themeViewModel: ThemeViewModel) {
 
 
-    val textColor = ThemeColors.textColor()
-    val backgroundColor = ThemeColors.backgroundColor()
-    val labelColor = ThemeColors.labelColor()
+    val isDarkTheme by themeViewModel.isDarkTheme.observeAsState(false)
+
+    val textColor = ThemeColors.textColor(isDarkTheme)
+    val backgroundColor = ThemeColors.backgroundColor(isDarkTheme)
+    val labelColor = ThemeColors.labelColor(isDarkTheme)
 
 
     Column(
@@ -41,7 +45,8 @@ fun DailyUVIndexDisplay( dailyState: DailyWeatherState,) {
                     val todayWeatherData = dailyState.dailyWeatherInfo.dailyWeatherData.get(0)
 
                     todayWeatherData?.let { todayData ->
-                        UVIndexGradient(uvIndex = todayData.get(0).uvIndex.toFloat())
+                        UVIndexGradient(uvIndex = todayData.get(0).uvIndex.toFloat(),
+                            themeViewModel = themeViewModel)
                     }
 
                 }

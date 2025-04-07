@@ -20,6 +20,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
@@ -36,7 +37,6 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.makaota.weathermzansi.R
@@ -97,12 +97,15 @@ fun WindDirectionCompass(
     windDegrees: Float, // Wind direction in degrees
     modifier: Modifier = Modifier,
     windSpeed: Double,
+    themeViewModel: ThemeViewModel
 
     ) {
 
-    val textColor = ThemeColors.textColor()
-    val backgroundColor = ThemeColors.backgroundColor()
-    val labelColor = ThemeColors.labelColor()
+    val isDarkTheme by themeViewModel.isDarkTheme.observeAsState(false)
+
+    val textColor = ThemeColors.textColor(isDarkTheme)
+    val backgroundColor = ThemeColors.backgroundColor(isDarkTheme)
+    val labelColor = ThemeColors.labelColor(isDarkTheme)
 
 
     val myColorInt = if (isSystemInDarkTheme()) 1
@@ -239,13 +242,15 @@ fun AnimatedWindArrow(degrees: Float) {
 }
 
 @Composable
-fun PressureGauge(pressure: Float) {
+fun PressureGauge(pressure: Float,themeViewModel: ThemeViewModel) {
     val minPressure = 950f
     val maxPressure = 1050f
 
-    val textColor = ThemeColors.textColor()
-    val backgroundColor = ThemeColors.backgroundColor()
-    val labelColor = ThemeColors.labelColor()
+    val isDarkTheme by themeViewModel.isDarkTheme.observeAsState(false)
+
+    val textColor = ThemeColors.textColor(isDarkTheme)
+    val backgroundColor = ThemeColors.backgroundColor(isDarkTheme)
+    val labelColor = ThemeColors.labelColor(isDarkTheme)
 
 
     // Normalize pressure to an angle between -120° (Low) and 120° (High)
@@ -379,20 +384,23 @@ fun LegendItem(label: String, color: Color, textColor: Color) {
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun PreviewPressureGauge() {
-    PressureGauge(pressure = 1013f) // Example Pressure
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun PreviewPressureGauge() {
+//
+//    PressureGauge(pressure = 1013f, themeViewModel = ) // Example Pressure
+//}
 
 @Composable
-fun HumidityGauge(humidity: Float) {
+fun HumidityGauge(humidity: Float,themeViewModel: ThemeViewModel) {
     val minHumidity = 0f
     val maxHumidity = 100f
 
-    val textColor = ThemeColors.textColor()
-    val backgroundColor = ThemeColors.backgroundColor()
-    val labelColor = ThemeColors.labelColor()
+    val isDarkTheme by themeViewModel.isDarkTheme.observeAsState(false)
+
+    val textColor = ThemeColors.textColor(isDarkTheme)
+    val backgroundColor = ThemeColors.backgroundColor(isDarkTheme)
+    val labelColor = ThemeColors.labelColor(isDarkTheme)
 
 
     // Normalize humidity to an angle between -120° (Low) and 120° (High)
@@ -440,9 +448,9 @@ fun HumidityGauge(humidity: Float) {
 
                 // Draw colored humidity zones
                 drawArc(Color.Blue.copy(alpha = 0.5f), -131f, 80f, false, style = Stroke(20f)) // Low Humidity
-                drawArc(Color.Green.copy(alpha = 0.5f), -50f, 80f, false, style = Stroke(20f)) // Comfortable
-                drawArc(Color(0xFFFFA500).copy(alpha = 0.5f), 25f, 50f, false, style = Stroke(20f)) // High Humidity
-                drawArc(Color.Red.copy(alpha = 0.5f), 74f, 60f, false, style = Stroke(20f)) // Very High Humidity
+                drawArc(Color.Green.copy(alpha = 0.5f), -52f, 78f, false, style = Stroke(20f)) // Comfortable
+                drawArc(Color(0xFFFFA500).copy(alpha = 0.5f), 26f, 48f, false, style = Stroke(20f)) // High Humidity
+                drawArc(Color.Red.copy(alpha = 0.5f), 74f, 68f, false, style = Stroke(20f)) // Very High Humidity
 
                 // Draw Needle (Arrow)
                 val needleEnd = Offset(
@@ -507,9 +515,9 @@ fun HumidityGauge(humidity: Float) {
 }
 
 
-@Preview(showBackground = true)
-@Composable
-fun PreviewHumidityGauge() {
-    HumidityGauge(humidity = 80f) // Example Humidity
-}
-
+//@Preview(showBackground = true)
+//@Composable
+//fun PreviewHumidityGauge() {
+//    HumidityGauge(humidity = 81f) // Example Humidity
+//}
+//

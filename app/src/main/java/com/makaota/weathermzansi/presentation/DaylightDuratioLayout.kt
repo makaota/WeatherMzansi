@@ -1,6 +1,5 @@
 package com.makaota.weathermzansi.presentation
 
-import android.content.res.Configuration
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -17,12 +16,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.makaota.weathermzansi.domain.utils.ThemeColors
 import java.time.Duration
@@ -37,14 +37,18 @@ fun DaylightDurationLayout(
     sunsetTime: LocalTime,
     daylightDuration: Duration, // Use daylight duration!
     currentTime: LocalTime = LocalTime.now(),
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    themeViewModel: ThemeViewModel
 ) {
     val barBackgroundColor = if (isSystemInDarkTheme()) Color.Gray else Color.Gray.copy(alpha = 0.3f) // Light Gray
     val progressColor = Color(0xFFFFD700) // Golden Yellow
     val sunColor = Color(0xFFFFA500) // Sun icon
-    val textColor = ThemeColors.textColor()
-    val backgroundColor = ThemeColors.backgroundColor()
-    val labelColor = ThemeColors.labelColor()
+
+    val isDarkTheme by themeViewModel.isDarkTheme.observeAsState(false)
+
+    val textColor = ThemeColors.textColor(isDarkTheme)
+    val backgroundColor = ThemeColors.backgroundColor(isDarkTheme)
+    val labelColor = ThemeColors.labelColor(isDarkTheme)
 
     val totalDayMinutes = daylightDuration.toMinutes().toFloat()
 
@@ -132,14 +136,14 @@ fun DaylightDurationLayout(
     }
 }
 
-@Preview(name = "Light Mode", uiMode = Configuration.UI_MODE_NIGHT_NO, showBackground = true)
-@Preview(name = "Dark Mode", uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
-@Composable
-fun PreviewDaylightDurationLayout() {
-    DaylightDurationLayout(
-        sunriseTime = LocalTime.of(6, 45),  // 6:30 AM
-        sunsetTime = LocalTime.of(18, 45),  // 6:45 PM
-        daylightDuration = Duration.ofHours(12) // Example: 12-hour daylight
-    )
-}
+//@Preview(name = "Light Mode", uiMode = Configuration.UI_MODE_NIGHT_NO, showBackground = true)
+//@Preview(name = "Dark Mode", uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
+//@Composable
+//fun PreviewDaylightDurationLayout() {
+//    DaylightDurationLayout(
+//        sunriseTime = LocalTime.of(6, 45),  // 6:30 AM
+//        sunsetTime = LocalTime.of(18, 45),  // 6:45 PM
+//        daylightDuration = Duration.ofHours(12), // Example: 12-hour daylight
+//    )
+//}
 

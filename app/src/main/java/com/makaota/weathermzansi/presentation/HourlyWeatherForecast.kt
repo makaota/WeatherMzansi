@@ -13,6 +13,8 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -26,12 +28,15 @@ import java.time.LocalDateTime
 @Composable
 fun HourlyWeatherForecast(
     state: WeatherState,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    themeViewModel: ThemeViewModel
 ) {
 
-    val textColor = ThemeColors.textColor()
-    val backgroundColor = ThemeColors.backgroundColor()
-    val labelColor = ThemeColors.labelColor()
+    val isDarkTheme by themeViewModel.isDarkTheme.observeAsState(false)
+
+    val textColor = ThemeColors.textColor(isDarkTheme)
+    val backgroundColor = ThemeColors.backgroundColor(isDarkTheme)
+    val labelColor = ThemeColors.labelColor(isDarkTheme)
 
 
     Column(
@@ -56,7 +61,6 @@ fun HourlyWeatherForecast(
                       //  .background(backgroundColor)    // Set background color
                 ) {
 
-
                     state.weatherInfo?.weatherDataPerDay?.get(0)?.let { data ->
 
                         // Get the current time
@@ -65,7 +69,7 @@ fun HourlyWeatherForecast(
                         // Filter the data to show only the current hour onward
                         val todayData = remember(data, currentTime) {
                             data.filter { weatherData ->
-                                Log.d("WeatherDataForecast", "values: $weatherData")
+                                Log.d("WeatherDataForecast", "hourlyWeatherForecast: $weatherData")
                                 weatherData.time.isAfter(currentTime) || weatherData.time.hour == currentTime.hour ||
                                         weatherData.time.hour == 0
 
@@ -111,7 +115,8 @@ fun HourlyWeatherForecast(
                                             weatherData = weatherData,
                                             modifier = Modifier
                                                 .padding(horizontal = 10.dp)
-                                                .background(Color.Transparent)
+                                                .background(Color.Transparent),
+                                            themeViewModel = themeViewModel
                                         )
                                     }
 

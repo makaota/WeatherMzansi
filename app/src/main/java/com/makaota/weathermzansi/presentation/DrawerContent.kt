@@ -44,8 +44,8 @@ fun DrawerContent(navController: NavController, closeDrawer: () -> Unit) {
             modifier = Modifier.padding(16.dp)
         )
 
-        DrawerItem("City Management", "cityManagement", Icons.Default.Settings, selectedItem, navController, closeDrawer)
-        DrawerItem("About", "about", Icons.Default.Info, selectedItem, navController, closeDrawer)
+        DrawerItem("City Management", "cityManagement", Icons.Default.Info, selectedItem, navController, closeDrawer)
+        DrawerItem("Settings", "settingsScreen", Icons.Default.Settings, selectedItem, navController, closeDrawer)
     }
 }
 

@@ -22,7 +22,8 @@ import java.time.LocalDateTime
 @Composable
 fun WeatherForecast(
     state: WeatherState,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    themeViewModel: ThemeViewModel
 ) {
     state.weatherInfo?.weatherDataPerDay?.get(0)?.let { data ->
 
@@ -72,7 +73,8 @@ fun WeatherForecast(
                         modifier = Modifier
                             .height(100.dp)
                             .padding(horizontal = 16.dp)
-                            .background(DeepBlue)
+                            .background(DeepBlue),
+                        themeViewModel = themeViewModel
                     )
                 }
 

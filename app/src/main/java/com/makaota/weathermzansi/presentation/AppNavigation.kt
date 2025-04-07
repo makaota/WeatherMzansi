@@ -8,14 +8,17 @@ import com.makaota.weathermzansi.data.location_database.LocationDao
 
 @Composable
 fun AppNavigation(navController: NavHostController, combinedViewModel: CombinedWeatherViewModel,
-                  locationDao: LocationDao) {
+                  locationDao: LocationDao,themeViewModel: ThemeViewModel, hourlyWeatherState: WeatherState) {
     NavHost(navController, startDestination = "home") {
-        composable("home") { WeatherApp(combinedViewModel, navController) }
+        composable("home") { WeatherApp(combinedViewModel, navController, themeViewModel) }
         composable("cityManagement") { CityManagementScreen(combinedViewModel,
             navController,
             locationDao) }
-        composable("about") { AboutScreen() }
-        composable("WeatherDetails") { WeatherDetailsScreen(combinedViewModel, navController) }
+        composable("settingsScreen") { SettingsScreen(themeViewModel = themeViewModel) }
+        composable("WeatherDetails") { WeatherDetailsScreen(combinedViewModel,
+            navController,
+            themeViewModel,
+            hourlyWeatherState) }
 
     }
 }

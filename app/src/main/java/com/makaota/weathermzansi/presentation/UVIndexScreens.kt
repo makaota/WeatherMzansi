@@ -18,6 +18,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
@@ -36,14 +38,16 @@ import com.makaota.weathermzansi.R
 import com.makaota.weathermzansi.domain.utils.ThemeColors
 
 @Composable
-fun UVIndexGradient(uvIndex: Float) {
+fun UVIndexGradient(uvIndex: Float,themeViewModel: ThemeViewModel) {
     val gradientBrush = Brush.horizontalGradient(
-        colors = listOf(Color.Green, Color.Yellow, Color(0xFFFFA500), Color.Red, Color(0xFF8B00FF))
+        colors = listOf(Color.Green, Color.Yellow, Color(0xFFFFA500), Color.Red, Color(0xFF8B00FF)),
     )
 
-    val textColor = ThemeColors.textColor()
-    val backgroundColor = ThemeColors.backgroundColor()
-    val labelColor = ThemeColors.labelColor()
+    val isDarkTheme by themeViewModel.isDarkTheme.observeAsState(false)
+
+    val textColor = ThemeColors.textColor(isDarkTheme)
+    val backgroundColor = ThemeColors.backgroundColor(isDarkTheme)
+    val labelColor = ThemeColors.labelColor(isDarkTheme)
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -55,7 +59,7 @@ fun UVIndexGradient(uvIndex: Float) {
             .padding(start = 16.dp, end = 16.dp)
     ) {
 
-        UVIndexSunIcon(uvIndex = uvIndex)
+        UVIndexSunIcon(uvIndex = uvIndex, themeViewModel = themeViewModel)
 
 
         Spacer(modifier = Modifier.height(8.dp))
@@ -83,12 +87,14 @@ fun UVIndexGradient(uvIndex: Float) {
 }
 
 @Composable
-fun UVIndexSunIcon(uvIndex: Float) {
+fun UVIndexSunIcon(uvIndex: Float, themeViewModel: ThemeViewModel) {
 
 
-    val textColor = ThemeColors.textColor()
-    val backgroundColor = ThemeColors.backgroundColor()
-    val labelColor = ThemeColors.labelColor()
+    val isDarkTheme by themeViewModel.isDarkTheme.observeAsState(false)
+
+    val textColor = ThemeColors.textColor(isDarkTheme)
+    val backgroundColor = ThemeColors.backgroundColor(isDarkTheme)
+    val labelColor = ThemeColors.labelColor(isDarkTheme)
 
 
     val uvColor = when {
@@ -145,10 +151,10 @@ fun VisibilityBlurEffect(visibilityKm: Float) {
 
     // Determine color based on visibility range
     val visibilityColor = when {
-        visibilityKm < 10000 -> Color.Red // Very Poor
-        visibilityKm < 40000 -> Color(0xFFFFA500) // Orange - Poor
-        visibilityKm < 100000 -> Color.Yellow // Moderate
-        visibilityKm < 200000 -> Color(0xFF90EE90) // Light Green - Good
+        visibilityKm < 1000 -> Color.Red // Very Poor
+        visibilityKm < 4000 -> Color(0xFFFFA500) // Orange - Poor
+        visibilityKm < 10000 -> Color.Yellow // Moderate
+        visibilityKm < 20000 -> Color(0xFF90EE90) // Light Green - Good
         else -> Color.Green // Excellent
     }
 
@@ -197,8 +203,8 @@ fun VisibilityBlurEffect(visibilityKm: Float) {
         Spacer(modifier = Modifier.height(8.dp))
 
         val visibilityText = when {
-            visibilityKm >= 100000 -> "Unlimited"
-            visibilityKm >= 10000 -> String.format("%.1f km", visibilityKm / 10000) // Converts to "16.4k km"
+            visibilityKm >= 10000 -> "Unlimited"
+            visibilityKm >= 1000 -> String.format("%.1f km", visibilityKm / 1000) // Converts to "16.4k km"
             else -> "${visibilityKm.toDouble()} km"
         }
         // Display Visibility Value
@@ -262,104 +268,8 @@ fun LegendItems(label: String, color: Color, textColor: Color) {
 @Preview(showBackground = true)
 @Composable
 fun PreviewVisibilityBlur() {
-    VisibilityBlurEffect(visibilityKm = 110000f)
+    VisibilityBlurEffect(visibilityKm = 5400f)
 }
 
-//@Composable
-//fun VisibilityBlurEffect(visibilityKm: Float, dewPoint: Double) {
-//    val blurRadius = (50f - visibilityKm).coerceIn(0f, 50f) // More blur for lower visibility
-//    val iconOpacity = (visibilityKm / 50f).coerceIn(0.2f, 1f) // Less opacity when visibility is low
-//
-//
-//    val textColor = if (isSystemInDarkTheme()) colorResource(id = R.color.white)
-//    else colorResource(
-//        id = R.color.dark_gray
-//    )
-//
-//    val labelColor =
-//        if (isSystemInDarkTheme()) colorResource(id = R.color.light_steel_blue)
-//        else colorResource(id = R.color.medium_gray)
-//
-//    val backgroundColor =
-//        if (isSystemInDarkTheme()) colorResource(id = R.color.night_sky_blue)
-//        else colorResource(
-//            id = R.color.sky_blue
-//        )
-//
-//    val backgroundColor2 =
-//        if (isSystemInDarkTheme()) colorResource(id = R.color.night_image_dark)
-//        else colorResource(
-//            id = R.color.day_image_dark_blue
-//        )
-//
-//
-//    Column(
-//        horizontalAlignment = Alignment.CenterHorizontally,
-//        modifier = Modifier.fillMaxSize()
-//        // .padding(16.dp)
-//    ) {
-//        Text(
-//            text = "Visibility",
-//            fontSize = 18.sp,
-//            fontWeight = FontWeight.Bold,
-//            color = textColor,
-//            textAlign = TextAlign.Start,
-//            modifier = Modifier
-//                .align(Alignment.Start)
-//                .padding(start = 16.dp, top = 16.dp)
-//        )
-//
-//        Box(
-//            modifier = Modifier
-//                .size(150.dp)
-//                .blur(blurRadius.dp) // Apply blur dynamically
-//                .padding(16.dp)
-//                .background(Color.Gray.copy(alpha = 0.3f)) // Slight gray tint for fog effect
-//
-//        ) {
-//            Column(
-//                modifier = Modifier.align(Alignment.Center),
-//                horizontalAlignment = Alignment.CenterHorizontally
-//            ) {
-//
-//                Icon(
-//                    imageVector = ImageVector.vectorResource(id = R.drawable.visibility), // 👁 Eye Icon
-//                    contentDescription = "Visibility Icon",
-//                    modifier = Modifier.size(60.dp),
-//                    tint = Color.White.copy(alpha = iconOpacity) // Adjust opacity based on visibility
-//                )
-//
-//
-//
-//
-//            }
-//        }
-//        Text(
-//            text = "${visibilityKm.toDouble()} km",
-//            fontSize = 17.sp,
-//            color = textColor,
-//            textAlign = TextAlign.Start,
-//            modifier = Modifier
-//                .align(Alignment.Start)
-//                .padding(start = 16.dp)
-//        )
-//
-//        //   Spacer(modifier = Modifier.height(8.dp))
-//
-//        Text(
-//            text = "Dew point: ${dewPoint.roundToInt()}°",
-//            fontSize = 16.sp,
-//            color = textColor,
-//            textAlign = TextAlign.Start,
-//            modifier = Modifier
-//                .align(Alignment.Start)
-//                .padding(start = 16.dp)
-//        )
-//    }
-//}
-//
-@Preview(showBackground = true)
-@Composable
-fun PreviewVisibilityBlur1() {
-    VisibilityBlurEffect(visibilityKm = 10f,) // Example: 10 km visibility
-}
+
+

@@ -3,7 +3,6 @@ package com.makaota.weathermzansi.presentation
 import android.util.Log
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedContentTransitionScope
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.Image
@@ -33,11 +32,13 @@ import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -59,6 +60,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.google.android.gms.maps.model.LatLng
 import com.makaota.weathermzansi.R
@@ -67,6 +69,7 @@ import com.makaota.weathermzansi.data.location_database.LocationEntity
 import com.makaota.weathermzansi.domain.utils.ThemeColors
 import kotlinx.coroutines.launch
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import kotlin.math.roundToInt
 
@@ -116,7 +119,7 @@ fun CityManagementScreen(
                             combinedViewModel.updateLocation(
                                 city.name,
                                 LatLng(city.latitude, city.longitude)
-                            ) // ✅ Update ViewModel
+                            ) // Update ViewModel
                             combinedViewModel.fetchWeather(
                                 city.latitude,
                                 city.longitude
@@ -138,15 +141,28 @@ fun CityManagementScreen(
 
 
 @Composable
-fun AboutScreen() {
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
-    ) {
-        Text("ℹ️ About Screen", fontSize = 24.sp)
+fun SettingsScreen(themeViewModel: ThemeViewModel = viewModel(), ) {
+    val isDarkTheme by themeViewModel.isDarkTheme.observeAsState(false)
+
+    val textColor = ThemeColors.textColor(isDarkTheme)
+    val backgroundColor = ThemeColors.backgroundColor(isDarkTheme)
+    val labelColor = ThemeColors.labelColor(isDarkTheme)
+
+    Column(modifier = Modifier.fillMaxSize().padding(16.dp).background(backgroundColor)) {
+        Text("Theme Settings", color = textColor)
+
+        Row(
+            modifier = Modifier.fillMaxWidth().padding(top = 16.dp),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Text("Dark Mode")
+            Switch(
+                checked = isDarkTheme,
+                onCheckedChange = { themeViewModel.toggleTheme(it) }
+            )
+        }
     }
 }
-
 @Composable
 fun CityItem(
     locationEntity: LocationEntity, // Ensure correct `LocationEntity` is passed
@@ -180,16 +196,19 @@ fun CityItem(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalAnimationApi::class)
 @Composable
-fun WeatherDetailsScreen(viewModel: CombinedWeatherViewModel, navController: NavHostController) {
+fun WeatherDetailsScreen(viewModel: CombinedWeatherViewModel, navController: NavHostController,
+                         themeViewModel: ThemeViewModel, hourlyState: WeatherState) {
     val selectedWeatherData = viewModel.selectedWeatherData // Observe selected data
 
-    val state = viewModel.dailyWeatherState
+    val dailyWeatherState = viewModel.dailyWeatherState
 
-    val textColor = ThemeColors.textColor()
-    val backgroundColor = ThemeColors.backgroundColor()
-    val labelColor = ThemeColors.labelColor()
+    val isDarkTheme by themeViewModel.isDarkTheme.observeAsState(false)
+
+    val textColor = ThemeColors.textColor(isDarkTheme)
+    val backgroundColor = ThemeColors.backgroundColor(isDarkTheme)
+    val labelColor = ThemeColors.labelColor(isDarkTheme)
+
     val scrollState = rememberScrollState()
 
     // val selectedIndex = viewModel.getSelectedDay()
@@ -225,7 +244,7 @@ fun WeatherDetailsScreen(viewModel: CombinedWeatherViewModel, navController: Nav
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            state.dailyWeatherInfo?.dailyWeatherData?.forEach { (index, weatherDataList) ->
+            dailyWeatherState.dailyWeatherInfo?.dailyWeatherData?.forEach { (index, weatherDataList) ->
                 items(weatherDataList) { data ->
                     val dayFormatter = DateTimeFormatter.ofPattern("EEE")
                     val today = LocalDate.now()
@@ -284,6 +303,54 @@ fun WeatherDetailsScreen(viewModel: CombinedWeatherViewModel, navController: Nav
             }
 
         }
+
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+        ) {
+
+            when {
+                hourlyState.weatherInfo != null -> {
+                    Text(
+                        text = "Hourly Forecast",
+                        color = textColor,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 20.sp,
+                        // modifier = Modifier.padding(start = 16.dp)
+                    )
+                    Box(
+                        modifier = Modifier
+                            //     .padding(16.dp)
+                            .clip(RoundedCornerShape(10.dp)) // Apply rounded corners
+                        //  .background(backgroundColor)    // Set background color
+                    ) {
+
+                        hourlyState.weatherInfo?.weatherDataPerDay?.get(selectedIndex)?.let { data ->
+
+                            // Get the current time
+                            val currentTime = remember { LocalDateTime.now() }
+
+                            // Filter the data to show only the current hour onward
+                            val todayData = remember(data, currentTime) {
+                                data.filter { weatherData ->
+                                    Log.d(
+                                        "WeatherDetailsScreen",
+                                        "hourlyWeatherForecast: $weatherData"
+                                    )
+                                    weatherData.time.isAfter(currentTime) || weatherData.time.hour == currentTime.hour ||
+                                            weatherData.time.hour == 0
+
+                                }
+
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+
 
         Column(
             modifier = Modifier
@@ -375,21 +442,24 @@ fun WeatherDetailsScreen(viewModel: CombinedWeatherViewModel, navController: Nav
                             imageVector = ImageVector.vectorResource(id = R.drawable.temperature_feels_like_ic),
                             text = "Feels Like",
                             textColor = textColor,
-                            textValue = "${data.apparentTemperatureMax.roundToInt()}°"
+                            textValue = "${data.apparentTemperatureMax.roundToInt()}°",
+                            themeViewModel = themeViewModel
                         )
                         Spacer(modifier = Modifier.height(16.dp))
                         DayAndNightDisplay(
                             imageVector = ImageVector.vectorResource(id = R.drawable.sunrise_up_ic),
                             text = "Sunrise",
                             textColor = textColor,
-                            textValue = "${data.sunrise}"
+                            textValue = "${data.sunrise}",
+                            themeViewModel = themeViewModel
                         )
                         Spacer(modifier = Modifier.height(16.dp))
                         DayAndNightDisplay(
                             imageVector = ImageVector.vectorResource(id = R.drawable.sunset_down_ic),
                             text = "Sunset",
                             textColor = textColor,
-                            textValue = "${data.sunset}"
+                            textValue = "${data.sunset}",
+                            themeViewModel = themeViewModel
                         )
                         Spacer(modifier = Modifier.height(16.dp))
                         val dayLightHours =
@@ -400,7 +470,8 @@ fun WeatherDetailsScreen(viewModel: CombinedWeatherViewModel, navController: Nav
                             imageVector = ImageVector.vectorResource(id = R.drawable.time_ic),
                             text = "Daylight Duration",
                             textColor = textColor,
-                            textValue = "${dayLightHours}h ${dayLightMinutes}m"
+                            textValue = "${dayLightHours}h ${dayLightMinutes}m",
+                            themeViewModel = themeViewModel
                         )
                         Spacer(modifier = Modifier.height(16.dp))
                         val sunShineHours =
@@ -411,14 +482,16 @@ fun WeatherDetailsScreen(viewModel: CombinedWeatherViewModel, navController: Nav
                             imageVector = ImageVector.vectorResource(id = R.drawable.clear_day_ic),
                             text = "Sunshine Duration",
                             textColor = textColor,
-                            textValue = "${sunShineHours}h ${sunShineMinutes}m"
+                            textValue = "${sunShineHours}h ${sunShineMinutes}m",
+                            themeViewModel = themeViewModel
                         )
                         Spacer(modifier = Modifier.height(16.dp))
                         DayAndNightDisplay(
                             imageVector = ImageVector.vectorResource(id = R.drawable.uv_index_alt_ic),
                             text = "UV Index Max",
                             textColor = textColor,
-                            textValue = data.uvIndex.roundToInt().toString()
+                            textValue = data.uvIndex.roundToInt().toString(),
+                            themeViewModel = themeViewModel
                         )
                         Spacer(modifier = Modifier.height(16.dp))
                         DayAndNightDisplay(
@@ -426,35 +499,40 @@ fun WeatherDetailsScreen(viewModel: CombinedWeatherViewModel, navController: Nav
                             text = "UV Index Clear Sky",
                             textColor = textColor,
                             textValue = data.uvIndexClearSky.roundToInt()
-                                .toString()
+                                .toString(),
+                            themeViewModel = themeViewModel
                         )
                         Spacer(modifier = Modifier.height(16.dp))
                         DayAndNightDisplay(
                             imageVector = ImageVector.vectorResource(id = R.drawable.rain_ic),
                             text = "Rain Chances",
                             textColor = textColor,
-                            textValue = "${data.chancesOfRain.roundToInt()}%"
+                            textValue = "${data.chancesOfRain.roundToInt()}%",
+                            themeViewModel = themeViewModel
                         )
                         Spacer(modifier = Modifier.height(16.dp))
                         DayAndNightDisplay(
                             imageVector = ImageVector.vectorResource(id = R.drawable.snow_ic),
                             text = "Snowfall Sum",
                             textColor = textColor,
-                            textValue = "${data.snowfallSum}mm"
+                            textValue = "${data.snowfallSum}mm",
+                            themeViewModel = themeViewModel
                         )
                         Spacer(modifier = Modifier.height(16.dp))
                         DayAndNightDisplay(
                             imageVector = ImageVector.vectorResource(id = R.drawable.wind_speed_ic),
                             text = "Max Wind Speed (10m)",
                             textColor = textColor,
-                            textValue = "${data.windSpeed.roundToInt()}km/h"
+                            textValue = "${data.windSpeed.roundToInt()}km/h",
+                            themeViewModel = themeViewModel
                         )
                         Spacer(modifier = Modifier.height(16.dp))
                         DayAndNightDisplay(
                             imageVector = ImageVector.vectorResource(id = R.drawable.wind_gust),
                             text = "Max Wind Gust (10m)",
                             textColor = textColor,
-                            textValue = "${data.windGust.roundToInt()}km/h"
+                            textValue = "${data.windGust.roundToInt()}km/h",
+                            themeViewModel = themeViewModel
                         )
                         Spacer(modifier = Modifier.height(16.dp))
                         DayAndNightDisplay(
@@ -462,7 +540,8 @@ fun WeatherDetailsScreen(viewModel: CombinedWeatherViewModel, navController: Nav
                             text = "Wind Direction (10m)",
                             textColor = textColor,
                             textValue = "${getWindDirection(data.windDirection)} " +
-                                    "(${data.windDirection.roundToInt()}°)"
+                                    "(${data.windDirection.roundToInt()}°)",
+                            themeViewModel = themeViewModel
                         )
 
                     }
@@ -551,21 +630,24 @@ fun WeatherDetailsScreen(viewModel: CombinedWeatherViewModel, navController: Nav
                             imageVector = ImageVector.vectorResource(id = R.drawable.temperature_feels_like_ic),
                             text = "Feels Like",
                             textColor = textColor,
-                            textValue = "${data.apparentTemperatureMin.roundToInt()}°"
+                            textValue = "${data.apparentTemperatureMin.roundToInt()}°",
+                            themeViewModel = themeViewModel
                         )
                         Spacer(modifier = Modifier.height(16.dp))
                         DayAndNightDisplay(
                             imageVector = ImageVector.vectorResource(id = R.drawable.wind_speed),
                             text = "Wind Speed",
                             textColor = textColor,
-                            textValue = "${data.windSpeed.roundToInt()}km/h"
+                            textValue = "${data.windSpeed.roundToInt()}km/h",
+                            themeViewModel = themeViewModel
                         )
                         Spacer(modifier = Modifier.height(16.dp))
                         DayAndNightDisplay(
                             imageVector = ImageVector.vectorResource(id = R.drawable.ic_wind),
                             text = "Wind Gust",
                             textColor = textColor,
-                            textValue = "${data.windGust.roundToInt()}km/h"
+                            textValue = "${data.windGust.roundToInt()}km/h",
+                            themeViewModel = themeViewModel
                         )
                         Spacer(modifier = Modifier.height(16.dp))
                         val dayHours = data.daylightDuration.div(3600).toInt()
@@ -579,7 +661,8 @@ fun WeatherDetailsScreen(viewModel: CombinedWeatherViewModel, navController: Nav
                             imageVector = ImageVector.vectorResource(id = R.drawable.time_ic),
                             text = "Night Duration",
                             textColor = textColor,
-                            textValue = "${nightHours}h ${nightMinutes}m"
+                            textValue = "${nightHours}h ${nightMinutes}m",
+                            themeViewModel = themeViewModel
                         )
 
                     }
@@ -596,9 +679,14 @@ fun DayAndNightDisplay(
     text: String,
     textColor: Color,
     textValue: String,
+    themeViewModel: ThemeViewModel
 ) {
 
-    val backgroundColor = ThemeColors.backgroundColor()
+    val isDarkTheme by themeViewModel.isDarkTheme.observeAsState(false)
+
+   // val textColor = ThemeColors.textColor(isDarkTheme)
+    val backgroundColor = ThemeColors.backgroundColor(isDarkTheme)
+    val labelColor = ThemeColors.labelColor(isDarkTheme)
 
     Row(
         horizontalArrangement = Arrangement.Start,

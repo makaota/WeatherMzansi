@@ -1,6 +1,5 @@
 package com.makaota.weathermzansi.presentation
 
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -9,24 +8,26 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.makaota.weathermzansi.R
+import com.makaota.weathermzansi.domain.utils.ThemeColors
 
 @Composable
 fun WeatherScreenDisplay(
     dailyState: DailyWeatherState,
     combinedWeatherViewModel: CombinedWeatherViewModel,
+    themeViewModel: ThemeViewModel
 ) {
 
-    val textColor = if (isSystemInDarkTheme()) colorResource(id = R.color.white)
-    else colorResource(
-        id = R.color.black
-    )
+    val isDarkTheme by themeViewModel.isDarkTheme.observeAsState(false)
+
+    val textColor = ThemeColors.textColor(isDarkTheme)
+    val backgroundColor = ThemeColors.backgroundColor(isDarkTheme)
+    val labelColor = ThemeColors.labelColor(isDarkTheme)
     val selectedLocation by combinedWeatherViewModel.selectedLocation.collectAsState()
 
     Column (horizontalAlignment = Alignment.CenterHorizontally,

@@ -46,7 +46,10 @@ import java.util.Locale
 fun WeatherAppWithDrawer(
     navController: NavHostController = rememberNavController(),
     combinedViewModel: CombinedWeatherViewModel,
-    locationDao: LocationDao
+    locationDao: LocationDao,
+    themeViewModel: ThemeViewModel,
+    hourlyWeatherState: WeatherState
+
 ) {
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()
@@ -93,7 +96,7 @@ fun WeatherAppWithDrawer(
             topBar = {
                 TopAppBar(
                     navigationIcon = {
-                        val validRoutes = listOf("home", "cityManagement", "WeatherDetails") // Define your valid routes
+                        val validRoutes = listOf("home", "cityManagement","settingsScreen", "WeatherDetails") // Define your valid routes
                         if (currentRoute != null && currentRoute in validRoutes) {
                             if (currentRoute == "home") {
                                 // Show Menu Icon on Home Screen
@@ -164,6 +167,9 @@ fun WeatherAppWithDrawer(
                             else if (currentRoute == "WeatherDetails"){
                                 Text("7-Day forecast")
                             }
+                            else if (currentRoute == "settingsScreen"){
+                                Text("Settings")
+                            }
 
                         }
                     }
@@ -175,7 +181,8 @@ fun WeatherAppWithDrawer(
                     .fillMaxSize()
                     .padding(padding) // Ensures content doesn't overlap topBar
             ) {
-                AppNavigation(navController, combinedViewModel,locationDao)
+                AppNavigation(navController, combinedViewModel,locationDao, themeViewModel = themeViewModel,
+                    hourlyWeatherState =hourlyWeatherState )
 
                 // **Snackbar Positioned at the Bottom**
                 SnackbarHost(

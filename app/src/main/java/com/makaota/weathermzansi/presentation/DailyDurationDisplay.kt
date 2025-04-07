@@ -6,6 +6,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -15,12 +17,13 @@ import java.time.Duration
 
 
 @Composable
-fun DailyDurationDisplay( dailyState: DailyWeatherState,) {
+fun DailyDurationDisplay( dailyState: DailyWeatherState, themeViewModel: ThemeViewModel) {
 
+    val isDarkTheme by themeViewModel.isDarkTheme.observeAsState(false)
 
-    val textColor = ThemeColors.textColor()
-    val backgroundColor = ThemeColors.backgroundColor()
-    val labelColor = ThemeColors.labelColor()
+    val textColor = ThemeColors.textColor(isDarkTheme)
+    val backgroundColor = ThemeColors.backgroundColor(isDarkTheme)
+    val labelColor = ThemeColors.labelColor(isDarkTheme)
 
 
     Column(
@@ -46,7 +49,8 @@ fun DailyDurationDisplay( dailyState: DailyWeatherState,) {
                     todayWeatherData?.let { todayData ->
                         DaylightDurationLayout(sunriseTime = todayData.get(0).sunrise,
                             sunsetTime = todayData.get(0).sunset,
-                            daylightDuration = Duration.ofSeconds(todayData.get(0).daylightDuration.toLong()))
+                            daylightDuration = Duration.ofSeconds(todayData.get(0).daylightDuration.toLong()),
+                            themeViewModel = themeViewModel)
                         Log.d("DailyDisplay", "WeatherData: $data")
                         Log.d("DailyDisplay", "TodayData: $todayData")
                     }

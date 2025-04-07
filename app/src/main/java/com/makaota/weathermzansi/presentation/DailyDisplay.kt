@@ -11,6 +11,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -21,19 +23,23 @@ import com.makaota.weathermzansi.domain.utils.ThemeColors
 
 
 @Composable
-fun DailyDisplay(viewModel: CombinedWeatherViewModel = hiltViewModel(), navController: NavController) {
+fun DailyDisplay(viewModel: CombinedWeatherViewModel = hiltViewModel(), navController: NavController,
+                 themeViewModel: ThemeViewModel) {
 
     val state = viewModel.dailyWeatherState
 
 
+    val isDarkTheme by themeViewModel.isDarkTheme.observeAsState(false)
 
-    val textColor = ThemeColors.textColor()
+    val textColor = ThemeColors.textColor(isDarkTheme)
+    val backgroundColor = ThemeColors.backgroundColor(isDarkTheme)
+    val labelColor = ThemeColors.labelColor(isDarkTheme)
 
 
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding( start = 16.dp, end = 16.dp)
+            .padding(start = 16.dp, end = 16.dp)
     ) {
 
         when {
@@ -57,7 +63,7 @@ fun DailyDisplay(viewModel: CombinedWeatherViewModel = hiltViewModel(), navContr
                                         viewModel.selectDay(index)
                                         viewModel.selectWeatherData(data)
                                          navController.navigate("WeatherDetails")
-                                    },
+                                    }, themeViewModel = themeViewModel
                             )
                             // Add space after each row
                             Spacer(modifier = Modifier.height(8.dp))

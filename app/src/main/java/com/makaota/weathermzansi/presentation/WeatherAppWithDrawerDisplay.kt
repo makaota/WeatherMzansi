@@ -11,7 +11,9 @@ import com.makaota.weathermzansi.data.location_database.LocationDao
 fun WeatherAppWithDrawerDisplay(dailyState: DailyWeatherState,
                                 viewModel: CombinedWeatherViewModel = hiltViewModel(),
                                 navController: NavHostController = rememberNavController(),
-                                locationDao: LocationDao
+                                locationDao: LocationDao,
+                                themeViewModel: ThemeViewModel,
+                                hourlyWeatherState: WeatherState
 ) {
 
     Column{
@@ -19,7 +21,10 @@ fun WeatherAppWithDrawerDisplay(dailyState: DailyWeatherState,
         when {
             dailyState.dailyWeatherInfo != null -> {
                 WeatherAppWithDrawer(navController = navController,
-                    combinedViewModel = viewModel,locationDao)
+                    combinedViewModel = viewModel,locationDao,
+                    themeViewModel = themeViewModel,
+                    hourlyWeatherState
+                )
             }
         }
 
