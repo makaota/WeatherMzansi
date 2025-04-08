@@ -230,16 +230,6 @@ fun WindInfoDisplay(
             }
         }
 
-
-//        Column(
-//            modifier = Modifier
-//                .fillMaxWidth()
-//                .padding(16.dp),
-//            horizontalAlignment = Alignment.CenterHorizontally
-//        ) {
-//            HumidityGauge(humidity = data.humidity.toFloat())
-//            VisibilityBlurEffect(visibilityKm = data.visibility.toFloat())
-//        }
     }
 
 }
@@ -292,11 +282,11 @@ fun HumidityInfoDisplay(
                 shape = RoundedCornerShape(10.dp),
                 modifier = Modifier
                     .weight(1f)
-                    .heightIn(min = 180.dp, max = 230.dp) // Adjust height dynamically
+                    .height(230.dp)
 
             ) {
                 VisibilityBlurEffect(
-                    visibilityKm = data.visibility.toFloat()
+                    visibilityKm = data.visibility.toFloat(), themeViewModel = themeViewModel
                 )
             }
         }

@@ -63,7 +63,7 @@ fun DaylightDurationLayout(
 
     Column(
         modifier = modifier
-            .fillMaxWidth()
+            .fillMaxSize()
             .height(245.dp)
             .background(backgroundColor, shape = RoundedCornerShape(12.dp)),
         horizontalAlignment = Alignment.CenterHorizontally

@@ -5,7 +5,6 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -28,6 +27,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.nativeCanvas
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
@@ -107,9 +107,13 @@ fun WindDirectionCompass(
     val backgroundColor = ThemeColors.backgroundColor(isDarkTheme)
     val labelColor = ThemeColors.labelColor(isDarkTheme)
 
+    val compassTextColor = if (isDarkTheme) {
+        Color.White.toArgb()
+    } else {
+        Color.Black.toArgb()
+    }
 
-    val myColorInt = if (isSystemInDarkTheme()) 1
-    else 2
+
 
 
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -151,12 +155,6 @@ fun WindDirectionCompass(
                         (center.x + radius * cos(angleRad)).toFloat() - 10f, // Adjust text centering
                         (center.y + radius * sin(angleRad)).toFloat() + 5f
                     )
-
-
-                    val compassTextColor = myIntColor(myColorInt)
-
-                    val white = android.graphics.Color.WHITE
-                    val black = android.graphics.Color.BLACK
                     drawContext.canvas.nativeCanvas.drawText(
                         label,
                         textOffset.x,
@@ -165,13 +163,14 @@ fun WindDirectionCompass(
                             color = compassTextColor
                             textSize = 40f
                             textAlign = android.graphics.Paint.Align.CENTER
+                            isAntiAlias = true
                         }
                     )
                 }
             }
 
 
-            AnimatedWindArrow(degrees = windDegrees)
+            AnimatedWindArrow(degrees = windDegrees, textColor)
         }
 
         Column(
@@ -213,19 +212,9 @@ fun WindDirectionCompass(
     }
 }
 
-private fun myIntColor(myIntTextColor: Int): Int{
-
-    val white = android.graphics.Color.WHITE
-    val black = android.graphics.Color.BLACK
-    return if (myIntTextColor == 1){
-        white
-    }else{
-        black
-    }
-}
 
 @Composable
-fun AnimatedWindArrow(degrees: Float) {
+fun AnimatedWindArrow(degrees: Float, textColor: Color) {
     val animatedRotation by animateFloatAsState(
         targetValue = degrees,
         animationSpec = tween(durationMillis = 1000, easing = LinearEasing),
@@ -235,6 +224,7 @@ fun AnimatedWindArrow(degrees: Float) {
     Icon(
         painter = painterResource(id = R.drawable.wind_direction), // Custom arrow
         contentDescription = "Wind Direction",
+        tint = textColor,
         modifier = Modifier
             .size(26.dp)
             .rotate(animatedRotation) //  Rotates smoothly

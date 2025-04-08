@@ -1,7 +1,6 @@
 package com.makaota.weathermzansi.presentation
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -30,7 +29,6 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.times
@@ -142,12 +140,15 @@ fun UVLegend() {
 }
 
 @Composable
-fun VisibilityBlurEffect(visibilityKm: Float) {
+fun VisibilityBlurEffect(visibilityKm: Float, themeViewModel: ThemeViewModel) {
     val blurRadius = (50f - visibilityKm).coerceIn(0f, 50f) // More blur for lower visibility
     val iconOpacity = (visibilityKm / 50f).coerceIn(0.2f, 1f) // Less opacity when visibility is low
 
-    val textColor = if (isSystemInDarkTheme()) colorResource(id = R.color.white)
-    else colorResource(id = R.color.dark_gray)
+    val isDarkTheme by themeViewModel.isDarkTheme.observeAsState(false)
+
+    val textColor = ThemeColors.textColor(isDarkTheme)
+    val backgroundColor = ThemeColors.backgroundColor(isDarkTheme)
+    val labelColor = ThemeColors.labelColor(isDarkTheme)
 
     // Determine color based on visibility range
     val visibilityColor = when {
@@ -209,7 +210,7 @@ fun VisibilityBlurEffect(visibilityKm: Float) {
         }
         // Display Visibility Value
         Text(
-            text = "$visibilityText",
+            text = visibilityText,
             fontSize = 18.sp,
             fontWeight = FontWeight.Bold,
             color = textColor,
@@ -265,11 +266,11 @@ fun LegendItems(label: String, color: Color, textColor: Color) {
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun PreviewVisibilityBlur() {
-    VisibilityBlurEffect(visibilityKm = 5400f)
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun PreviewVisibilityBlur() {
+//    VisibilityBlurEffect(visibilityKm = 5400f)
+//}
 
 
 

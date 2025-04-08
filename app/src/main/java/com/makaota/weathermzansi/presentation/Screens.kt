@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -29,6 +30,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -69,7 +72,6 @@ import com.makaota.weathermzansi.data.location_database.LocationEntity
 import com.makaota.weathermzansi.domain.utils.ThemeColors
 import kotlinx.coroutines.launch
 import java.time.LocalDate
-import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import kotlin.math.roundToInt
 
@@ -141,18 +143,25 @@ fun CityManagementScreen(
 
 
 @Composable
-fun SettingsScreen(themeViewModel: ThemeViewModel = viewModel(), ) {
+fun SettingsScreen(themeViewModel: ThemeViewModel = viewModel()) {
     val isDarkTheme by themeViewModel.isDarkTheme.observeAsState(false)
 
     val textColor = ThemeColors.textColor(isDarkTheme)
     val backgroundColor = ThemeColors.backgroundColor(isDarkTheme)
     val labelColor = ThemeColors.labelColor(isDarkTheme)
 
-    Column(modifier = Modifier.fillMaxSize().padding(16.dp).background(backgroundColor)) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp)
+            .background(backgroundColor)
+    ) {
         Text("Theme Settings", color = textColor)
 
         Row(
-            modifier = Modifier.fillMaxWidth().padding(top = 16.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 16.dp),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text("Dark Mode")
@@ -163,6 +172,7 @@ fun SettingsScreen(themeViewModel: ThemeViewModel = viewModel(), ) {
         }
     }
 }
+
 @Composable
 fun CityItem(
     locationEntity: LocationEntity, // Ensure correct `LocationEntity` is passed
@@ -197,8 +207,10 @@ fun CityItem(
 }
 
 @Composable
-fun WeatherDetailsScreen(viewModel: CombinedWeatherViewModel, navController: NavHostController,
-                         themeViewModel: ThemeViewModel, hourlyState: WeatherState) {
+fun WeatherDetailsScreen(
+    viewModel: CombinedWeatherViewModel, navController: NavHostController,
+    themeViewModel: ThemeViewModel, hourlyState: WeatherState,
+) {
     val selectedWeatherData = viewModel.selectedWeatherData // Observe selected data
 
     val dailyWeatherState = viewModel.dailyWeatherState
@@ -207,6 +219,7 @@ fun WeatherDetailsScreen(viewModel: CombinedWeatherViewModel, navController: Nav
 
     val textColor = ThemeColors.textColor(isDarkTheme)
     val backgroundColor = ThemeColors.backgroundColor(isDarkTheme)
+    val backgroundColor2 = ThemeColors.backgroundColor2(isDarkTheme)
     val labelColor = ThemeColors.labelColor(isDarkTheme)
 
     val scrollState = rememberScrollState()
@@ -235,7 +248,8 @@ fun WeatherDetailsScreen(viewModel: CombinedWeatherViewModel, navController: Nav
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(start = 16.dp, end = 16.dp)
+            .background(backgroundColor2)
+            .padding(16.dp)
         //.verticalScroll(scrollState)
     ) {
 
@@ -304,12 +318,12 @@ fun WeatherDetailsScreen(viewModel: CombinedWeatherViewModel, navController: Nav
 
         }
 
+        Spacer(modifier = Modifier.height(16.dp))
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp)
+                .verticalScroll(scrollState)
         ) {
-
             when {
                 hourlyState.weatherInfo != null -> {
                     Text(
@@ -317,359 +331,411 @@ fun WeatherDetailsScreen(viewModel: CombinedWeatherViewModel, navController: Nav
                         color = textColor,
                         fontWeight = FontWeight.Bold,
                         fontSize = 20.sp,
-                        // modifier = Modifier.padding(start = 16.dp)
+                        modifier = Modifier.padding(bottom = 16.dp)
                     )
+                }
+            }
+
+            AnimatedContent(targetState = hourlyState, transitionSpec = {
+                slideIntoContainer(transitionDirection, tween(500)) togetherWith
+                        slideOutOfContainer(transitionDirection, tween(500))
+            }, label = "") { data ->
+                data?.let { data ->
+
+
                     Box(
                         modifier = Modifier
-                            //     .padding(16.dp)
-                            .clip(RoundedCornerShape(10.dp)) // Apply rounded corners
-                        //  .background(backgroundColor)    // Set background color
+                            .clip(RoundedCornerShape(10.dp))
                     ) {
+                        hourlyState.weatherInfo?.weatherDataPerDay?.get(selectedIndex)
+                            ?.let { data ->
 
-                        hourlyState.weatherInfo?.weatherDataPerDay?.get(selectedIndex)?.let { data ->
+                                LazyRow(
+                                    userScrollEnabled = true,
+                                    modifier = Modifier
+                                        .clip(RoundedCornerShape(10.dp)) // Apply rounded corners to LazyRow
+                                        .background(backgroundColor)    // Ensure the background matches
+                                        .padding(8.dp),
+                                ) {
+                                    items(data) { weatherData ->
 
-                            // Get the current time
-                            val currentTime = remember { LocalDateTime.now() }
-
-                            // Filter the data to show only the current hour onward
-                            val todayData = remember(data, currentTime) {
-                                data.filter { weatherData ->
-                                    Log.d(
-                                        "WeatherDetailsScreen",
-                                        "hourlyWeatherForecast: $weatherData"
-                                    )
-                                    weatherData.time.isAfter(currentTime) || weatherData.time.hour == currentTime.hour ||
-                                            weatherData.time.hour == 0
-
+                                        HourlyWeatherDisplay(
+                                            weatherData = weatherData,
+                                            modifier = Modifier
+                                                .padding(horizontal = 10.dp)
+                                                .background(Color.Transparent),
+                                            themeViewModel = themeViewModel
+                                        )
+                                    }
                                 }
+                            }
+                    }
+
+                }
+            }
+
+            hourlyState.weatherInfo?.weatherDataPerDay?.get(selectedIndex).let { data ->
+
+                Text(
+                    text = "Hourly Weather Details",
+                    fontSize = 20.sp,
+                    color = textColor,
+                    fontWeight = FontWeight.Bold,
+                    modifier= Modifier.padding(top = 16.dp, bottom = 16.dp)
+                )
+
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                ) {
+                    Card(
+                        colors = CardDefaults.cardColors(
+                            containerColor = backgroundColor
+                        ),
+                        shape = RoundedCornerShape(10.dp),
+                        modifier = Modifier
+                            .weight(1f)
+                            .heightIn(min = 180.dp, max = 230.dp) // Adjust height dynamically
+
+                    ) {
+                        WindDirectionCompass(
+                            windDegrees = data?.get(selectedIndex)?.windDirection!!.toFloat(),
+                            windSpeed = data.get(selectedIndex).windSpeed.dec(),
+                            themeViewModel = themeViewModel
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.width(10.dp)) // Space between two cards
+
+                    Card(
+                        colors = CardDefaults.cardColors(
+                            containerColor = backgroundColor
+                        ),
+                        shape = RoundedCornerShape(10.dp),
+                        modifier = Modifier
+                            .weight(1f)
+                            .heightIn(min = 180.dp, max = 230.dp) // Adjust height dynamically
+
+                    ) {
+                        PressureGauge(
+                            pressure = data?.get(selectedIndex)?.pressure!!.toFloat(),
+                            themeViewModel = themeViewModel
+                        )
+                    }
+                }
+
+            }
+
+            hourlyState.weatherInfo?.weatherDataPerDay?.get(selectedIndex).let { data ->
+
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 16.dp)
+                ) {
+                    Card(
+                        colors = CardDefaults.cardColors(
+                            containerColor = backgroundColor
+                        ),
+                        shape = RoundedCornerShape(10.dp),
+                        modifier = Modifier
+                            .weight(1f)
+                            .heightIn(min = 180.dp, max = 230.dp) // Adjust height dynamically
+
+                    ) {
+                        HumidityGauge(
+                            humidity = data?.get(selectedIndex)?.humidity!!.toFloat(),
+                            themeViewModel = themeViewModel
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.width(10.dp)) // Space between two cards
+
+                    Card(
+                        colors = CardDefaults.cardColors(
+                            containerColor = backgroundColor
+                        ),
+                        shape = RoundedCornerShape(10.dp),
+                        modifier = Modifier
+                            .weight(1f)
+                            .height(230.dp)
+
+                    ) {
+                        VisibilityBlurEffect(
+                            visibilityKm = data?.get(selectedIndex)?.visibility!!.toFloat(),
+                            themeViewModel = themeViewModel
+                        )
+                    }
+                }
+            }
+
+
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(top = 16.dp)
+                // .verticalScroll(scrollState)
+            ) {
+
+                AnimatedContent(targetState = selectedWeatherData, transitionSpec = {
+                    slideIntoContainer(transitionDirection, tween(500)) togetherWith
+                            slideOutOfContainer(transitionDirection, tween(500))
+                }, label = "") { data ->
+                    data?.let { data ->
+
+
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.Center,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clip(RoundedCornerShape(10.dp))
+                                .background(backgroundColor)
+                            //.alpha(animatedAlpha)
+                        ) {
+
+                            Text(
+                                text = "Daytime",
+                                fontSize = 25.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = colorResource(id = R.color.orange_red),
+                                modifier = Modifier
+                                    .align(Alignment.Start)
+                                    .padding(16.dp)
+                            )
+
+                            Row(
+                                horizontalArrangement = Arrangement.Center,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+
+                                Image(
+                                    painter = painterResource(id = data.weatherType.iconRes),
+                                    contentDescription = null,
+                                    modifier = Modifier.size(60.dp)
+                                )
+                                Spacer(modifier = Modifier.width(8.dp))
+                                Text(
+                                    text = "${data.maxTemperatures.roundToInt()}°C",
+                                    fontSize = 40.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = colorResource(id = R.color.orange_red)
+                                )
 
                             }
+                            Text(
+                                text = data.weatherType.weatherDesc,
+                                fontSize = 18.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = textColor,
+                                modifier = Modifier.padding(bottom = 16.dp)
+                            )
+
                         }
                     }
                 }
-            }
-        }
 
 
 
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(top = 16.dp)
-                .verticalScroll(scrollState)
-        ) {
+                Spacer(modifier = Modifier.height(16.dp))
 
-            AnimatedContent(targetState = selectedWeatherData, transitionSpec = {
-                slideIntoContainer(transitionDirection, tween(500)) togetherWith
-                        slideOutOfContainer(transitionDirection, tween(500))
-            }, label = "") { data ->
-                data?.let { data ->
+                AnimatedContent(targetState = selectedWeatherData, transitionSpec = {
+                    slideIntoContainer(transitionDirection, tween(500)) togetherWith
+                            slideOutOfContainer(transitionDirection, tween(500))
+                }, label = "") { data ->
+                    data?.let { data ->
 
-
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.Center,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clip(RoundedCornerShape(10.dp))
-                            .background(backgroundColor)
-                        //.alpha(animatedAlpha)
-                    ) {
-
-                        Text(
-                            text = "Daytime",
-                            fontSize = 25.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = colorResource(id = R.color.orange_red),
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.Center,
                             modifier = Modifier
-                                .align(Alignment.Start)
-                                .padding(16.dp)
-                        )
-
-                        Row(
-                            horizontalArrangement = Arrangement.Center,
-                            verticalAlignment = Alignment.CenterVertically
+                                .fillMaxWidth()
+                                .clip(RoundedCornerShape(10.dp))
+                            //  .background(Color.LightGray.copy(alpha = 0.5f))
+                            //.alpha(animatedAlpha)
                         ) {
 
-                            Image(
-                                painter = painterResource(id = data.weatherType.iconRes),
-                                contentDescription = null,
-                                modifier = Modifier.size(60.dp)
+
+                            DayAndNightDisplay(
+                                imageVector = ImageVector.vectorResource(id = R.drawable.temperature_feels_like_ic),
+                                text = "Feels Like",
+                                textColor = textColor,
+                                textValue = "${data.apparentTemperatureMax.roundToInt()}°",
+                                themeViewModel = themeViewModel
                             )
-                            Spacer(modifier = Modifier.width(8.dp))
-                            Text(
-                                text = "${data.maxTemperatures.roundToInt()}°C",
-                                fontSize = 40.sp,
-                                fontWeight = FontWeight.Bold,
-                                color = colorResource(id = R.color.orange_red)
+                            Spacer(modifier = Modifier.height(16.dp))
+                            DayAndNightDisplay(
+                                imageVector = ImageVector.vectorResource(id = R.drawable.sunrise_up_ic),
+                                text = "Sunrise",
+                                textColor = textColor,
+                                textValue = "${data.sunrise}",
+                                themeViewModel = themeViewModel
                             )
+                            Spacer(modifier = Modifier.height(16.dp))
+                            DayAndNightDisplay(
+                                imageVector = ImageVector.vectorResource(id = R.drawable.sunset_down_ic),
+                                text = "Sunset",
+                                textColor = textColor,
+                                textValue = "${data.sunset}",
+                                themeViewModel = themeViewModel
+                            )
+                            Spacer(modifier = Modifier.height(16.dp))
+                            val dayLightHours =
+                                data.daylightDuration.div(3600).toInt()
+                            val dayLightMinutes =
+                                (data.daylightDuration % (3600) / 60).toInt()
+                            DayAndNightDisplay(
+                                imageVector = ImageVector.vectorResource(id = R.drawable.time_ic),
+                                text = "Daylight Duration",
+                                textColor = textColor,
+                                textValue = "${dayLightHours}h ${dayLightMinutes}m",
+                                themeViewModel = themeViewModel
+                            )
+                            Spacer(modifier = Modifier.height(16.dp))
+                            val sunShineHours =
+                                data.sunshineDuration.div(3600).toInt()
+                            val sunShineMinutes =
+                                (data.sunshineDuration % (3600) / 60).toInt()
+                            DayAndNightDisplay(
+                                imageVector = ImageVector.vectorResource(id = R.drawable.clear_day_ic),
+                                text = "Sunshine Duration",
+                                textColor = textColor,
+                                textValue = "${sunShineHours}h ${sunShineMinutes}m",
+                                themeViewModel = themeViewModel
+                            )
+
 
                         }
-                        Text(
-                            text = data.weatherType.weatherDesc,
-                            fontSize = 18.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = textColor,
-                            modifier = Modifier.padding(bottom = 16.dp)
-                        )
-
                     }
                 }
-            }
+
+                // NIGHT TIME SECTION
 
 
+                Spacer(modifier = Modifier.height(16.dp))
 
-            Spacer(modifier = Modifier.height(16.dp))
+                AnimatedContent(targetState = selectedWeatherData, transitionSpec = {
+                    slideIntoContainer(transitionDirection, tween(500)) togetherWith
+                            slideOutOfContainer(transitionDirection, tween(500))
+                }, label = "") { data ->
+                    data?.let { data ->
 
-            AnimatedContent(targetState = selectedWeatherData, transitionSpec = {
-                slideIntoContainer(transitionDirection, tween(500)) togetherWith
-                        slideOutOfContainer(transitionDirection, tween(500))
-            }, label = "") { data ->
-                data?.let { data ->
-
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.Center,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clip(RoundedCornerShape(10.dp))
-                          //  .background(Color.LightGray.copy(alpha = 0.5f))
-                        //.alpha(animatedAlpha)
-                    ) {
-
-
-                        DayAndNightDisplay(
-                            imageVector = ImageVector.vectorResource(id = R.drawable.temperature_feels_like_ic),
-                            text = "Feels Like",
-                            textColor = textColor,
-                            textValue = "${data.apparentTemperatureMax.roundToInt()}°",
-                            themeViewModel = themeViewModel
-                        )
-                        Spacer(modifier = Modifier.height(16.dp))
-                        DayAndNightDisplay(
-                            imageVector = ImageVector.vectorResource(id = R.drawable.sunrise_up_ic),
-                            text = "Sunrise",
-                            textColor = textColor,
-                            textValue = "${data.sunrise}",
-                            themeViewModel = themeViewModel
-                        )
-                        Spacer(modifier = Modifier.height(16.dp))
-                        DayAndNightDisplay(
-                            imageVector = ImageVector.vectorResource(id = R.drawable.sunset_down_ic),
-                            text = "Sunset",
-                            textColor = textColor,
-                            textValue = "${data.sunset}",
-                            themeViewModel = themeViewModel
-                        )
-                        Spacer(modifier = Modifier.height(16.dp))
-                        val dayLightHours =
-                            data.daylightDuration.div(3600).toInt()
-                        val dayLightMinutes =
-                            (data.daylightDuration % (3600) / 60).toInt()
-                        DayAndNightDisplay(
-                            imageVector = ImageVector.vectorResource(id = R.drawable.time_ic),
-                            text = "Daylight Duration",
-                            textColor = textColor,
-                            textValue = "${dayLightHours}h ${dayLightMinutes}m",
-                            themeViewModel = themeViewModel
-                        )
-                        Spacer(modifier = Modifier.height(16.dp))
-                        val sunShineHours =
-                            data.sunshineDuration.div(3600).toInt()
-                        val sunShineMinutes =
-                            (data.sunshineDuration % (3600) / 60).toInt()
-                        DayAndNightDisplay(
-                            imageVector = ImageVector.vectorResource(id = R.drawable.clear_day_ic),
-                            text = "Sunshine Duration",
-                            textColor = textColor,
-                            textValue = "${sunShineHours}h ${sunShineMinutes}m",
-                            themeViewModel = themeViewModel
-                        )
-                        Spacer(modifier = Modifier.height(16.dp))
-                        DayAndNightDisplay(
-                            imageVector = ImageVector.vectorResource(id = R.drawable.uv_index_alt_ic),
-                            text = "UV Index Max",
-                            textColor = textColor,
-                            textValue = data.uvIndex.roundToInt().toString(),
-                            themeViewModel = themeViewModel
-                        )
-                        Spacer(modifier = Modifier.height(16.dp))
-                        DayAndNightDisplay(
-                            imageVector = ImageVector.vectorResource(id = R.drawable.uv_index_ic),
-                            text = "UV Index Clear Sky",
-                            textColor = textColor,
-                            textValue = data.uvIndexClearSky.roundToInt()
-                                .toString(),
-                            themeViewModel = themeViewModel
-                        )
-                        Spacer(modifier = Modifier.height(16.dp))
-                        DayAndNightDisplay(
-                            imageVector = ImageVector.vectorResource(id = R.drawable.rain_ic),
-                            text = "Rain Chances",
-                            textColor = textColor,
-                            textValue = "${data.chancesOfRain.roundToInt()}%",
-                            themeViewModel = themeViewModel
-                        )
-                        Spacer(modifier = Modifier.height(16.dp))
-                        DayAndNightDisplay(
-                            imageVector = ImageVector.vectorResource(id = R.drawable.snow_ic),
-                            text = "Snowfall Sum",
-                            textColor = textColor,
-                            textValue = "${data.snowfallSum}mm",
-                            themeViewModel = themeViewModel
-                        )
-                        Spacer(modifier = Modifier.height(16.dp))
-                        DayAndNightDisplay(
-                            imageVector = ImageVector.vectorResource(id = R.drawable.wind_speed_ic),
-                            text = "Max Wind Speed (10m)",
-                            textColor = textColor,
-                            textValue = "${data.windSpeed.roundToInt()}km/h",
-                            themeViewModel = themeViewModel
-                        )
-                        Spacer(modifier = Modifier.height(16.dp))
-                        DayAndNightDisplay(
-                            imageVector = ImageVector.vectorResource(id = R.drawable.wind_gust),
-                            text = "Max Wind Gust (10m)",
-                            textColor = textColor,
-                            textValue = "${data.windGust.roundToInt()}km/h",
-                            themeViewModel = themeViewModel
-                        )
-                        Spacer(modifier = Modifier.height(16.dp))
-                        DayAndNightDisplay(
-                            imageVector = ImageVector.vectorResource(id = R.drawable.compass_ic),
-                            text = "Wind Direction (10m)",
-                            textColor = textColor,
-                            textValue = "${getWindDirection(data.windDirection)} " +
-                                    "(${data.windDirection.roundToInt()}°)",
-                            themeViewModel = themeViewModel
-                        )
-
-                    }
-                }
-            }
-
-            // NIGHT TIME SECTION
-
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            AnimatedContent(targetState = selectedWeatherData, transitionSpec = {
-                slideIntoContainer(transitionDirection, tween(500)) togetherWith
-                        slideOutOfContainer(transitionDirection, tween(500))
-            }, label = "") { data ->
-                data?.let { data ->
-
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.Center,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clip(RoundedCornerShape(10.dp))
-                            .background(backgroundColor)
-                    ) {
-
-                        Text(
-                            text = "Night Time",
-                            fontSize = 25.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = colorResource(id = R.color.dodger_blue),
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.Center,
                             modifier = Modifier
-                                .align(Alignment.Start)
-                                .padding(16.dp)
-                        )
-
-                        Row(
-                            horizontalArrangement = Arrangement.Center,
-                            verticalAlignment = Alignment.CenterVertically
+                                .fillMaxWidth()
+                                .clip(RoundedCornerShape(10.dp))
+                                .background(backgroundColor)
                         ) {
 
-                            Image(
-                                painter = painterResource(id = data.weatherType.iconRes),
-                                contentDescription = null,
-                                modifier = Modifier.size(60.dp)
-                            )
-                            Spacer(modifier = Modifier.width(8.dp))
                             Text(
-                                text = "${data.lowTemperatures.roundToInt()}°C",
-                                fontSize = 40.sp,
+                                text = "Night Time",
+                                fontSize = 25.sp,
                                 fontWeight = FontWeight.Bold,
-                                color = colorResource(id = R.color.dodger_blue)
+                                color = colorResource(id = R.color.dodger_blue),
+                                modifier = Modifier
+                                    .align(Alignment.Start)
+                                    .padding(16.dp)
+                            )
+
+                            Row(
+                                horizontalArrangement = Arrangement.Center,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+
+                                Image(
+                                    painter = painterResource(id = data.weatherType.iconRes),
+                                    contentDescription = null,
+                                    modifier = Modifier.size(60.dp)
+                                )
+                                Spacer(modifier = Modifier.width(8.dp))
+                                Text(
+                                    text = "${data.lowTemperatures.roundToInt()}°C",
+                                    fontSize = 40.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = colorResource(id = R.color.dodger_blue)
+                                )
+
+                            }
+                            Text(
+                                text = data.weatherType.weatherDesc,
+                                fontSize = 20.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = textColor,
+                                modifier = Modifier.padding(bottom = 16.dp)
                             )
 
                         }
-                        Text(
-                            text = data.weatherType.weatherDesc,
-                            fontSize = 20.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = textColor,
-                            modifier = Modifier.padding(bottom = 16.dp)
-                        )
-
-                    }
-
-                }
-            }
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            AnimatedContent(targetState = selectedWeatherData, transitionSpec = {
-                slideIntoContainer(transitionDirection, tween(500)) togetherWith
-                        slideOutOfContainer(transitionDirection, tween(500))
-            }, label = "") { data ->
-                data?.let { data ->
-
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.Center,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clip(RoundedCornerShape(10.dp))
-                    ) {
-
-                        DayAndNightDisplay(
-                            imageVector = ImageVector.vectorResource(id = R.drawable.temperature_feels_like_ic),
-                            text = "Feels Like",
-                            textColor = textColor,
-                            textValue = "${data.apparentTemperatureMin.roundToInt()}°",
-                            themeViewModel = themeViewModel
-                        )
-                        Spacer(modifier = Modifier.height(16.dp))
-                        DayAndNightDisplay(
-                            imageVector = ImageVector.vectorResource(id = R.drawable.wind_speed),
-                            text = "Wind Speed",
-                            textColor = textColor,
-                            textValue = "${data.windSpeed.roundToInt()}km/h",
-                            themeViewModel = themeViewModel
-                        )
-                        Spacer(modifier = Modifier.height(16.dp))
-                        DayAndNightDisplay(
-                            imageVector = ImageVector.vectorResource(id = R.drawable.ic_wind),
-                            text = "Wind Gust",
-                            textColor = textColor,
-                            textValue = "${data.windGust.roundToInt()}km/h",
-                            themeViewModel = themeViewModel
-                        )
-                        Spacer(modifier = Modifier.height(16.dp))
-                        val dayHours = data.daylightDuration.div(3600).toInt()
-                        val dayMinutes =
-                            (data.daylightDuration % (3600) / 60).toInt()
-                        val totalNightMinutes = (24 * 60) - (dayHours * 60 + dayMinutes)
-                        val nightHours = totalNightMinutes / 60
-                        val nightMinutes = totalNightMinutes % 60
-
-                        DayAndNightDisplay(
-                            imageVector = ImageVector.vectorResource(id = R.drawable.time_ic),
-                            text = "Night Duration",
-                            textColor = textColor,
-                            textValue = "${nightHours}h ${nightMinutes}m",
-                            themeViewModel = themeViewModel
-                        )
 
                     }
                 }
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                AnimatedContent(targetState = selectedWeatherData, transitionSpec = {
+                    slideIntoContainer(transitionDirection, tween(500)) togetherWith
+                            slideOutOfContainer(transitionDirection, tween(500))
+                }, label = "") { data ->
+                    data?.let { data ->
+
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.Center,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clip(RoundedCornerShape(10.dp))
+                        ) {
+
+                            DayAndNightDisplay(
+                                imageVector = ImageVector.vectorResource(id = R.drawable.temperature_feels_like_ic),
+                                text = "Feels Like",
+                                textColor = textColor,
+                                textValue = "${data.apparentTemperatureMin.roundToInt()}°",
+                                themeViewModel = themeViewModel
+                            )
+                            Spacer(modifier = Modifier.height(16.dp))
+                            DayAndNightDisplay(
+                                imageVector = ImageVector.vectorResource(id = R.drawable.wind_speed),
+                                text = "Wind Speed",
+                                textColor = textColor,
+                                textValue = "${data.windSpeed.roundToInt()}km/h",
+                                themeViewModel = themeViewModel
+                            )
+                            Spacer(modifier = Modifier.height(16.dp))
+                            DayAndNightDisplay(
+                                imageVector = ImageVector.vectorResource(id = R.drawable.ic_wind),
+                                text = "Wind Gust",
+                                textColor = textColor,
+                                textValue = "${data.windGust.roundToInt()}km/h",
+                                themeViewModel = themeViewModel
+                            )
+                            Spacer(modifier = Modifier.height(16.dp))
+                            val dayHours = data.daylightDuration.div(3600).toInt()
+                            val dayMinutes =
+                                (data.daylightDuration % (3600) / 60).toInt()
+                            val totalNightMinutes = (24 * 60) - (dayHours * 60 + dayMinutes)
+                            val nightHours = totalNightMinutes / 60
+                            val nightMinutes = totalNightMinutes % 60
+
+                            DayAndNightDisplay(
+                                imageVector = ImageVector.vectorResource(id = R.drawable.time_ic),
+                                text = "Night Duration",
+                                textColor = textColor,
+                                textValue = "${nightHours}h ${nightMinutes}m",
+                                themeViewModel = themeViewModel
+                            )
+
+                        }
+                    }
+                }
             }
+
         }
-
     }
 }
 
@@ -679,12 +745,12 @@ fun DayAndNightDisplay(
     text: String,
     textColor: Color,
     textValue: String,
-    themeViewModel: ThemeViewModel
+    themeViewModel: ThemeViewModel,
 ) {
 
     val isDarkTheme by themeViewModel.isDarkTheme.observeAsState(false)
 
-   // val textColor = ThemeColors.textColor(isDarkTheme)
+    // val textColor = ThemeColors.textColor(isDarkTheme)
     val backgroundColor = ThemeColors.backgroundColor(isDarkTheme)
     val labelColor = ThemeColors.labelColor(isDarkTheme)
 
