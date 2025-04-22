@@ -28,10 +28,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.graphics.toArgb
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
@@ -46,50 +44,11 @@ import kotlin.math.cos
 import kotlin.math.roundToInt
 import kotlin.math.sin
 
-@Composable
-fun WindInfo(windSpeed: Double, windDegrees: Double, modifier: Modifier = Modifier) {
-    val windDirection = getWindDirection(windDegrees)
-
-    Row(
-        modifier = modifier.padding(8.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Icon(
-            imageVector = ImageVector.vectorResource(id = R.drawable.wind_speed),
-            contentDescription = "Wind",
-            tint = Color.White,
-            modifier = Modifier.size(24.dp)
-        )
-        Spacer(modifier = Modifier.width(8.dp))
-        Text(
-            text = "Wind: $windSpeed km/h $windDirection",
-            fontSize = 18.sp,
-            fontWeight = FontWeight.Medium
-        )
-    }
-}
 
 fun getWindDirection(degrees: Double): String {
     val directions = arrayOf("North", "North East", "East", "South East", "South", "South West", "West", "North West")
     val index = ((degrees % 360) / 45).toInt()
     return directions[index]
-}
-
-@Composable
-fun WindArrow(degrees: Float, modifier: Modifier = Modifier) {
-    Icon(
-        painter = painterResource(id = R.drawable.wind_direction), // Use a custom arrow icon
-        contentDescription = "Wind Direction",
-        tint = Color.White,
-        modifier = modifier
-            .size(32.dp)
-            .rotate(degrees)
-    )
-}
-
-@Composable
-fun WindDisplay(windSpeed: Double, windDegrees: Double) {
-
 }
 
 @Composable
@@ -104,8 +63,6 @@ fun WindDirectionCompass(
     val isDarkTheme by themeViewModel.isDarkTheme.observeAsState(false)
 
     val textColor = ThemeColors.textColor(isDarkTheme)
-    val backgroundColor = ThemeColors.backgroundColor(isDarkTheme)
-    val labelColor = ThemeColors.labelColor(isDarkTheme)
 
     val compassTextColor = if (isDarkTheme) {
         Color.White.toArgb()
@@ -190,9 +147,6 @@ fun WindDirectionCompass(
                 color = textColor, // Change to your preferred color
                 fontSize = 16.sp, // Default size for non-highlighted text
                 textAlign = TextAlign.Start,
-//                modifier = Modifier
-//                    .align(Alignment.Start)
-//                    .padding(16.dp)
             )
          //   Spacer(modifier = Modifier.height(8.dp))
 
@@ -202,9 +156,6 @@ fun WindDirectionCompass(
                 fontSize = 14.sp, // Default size for non-highlighted text
                 textAlign = TextAlign.Start,
                 fontWeight = FontWeight.Bold,
-//                modifier = Modifier
-//                    .align(Alignment.Start)
-//                    .padding(start = 16.dp)
             )
 
         }
@@ -239,8 +190,6 @@ fun PressureGauge(pressure: Float,themeViewModel: ThemeViewModel) {
     val isDarkTheme by themeViewModel.isDarkTheme.observeAsState(false)
 
     val textColor = ThemeColors.textColor(isDarkTheme)
-    val backgroundColor = ThemeColors.backgroundColor(isDarkTheme)
-    val labelColor = ThemeColors.labelColor(isDarkTheme)
 
 
     // Normalize pressure to an angle between -120° (Low) and 120° (High)
@@ -326,9 +275,6 @@ fun PressureGauge(pressure: Float,themeViewModel: ThemeViewModel) {
                 fontWeight = FontWeight.Bold,
                 color = textColor,
                 textAlign = TextAlign.Start,
-//                modifier = Modifier
-//                    .align(Alignment.Start)
-//                    .padding(16.dp)
             )
 
            // Spacer(modifier = Modifier.height(8.dp))
@@ -389,8 +335,7 @@ fun HumidityGauge(humidity: Float,themeViewModel: ThemeViewModel) {
     val isDarkTheme by themeViewModel.isDarkTheme.observeAsState(false)
 
     val textColor = ThemeColors.textColor(isDarkTheme)
-    val backgroundColor = ThemeColors.backgroundColor(isDarkTheme)
-    val labelColor = ThemeColors.labelColor(isDarkTheme)
+
 
 
     // Normalize humidity to an angle between -120° (Low) and 120° (High)

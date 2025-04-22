@@ -31,19 +31,6 @@ private val LightColorScheme = lightColorScheme(
     */
 )
 
-
-//object DarkThemeColors {
-//    val background = Color(0xFF1E293B)
-//    val text = Color.White
-//    val label = Color.LightGray
-//}
-//
-//object LightThemeColors {
-//    val background = Color.LightGray.copy(alpha = 0.5f)
-//    val text = Color.DarkGray
-//    val label = Color.LightGray
-//}
-
 val LightThemeColors = AppColors(
     background = Color.LightGray.copy(alpha = 0.5f),
     text = Color.DarkGray,

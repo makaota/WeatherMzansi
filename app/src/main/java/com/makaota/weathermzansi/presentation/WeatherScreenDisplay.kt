@@ -26,8 +26,6 @@ fun WeatherScreenDisplay(
     val isDarkTheme by themeViewModel.isDarkTheme.observeAsState(false)
 
     val textColor = ThemeColors.textColor(isDarkTheme)
-    val backgroundColor = ThemeColors.backgroundColor(isDarkTheme)
-    val labelColor = ThemeColors.labelColor(isDarkTheme)
     val selectedLocation by combinedWeatherViewModel.selectedLocation.collectAsState()
 
     Column (horizontalAlignment = Alignment.CenterHorizontally,
