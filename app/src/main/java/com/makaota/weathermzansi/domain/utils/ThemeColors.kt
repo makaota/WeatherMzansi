@@ -12,7 +12,7 @@ object ThemeColors {
 
     @Composable
     fun backgroundColor(isDarkTheme: Boolean): Color = if (isDarkTheme) Color(0xFF1E293B)
-    else Color.LightGray.copy(alpha = 0.5f)
+    else Color.LightGray
 
     @Composable
     fun backgroundColor2(isDarkTheme: Boolean): Color = if (isDarkTheme) colorResource(id = R.color.black)

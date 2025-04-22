@@ -1,6 +1,7 @@
 package com.makaota.weathermzansi.presentation
 
 import android.location.Geocoder
+import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -83,13 +84,20 @@ fun WeatherAppWithDrawer(
             combinedViewModel.loadWeather(location.latitude, location.longitude)
         } else {
             combinedViewModel.updateLocation("Location Unavailable", null)
+            combinedViewModel.setError("Could not fetch location. Please check permissions or GPS.")
+            Log.e("WeatherApp", "Location is null")
+
         }
     }
 
     ModalNavigationDrawer(
         drawerState = drawerState,
         drawerContent = {
-            DrawerContent(navController) { scope.launch { drawerState.close() } }
+            DrawerContent(
+                navController = navController,
+                closeDrawer = { scope.launch { drawerState.close() } },
+                themeViewModel = themeViewModel
+            )
         }
     ) {
         Scaffold(

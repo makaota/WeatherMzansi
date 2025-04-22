@@ -4,10 +4,10 @@
     <selectionStates>
       <SelectionState runConfigName="app">
         <option name="selectionMode" value="DROPDOWN" />
-        <DropdownSelection timestamp="2025-04-01T17:17:46.241740300Z">
+        <DropdownSelection timestamp="2025-04-12T15:57:30.699221200Z">
           <Target type="DEFAULT_BOOT">
             <handle>
-              <DeviceId pluginId="PhysicalDevice" identifier="serial=89U4C18524008822" />
+              <DeviceId pluginId="LocalEmulator" identifier="path=C:\Users\Makaota\.android\avd\Pixel_7_Pro_API_34.avd" />
             </handle>
           </Target>
         </DropdownSelection>
@@ -15,7 +15,7 @@
           <targets>
             <Target type="DEFAULT_BOOT">
               <handle>
-                <DeviceId pluginId="PhysicalDevice" identifier="serial=89U4C18524008822" />
+                <DeviceId pluginId="PhysicalDevice" identifier="serial=RZ8R60H1WZX" />
               </handle>
             </Target>
             <Target type="DEFAULT_BOOT">

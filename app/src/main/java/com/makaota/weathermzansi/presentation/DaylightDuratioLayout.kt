@@ -7,17 +7,16 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -36,13 +35,16 @@ fun DaylightDurationLayout(
     sunriseTime: LocalTime,
     sunsetTime: LocalTime,
     daylightDuration: Duration, // Use daylight duration!
-    currentTime: LocalTime = LocalTime.now(),
+  //  currentTime: LocalTime = LocalTime.now(),
     modifier: Modifier = Modifier,
     themeViewModel: ThemeViewModel
 ) {
     val barBackgroundColor = if (isSystemInDarkTheme()) Color.Gray else Color.Gray.copy(alpha = 0.3f) // Light Gray
     val progressColor = Color(0xFFFFD700) // Golden Yellow
     val sunColor = Color(0xFFFFA500) // Sun icon
+
+    val currentTime = rememberUpdatedState(LocalTime.now())
+
 
     val isDarkTheme by themeViewModel.isDarkTheme.observeAsState(false)
 
@@ -54,9 +56,9 @@ fun DaylightDurationLayout(
 
     // Ensure correct time difference based on daylight
     val elapsedMinutes = when {
-        currentTime.isBefore(sunriseTime) -> 0f // Before sunrise, progress is 0
-        currentTime.isAfter(sunsetTime) -> totalDayMinutes // After sunset, progress stays full
-        else -> Duration.between(sunriseTime, currentTime).toMinutes().toFloat()
+        currentTime.value.isBefore(sunriseTime) -> 0f // Before sunrise, progress is 0
+        currentTime.value.isAfter(sunsetTime) -> totalDayMinutes // After sunset, progress stays full
+        else -> Duration.between(sunriseTime, currentTime.value).toMinutes().toFloat()
     }
 
     val sunProgress = (elapsedMinutes / totalDayMinutes).coerceIn(0f, 1f) // Clamp between 0 and 1
@@ -64,13 +66,10 @@ fun DaylightDurationLayout(
     Column(
         modifier = modifier
             .fillMaxSize()
-            .height(245.dp)
             .background(backgroundColor, shape = RoundedCornerShape(12.dp)),
-        horizontalAlignment = Alignment.CenterHorizontally
+      //  horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
-
-       // Spacer(modifier = Modifier.height(16.dp))
 
         Box(
             modifier = Modifier
@@ -121,12 +120,12 @@ fun DaylightDurationLayout(
             }
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
+      //  Spacer(modifier = Modifier.height(16.dp))
 
         // **Sunrise, Noon & Sunset Values**
         Row(
             modifier = Modifier.fillMaxWidth()
-                .padding(start = 16.dp, end = 16.dp),
+                .padding(16.dp),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(text = "🌅 ${sunriseTime.format(DateTimeFormatter.ofPattern("hh:mm a"))}", color = textColor)

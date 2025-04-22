@@ -17,6 +17,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
@@ -27,6 +28,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.room.Room
 import com.google.accompanist.swiperefresh.SwipeRefresh
@@ -86,12 +89,29 @@ class MainActivity : ComponentActivity() {
                   val locationDao = db.locationDao()
 
 
+                // Create a separate navController for Splash
+                val splashNavController = rememberNavController()
 
+                NavHost(
+                    navController = splashNavController,
+                    startDestination = "splash_screen"
+                ) {
+                    composable("splash_screen") {
+                        SplashScreen(navController = splashNavController, themeViewModel = themeViewModel)
+                    }
 
-                WeatherApp(combinedViewModel = combinedViewModel, navController,themeViewModel)
-                WeatherAppWithDrawerDisplay(dailyState = combinedViewModel.dailyWeatherState,
-                    navController = navController, locationDao = locationDao,
-                    themeViewModel = themeViewModel, hourlyWeatherState = combinedViewModel.state)
+                    composable("main_app") {
+                        // You can safely initialize a new navController here
+                        val mainNavController = rememberNavController()
+                        WeatherAppWithDrawerDisplay(
+                            navController = mainNavController,
+                            locationDao = locationDao,
+                            themeViewModel = themeViewModel,
+                            dailyState = combinedViewModel.dailyWeatherState,
+                            hourlyWeatherState = combinedViewModel.state
+                        )
+                    }
+                }
 
             }
         }
@@ -112,92 +132,98 @@ fun WeatherApp(combinedViewModel: CombinedWeatherViewModel, navHostController: N
     val labelColor = ThemeColors.labelColor(isDarkTheme)
 
 
+    val weatherState = combinedViewModel.state
 
-
+    LaunchedEffect(Unit) {
+        combinedViewModel.loadWeatherData()
+    }
 
     Box (modifier = Modifier.fillMaxSize()){
-        SwipeRefresh(
-            state = rememberSwipeRefreshState(isRefreshing),
-            onRefresh = { combinedViewModel.loadWeatherData() },
-         //   modifier = Modifier.fillMaxSize()
-        ) {
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(backgroundColor2)
-            ) {
-                item {
-                    WeatherScreenDisplay(
-                        dailyState = combinedViewModel.dailyWeatherState,
-                        combinedWeatherViewModel = combinedViewModel,
-                        themeViewModel = themeViewModel
-                    )
-                }
-                item {
-                    CurrentWeatherDisplay(
-                        hourlyState = combinedViewModel.state,
-                        dailyState = combinedViewModel.dailyWeatherState,
-                        themeViewModel = themeViewModel
-                    )
-                }
-                item {
-                    TodayTomorrowWeatherDisplay(
-                        dailyState = combinedViewModel.dailyWeatherState,
-                        themeViewModel = themeViewModel
-                    )
-                }
-                item {
-                    HourlyWeatherForecast(
-                        state = combinedViewModel.state,
-                        themeViewModel = themeViewModel
-                    )
-                }
-                item {
-                    DailyDisplay(
-                        combinedViewModel,
-                        navController = navHostController,
-                        themeViewModel = themeViewModel
-                    )
-                }
-                item {
-                    WindInfoDisplay(
-                        state = combinedViewModel.state,
-                        themeViewModel = themeViewModel
-                    )
-                    Spacer(modifier = Modifier.height(16.dp))
-                }
 
-                item {
-                    HumidityInfoDisplay(
-                        state = combinedViewModel.state,
-                        themeViewModel = themeViewModel
-                    )
-                }
-                item {
-                    DailyUVIndexDisplay(
-                        combinedViewModel.dailyWeatherState,
-                        themeViewModel = themeViewModel
-                    )
-                }
-                item {
-                    DailyDurationDisplay(
-                        combinedViewModel.dailyWeatherState,
-                        themeViewModel = themeViewModel
-                    )
-                }
-                item {
-                    Spacer(modifier = Modifier.height(16.dp))
-                }
-
-
-            }
-        }
 
         // **Show Loading Indicator While Data is Fetching**
-        if (combinedViewModel.state.isLoading && !isRefreshing) {
+        if (combinedViewModel.state.isLoading) {
             CircularProgressIndicator(
                 modifier = Modifier.align(Alignment.Center)
             )
+        }else
+        {
+            SwipeRefresh(
+                state = rememberSwipeRefreshState(isRefreshing),
+                onRefresh = { combinedViewModel.loadWeatherData() },
+                //   modifier = Modifier.fillMaxSize()
+            ) {
+                LazyColumn(
+                    modifier = Modifier
+                       // .fillMaxSize()
+                        .background(backgroundColor2)
+                ) {
+                    item {
+                        WeatherScreenDisplay(
+                            dailyState = combinedViewModel.dailyWeatherState,
+                            combinedWeatherViewModel = combinedViewModel,
+                            themeViewModel = themeViewModel
+                        )
+                    }
+                    item {
+                        CurrentWeatherDisplay(
+                            hourlyState = combinedViewModel.state,
+                            dailyState = combinedViewModel.dailyWeatherState,
+                            themeViewModel = themeViewModel
+                        )
+                    }
+                    item {
+                        TodayTomorrowWeatherDisplay(
+                            dailyState = combinedViewModel.dailyWeatherState,
+                            themeViewModel = themeViewModel
+                        )
+                    }
+                    item {
+                        HourlyWeatherForecast(
+                            state = combinedViewModel.state,
+                            themeViewModel = themeViewModel
+                        )
+                    }
+                    item {
+                        DailyDisplay(
+                            combinedViewModel,
+                            navController = navHostController,
+                            themeViewModel = themeViewModel
+                        )
+                    }
+                    item {
+                        WindInfoDisplay(
+                            state = combinedViewModel.state,
+                            themeViewModel = themeViewModel
+                        )
+                        Spacer(modifier = Modifier.height(16.dp))
+                    }
+
+                    item {
+                        HumidityInfoDisplay(
+                            state = combinedViewModel.state,
+                            themeViewModel = themeViewModel
+                        )
+                    }
+                    item {
+                        DailyUVIndexDisplay(
+                            combinedViewModel.dailyWeatherState,
+                            themeViewModel = themeViewModel
+                        )
+                    }
+                    item {
+                        DailyDurationDisplay(
+                            combinedViewModel.dailyWeatherState,
+                            themeViewModel = themeViewModel
+                        )
+                    }
+                    item {
+                        Spacer(modifier = Modifier.height(16.dp))
+                    }
+
+
+                }
+            }
         }
 
         // **Show Error Message if an Error Occurred**
@@ -210,6 +236,10 @@ fun WeatherApp(combinedViewModel: CombinedWeatherViewModel, navHostController: N
             )
 
         }
+
+
+
+
     }
 
 }

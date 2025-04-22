@@ -1,8 +1,11 @@
 package com.makaota.weathermzansi.presentation
 
+import android.annotation.SuppressLint
 import android.util.Log
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.Image
@@ -32,7 +35,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Switch
@@ -49,6 +51,7 @@ import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
@@ -64,43 +67,42 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.google.android.gms.maps.model.LatLng
 import com.makaota.weathermzansi.R
 import com.makaota.weathermzansi.data.location_database.LocationDao
 import com.makaota.weathermzansi.data.location_database.LocationEntity
 import com.makaota.weathermzansi.domain.utils.ThemeColors
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import kotlin.math.roundToInt
 
 @Composable
-fun HomeScreen() {
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
-    ) {
-        Text("🏠 Home Screen", fontSize = 24.sp)
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
 fun CityManagementScreen(
     combinedViewModel: CombinedWeatherViewModel,
     navController: NavHostController,
     locationDao: LocationDao, // Room DB Access
+    themeViewModel: ThemeViewModel
 ) {
     val scope = rememberCoroutineScope()
 
     // Correctly collect locations from Room Database
     val cities by locationDao.getAllLocations().collectAsState(initial = emptyList())
 
+    val isDarkTheme by themeViewModel.isDarkTheme.observeAsState(false)
+
+    val textColor = ThemeColors.textColor(isDarkTheme)
+    val backgroundColor2 = ThemeColors.backgroundColor2(isDarkTheme)
+    val labelColor = ThemeColors.labelColor(isDarkTheme)
+
 
     Box(
         modifier = Modifier
             .fillMaxSize()
+            .background(backgroundColor2)
     ) {
         if (cities.isEmpty()) {
             Text(
@@ -109,7 +111,7 @@ fun CityManagementScreen(
                     .fillMaxSize()
                     .wrapContentSize(Alignment.Center),
                 fontSize = 18.sp,
-                color = Color.Gray
+                color = textColor
             )
         } else {
             LazyColumn(modifier = Modifier.fillMaxSize()) {
@@ -132,7 +134,9 @@ fun CityManagementScreen(
                             scope.launch {
                                 locationDao.deleteLocation(city) // Delete city from DB
                             }
-                        }
+                        },
+                        textColor=textColor,
+                        labelColor=labelColor
                     )
                 }
             }
@@ -147,16 +151,21 @@ fun SettingsScreen(themeViewModel: ThemeViewModel = viewModel()) {
     val isDarkTheme by themeViewModel.isDarkTheme.observeAsState(false)
 
     val textColor = ThemeColors.textColor(isDarkTheme)
-    val backgroundColor = ThemeColors.backgroundColor(isDarkTheme)
+    val backgroundColor2 = ThemeColors.backgroundColor2(isDarkTheme)
     val labelColor = ThemeColors.labelColor(isDarkTheme)
 
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp)
-            .background(backgroundColor)
+          //  .padding(16.dp)
+            .background(backgroundColor2)
     ) {
-        Text("Theme Settings", color = textColor)
+        Text(text = "Theme Settings",
+            color = textColor,
+            fontSize = 20.sp,
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier.padding(16.dp)
+        )
 
         Row(
             modifier = Modifier
@@ -164,7 +173,11 @@ fun SettingsScreen(themeViewModel: ThemeViewModel = viewModel()) {
                 .padding(top = 16.dp),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Text("Dark Mode")
+            Text(text = "Dark Mode",
+                color = textColor,
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(start = 16.dp))
             Switch(
                 checked = isDarkTheme,
                 onCheckedChange = { themeViewModel.toggleTheme(it) }
@@ -178,6 +191,8 @@ fun CityItem(
     locationEntity: LocationEntity, // Ensure correct `LocationEntity` is passed
     onSelect: () -> Unit,
     onDelete: () -> Unit,
+    textColor: Color,
+    labelColor: Color
 ) {
     Row(
         modifier = Modifier
@@ -188,11 +203,12 @@ fun CityItem(
         verticalAlignment = Alignment.CenterVertically
     ) {
         Column {
-            Text(text = locationEntity.name, fontSize = 18.sp, fontWeight = FontWeight.Bold)
+            Text(text = locationEntity.name, fontSize = 18.sp, fontWeight = FontWeight.Bold,
+                color = textColor)
             Text(
                 text = "Lat: ${locationEntity.latitude}, Lng: ${locationEntity.longitude}",
                 fontSize = 14.sp,
-                color = Color.Gray
+                color = labelColor
             )
         }
 
@@ -336,7 +352,7 @@ fun WeatherDetailsScreen(
                 }
             }
 
-            AnimatedContent(targetState = hourlyState, transitionSpec = {
+            AnimatedContent(targetState = selectedWeatherData, transitionSpec = {
                 slideIntoContainer(transitionDirection, tween(500)) togetherWith
                         slideOutOfContainer(transitionDirection, tween(500))
             }, label = "") { data ->
@@ -796,4 +812,58 @@ fun DayAndNightDisplay(
     }
 
 }
+@SuppressLint("SuspiciousIndentation")
+@Composable
+fun SplashScreen(
+    navController: NavController,
+    themeViewModel: ThemeViewModel
+) {
+    val isDarkTheme by themeViewModel.isDarkTheme.observeAsState(false)
+    val backgroundColor2 = ThemeColors.backgroundColor2(isDarkTheme)
+    val textColor = ThemeColors.textColor(isDarkTheme)
+
+    var startAnimation by remember { mutableStateOf(false) }
+
+    val alphaAnim = animateFloatAsState(
+        targetValue = if (startAnimation) 1f else 0f,
+        animationSpec = tween(
+            durationMillis = 6000,
+            easing = FastOutSlowInEasing
+        ), label = ""
+    )
+
+    LaunchedEffect(Unit) {
+     startAnimation = true
+        delay(4000)
+        navController.navigate("main_app") {
+            popUpTo("splash_screen") { inclusive = true }
+        }
+    }
+
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(backgroundColor2),
+        contentAlignment = Alignment.Center
+    ) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+
+            Image(
+                painter = painterResource(id = R.drawable.weather_few_clouds),
+                contentDescription = "App Logo",
+                modifier = Modifier.size(120.dp)
+            )
+            Text(
+                text = "Weather Mzansi",
+                fontSize = 28.sp,
+                fontWeight = FontWeight.Bold,
+                color = textColor,
+                modifier = Modifier.alpha(alphaAnim.value)
+            )
+        }
+    }
+}
+
 

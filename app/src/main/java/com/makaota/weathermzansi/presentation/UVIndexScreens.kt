@@ -80,7 +80,7 @@ fun UVIndexGradient(uvIndex: Float,themeViewModel: ThemeViewModel) {
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        UVLegend()
+        UVLegend(themeViewModel)
     }
 }
 
@@ -124,11 +124,18 @@ fun UVIndexSunIcon(uvIndex: Float, themeViewModel: ThemeViewModel) {
 }
 
 @Composable
-fun UVLegend() {
+fun UVLegend(themeViewModel: ThemeViewModel) {
+
+    val isDarkTheme by themeViewModel.isDarkTheme.observeAsState(false)
+    val uvLegendBackgroundView = if (isDarkTheme) {
+        Color.Transparent
+    } else {
+        colorResource(id = R.color.dark_gray)
+    }
     Row(
-        modifier = Modifier.fillMaxWidth()
-            .background(colorResource(id = R.color.dark_gray))
-        ,
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(uvLegendBackgroundView),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Text("Low", color = Color.Green, fontSize = 14.sp)
@@ -254,7 +261,8 @@ fun VisibilityBlurEffect(visibilityKm: Float, themeViewModel: ThemeViewModel) {
 fun LegendItems(label: String, color: Color, textColor: Color) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier.padding(end = 16.dp)
+        modifier = Modifier
+            .padding(end = 16.dp)
             .fillMaxWidth()){
         Box(
             modifier = Modifier

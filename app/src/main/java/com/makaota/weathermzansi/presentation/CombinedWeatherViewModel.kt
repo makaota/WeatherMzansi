@@ -1,5 +1,6 @@
 package com.makaota.weathermzansi.presentation
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -31,8 +32,9 @@ class CombinedWeatherViewModel @Inject constructor(
     var dailyWeatherState by mutableStateOf(DailyWeatherState())
         private set
 
-    private val _state = MutableStateFlow(WeatherState())
-    val refreshState: StateFlow<WeatherState> = _state
+    private val weatherState = MutableStateFlow(WeatherState())
+    val _weatherState: StateFlow<WeatherState> = weatherState
+
 
     // Add an isRefreshing state
     private val _isRefreshing = MutableStateFlow(false)
@@ -62,47 +64,73 @@ class CombinedWeatherViewModel @Inject constructor(
     fun getSelectedDay(): Int {
         return selectedDayIndex
     }
+    fun setError(message: String) {
+        state = state.copy(
+            isLoading = false,
+            error = message
+        )
+    }
+
 
 
     fun loadWeatherData() {
         viewModelScope.launch {
-
             _isRefreshing.value = true
-            try {
-                // Load weather data here
-                state = state.copy(isLoading = true, error = null)
-                dailyWeatherState = dailyWeatherState.copy(isLoading = true, error = null)
 
-                val location = locationTracker.getCurrentLocation()
+            state = state.copy(isLoading = true, error = null)
+            dailyWeatherState = dailyWeatherState.copy(isLoading = true, error = null)
+            val location = locationTracker.getCurrentLocation()
+            try {
+                
+
                 if (location == null) {
-                    state = state.copy(
-                        isLoading = false,
-                        error = "Couldn't retrieve location. Make sure to grant permission and enable GPS."
-                    )
-                    dailyWeatherState = dailyWeatherState.copy(
-                        isLoading = false,
-                        error = "Couldn't retrieve location. Make sure to grant permission and enable GPS."
-                    )
+                    val errorMsg = "Couldn't retrieve location. Make sure to grant permission and enable GPS."
+                    state = state.copy(isLoading = false, error = errorMsg)
+                    dailyWeatherState = dailyWeatherState.copy(isLoading = false, error = errorMsg)
+                    _isRefreshing.value = false
                     return@launch
                 }
 
-                val currentWeatherDeferred =
-                    async { repository.getWeatherData(location.latitude, location.longitude) }
-                val dailyWeatherDeferred =
-                    async { repository.getDailyWeatherData(location.latitude, location.longitude) }
+                val current = async {
+                    try {
+                        repository.getWeatherData(location.latitude, location.longitude)
+                    } catch (e: Exception) {
+                        Log.e("WeatherVM", "Error getting current weather", e)
+                        throw Exception("Failed to load current weather. Check your internet connection.")
+                    }
+                }
 
-                val currentWeatherResult = currentWeatherDeferred.await()
-                val dailyWeatherResult = dailyWeatherDeferred.await()
+                val daily = async {
+                    try {
+                        repository.getDailyWeatherData(location.latitude, location.longitude)
+                    } catch (e: Exception) {
+                        Log.e("WeatherVM", "Error getting daily weather", e)
+                        throw Exception("Failed to load daily weather. Check your internet connection.")
+                    }
+                }
 
-                handleCurrentWeatherResult(currentWeatherResult)
-                handleDailyWeatherResult(dailyWeatherResult)
+                try {
+                    val currentResult = current.await()
+                    handleCurrentWeatherResult(currentResult)
+                } catch (e: Exception) {
+                    state = state.copy(isLoading = false, error = e.message)
+                }
+
+                try {
+                    val dailyResult = daily.await()
+                    handleDailyWeatherResult(dailyResult)
+                } catch (e: Exception) {
+                    dailyWeatherState = dailyWeatherState.copy(isLoading = false, error = e.message)
+                }
+
             } catch (e: Exception) {
-                // Handle errors
-
+                Log.e("WeatherVM", "Unhandled error", e)
+                val errorMsg = "Something went wrong. Check internet and try again."
+                state = state.copy(isLoading = false, error = errorMsg)
+                dailyWeatherState = dailyWeatherState.copy(isLoading = false, error = errorMsg)
             } finally {
                 _isRefreshing.value = false
             }
-
         }
     }
 
