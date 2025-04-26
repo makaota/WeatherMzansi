@@ -30,16 +30,6 @@ It provides accurate daily and hourly forecasts, UV index, wind, visibility, hum
 
 ---
 
-## 🚀 Tech Stack
-- **Kotlin + Jetpack Compose**
-- **MVVM Architecture** (ViewModel, State Management)
-- **Room Database** (for storing city search history)
-- **Coroutines + Flow** (asynchronous operations)
-- **Hilt (optional)** (for dependency injection)
-- **Open-Meteo API** (live weather data)
-
----
-
 ## 📸 Screenshots
 
 ![Samsung Galaxy S21 Ultra Screenshot 1_288x512](https://github.com/user-attachments/assets/085ff8c5-b5c0-4bfa-a27c-11dff03e761c)
@@ -61,15 +51,15 @@ Employers/Clients seeking proof of real Android development skills
 
 ## ⚙️ Tech Stack
 
-Tech	Details
-Language	Kotlin
-UI Framework          :	Jetpack Compose
-Architecture          :	MVVM (Model-View-ViewModel)
-Dependency Injection	: Hilt (or Manual ViewModel/Repository Injection)
-Navigation	          : Jetpack Navigation Component
-Persistence	          : Room Database (for Saved Cities)
-Data Storage	        : DataStore Preferences (for Theme Settings)
-Animations	          : Compose Animations (Crossfade, Slide, Scroll effects)
-Networking	          : Retrofit + Coroutine Flows
-Location	            : FusedLocationProviderClient (Google Play Services)
-Theme	                : Custom Light/Dark Themes using CompositionLocals
+- **Tech**	                : Details
+- **Language**	            : Kotlin
+- **UI Framework**          :	Jetpack Compose
+- **Architecture**          :	MVVM (Model-View-ViewModel)
+- **Dependency Injection**	: Hilt (or Manual ViewModel/Repository Injection)
+- **Navigation**	          : Jetpack Navigation Component
+- **Persistence**	          : Room Database (for Saved Cities)
+- **Data Storage**	        : DataStore Preferences (for Theme Settings)
+- **Animations**	          : Compose Animations (Crossfade, Slide, Scroll effects)
+- **Networking**	          : Retrofit + Coroutine Flows
+- **Location**	            : FusedLocationProviderClient (Google Play Services)
+- **Theme**	                : Custom Light/Dark Themes using CompositionLocals
