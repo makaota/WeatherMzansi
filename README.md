@@ -59,15 +59,17 @@ South African users looking for local, fast, and accurate weather forecasting
 
 Employers/Clients seeking proof of real Android development skills
 
-## 📢 About
-This project was built as a real-world portfolio app to demonstrate:
+## ⚙️ Tech Stack
 
-Clean Compose UI design
-
-Real API consumption
-
-Local caching
-
-Dark/Light theme switching
-
-Smooth UX and professional practices
+Tech	Details
+Language	Kotlin
+UI Framework          :	Jetpack Compose
+Architecture          :	MVVM (Model-View-ViewModel)
+Dependency Injection	: Hilt (or Manual ViewModel/Repository Injection)
+Navigation	          : Jetpack Navigation Component
+Persistence	          : Room Database (for Saved Cities)
+Data Storage	        : DataStore Preferences (for Theme Settings)
+Animations	          : Compose Animations (Crossfade, Slide, Scroll effects)
+Networking	          : Retrofit + Coroutine Flows
+Location	            : FusedLocationProviderClient (Google Play Services)
+Theme	                : Custom Light/Dark Themes using CompositionLocals
