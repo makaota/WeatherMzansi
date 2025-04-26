@@ -5,20 +5,28 @@ It provides accurate daily and hourly forecasts, UV index, wind, visibility, hum
 
 ---
 
-## ✨ Features
-- Real-time current weather updates
-- 7-day detailed weather forecast
-- Sunrise, sunset, daylight, and sunshine durations
-- UV Index display with safe exposure guidance
-- Wind speed and direction with animated compass
-- Pressure gauge and humidity monitor
-- Visibility display with atmospheric blur effect
-- Full dark mode/light mode support (with system auto-detect)
-- City search and management (Save/Delete cities)
-- Smooth navigation with animated transitions
-- Offline city history (using Room Database)
-- Swipe-to-refresh weather data
-- Responsive, modern UI with Material3 guidelines
+# ✨ Features
+🌍 Live Weather Data: Real-time weather updates using a powerful API.
+
+📅 7-Day Forecast: Detailed daily weather outlook with high/low temperatures.
+
+🕐 Hourly Forecasts: Plan your day with hour-by-hour precision.
+
+🔥 UV Index Awareness: Stay safe in the sun with clear UV readings.
+
+🌫️ Visibility and Humidity: Critical weather information at a glance.
+
+🌬️ Wind Speed & Direction: Animated visualizations of wind behavior.
+
+🌘 Sunrise/Sunset Times: Plan mornings and evenings better.
+
+🌓 Light & Dark Theme Support: Automatically adapts to your device’s theme — or manually choose!
+
+📂 Saved Cities: Save and manage your favorite locations.
+
+🧹 Smooth Animations: Animated transitions, swipes, and real-time changes.
+
+🧠 Optimized Architecture: MVVM + Repository Pattern for clean, maintainable code.
 
 ---
 
