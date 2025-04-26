@@ -45,3 +45,21 @@ It provides accurate daily and hourly forecasts, UV index, wind, visibility, hum
 
 ## 🛠️ Installation
 
+
+## 📍 Target Audience
+South African users looking for local, fast, and accurate weather forecasting
+
+Employers/Clients seeking proof of real Android development skills
+
+## 📢 About
+This project was built as a real-world portfolio app to demonstrate:
+
+Clean Compose UI design
+
+Real API consumption
+
+Local caching
+
+Dark/Light theme switching
+
+Smooth UX and professional practices
